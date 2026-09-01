@@ -39,6 +39,7 @@
             padding: 16px;
             backdrop-filter: blur(5px);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
         }
 
         .train-card:hover {
@@ -128,12 +129,12 @@
 
             grid.innerHTML += `
                 <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                    <div class="train-card">
+                    <div class="train-card" onclick="window.location.href='train_detail.php?id=${tsCode}'">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="ts-title">${tsCode}</span>
                             <span class="badge-status badge-nodata" id="badge-${tsCode}">NO DATA</span>
                         </div>
-                        
+            
                         <div class="row g-1 mb-3">
                             ${carBoxesHTML}
                         </div>
