@@ -1,6 +1,6 @@
 <?php
 // db.php
-$host = 'localhost';
+$host = '192.168.8.194';
 $user = 'root';
 $pass = ''; // Default password MySQL Laragon adalah kosong
 $db   = 'ssm_monitoring';
