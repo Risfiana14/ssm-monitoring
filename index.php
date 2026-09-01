@@ -61,8 +61,10 @@
             letter-spacing: 0.5px;
         }
 
+        /* Pemetaan Warna Status Header Badge */
         .badge-nodata { background-color: #4a5568; color: #cbd5e0; }
         .badge-online { background-color: #28a745; color: #ffffff; }
+        .badge-warning { background-color: #fd7e14; color: #ffffff; }
         .badge-offline { background-color: #dc3545; color: #ffffff; }
 
         .car-box {
@@ -76,11 +78,17 @@
             transition: all 0.3s ease;
         }
 
-        /* Warna Status Gerbong */
+        /* Pemetaan Warna Status Gerbong (3 Warna) */
         .car-box.up {
             background-color: #28a745 !important;
             color: #ffffff !important;
             box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
+        }
+
+        .car-box.warning {
+            background-color: #fd7e14 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 8px rgba(253, 126, 20, 0.6);
         }
 
         .car-box.down {
@@ -106,7 +114,7 @@
     <!-- Grid Container 16 Trainset -->
     <div class="container-fluid">
         <div class="row g-3" id="trainset-grid">
-            <!-- 16 Trainset Cards akan di-generate otomatis oleh JavaScript -->
+            <!-- 16 Trainset Cards di-generate oleh JavaScript -->
         </div>
     </div>
 
@@ -160,19 +168,23 @@
                     data.forEach(item => {
                         const ts = item.trainset; // e.g. TS-04
                         const loc = item.location; // e.g. MC1
-                        const status = item.status; // ONLINE / OFFLINE
+                        const status = item.status.toUpperCase(); // ONLINE / WARNING / OFFLINE
 
                         if (!trainsetMap[ts]) {
                             trainsetMap[ts] = {
                                 lastTime: item.timestamp,
                                 cars: {},
-                                hasOffline: false
+                                hasOffline: false,
+                                hasWarning: false
                             };
                         }
 
                         trainsetMap[ts].cars[loc] = status;
+
                         if (status === 'OFFLINE' || status === 'DOWN') {
                             trainsetMap[ts].hasOffline = true;
+                        } else if (status === 'WARNING') {
+                            trainsetMap[ts].hasWarning = true;
                         }
                     });
 
@@ -184,28 +196,35 @@
                         const timeElem = document.getElementById(`time-${ts}`);
                         if (timeElem) timeElem.innerText = tsData.lastTime;
 
-                        // Update Badge Header (ONLINE / OFFLINE)
+                        // Update Badge Status Trainset (Merah / Orange / Hijau)
                         const badgeElem = document.getElementById(`badge-${ts}`);
                         if (badgeElem) {
-                            badgeElem.classList.remove('badge-nodata', 'badge-online', 'badge-offline');
+                            badgeElem.classList.remove('badge-nodata', 'badge-online', 'badge-offline', 'badge-warning');
                             if (tsData.hasOffline) {
                                 badgeElem.classList.add('badge-offline');
                                 badgeElem.innerText = 'OFFLINE';
+                            } else if (tsData.hasWarning) {
+                                badgeElem.classList.add('badge-warning');
+                                badgeElem.innerText = 'WARNING';
                             } else {
                                 badgeElem.classList.add('badge-online');
                                 badgeElem.innerText = 'ONLINE';
                             }
                         }
 
-                        // Update Warna Tiap Gerbong (MC1, M1, dll)
+                        // Update Warna Kotak Gerbong (Hijau / Orange / Merah)
                         Object.keys(tsData.cars).forEach(car => {
                             const carElem = document.getElementById(`car-${ts}-${car}`);
                             if (carElem) {
-                                carElem.classList.remove('up', 'down');
-                                if (tsData.cars[car] === 'ONLINE' || tsData.cars[car] === 'UP') {
-                                    carElem.classList.add('up');
-                                } else {
-                                    carElem.classList.add('down');
+                                carElem.classList.remove('up', 'down', 'warning');
+                                const st = tsData.cars[car];
+
+                                if (st === 'ONLINE' || st === 'UP') {
+                                    carElem.classList.add('up');       // Hijau
+                                } else if (st === 'WARNING') {
+                                    carElem.classList.add('warning');  // Orange
+                                } else if (st === 'OFFLINE' || st === 'DOWN') {
+                                    carElem.classList.add('down');     // Merah
                                 }
                             }
                         });

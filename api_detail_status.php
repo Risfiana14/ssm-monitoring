@@ -10,7 +10,7 @@ if (!$trainset) {
     exit;
 }
 
-// Mengambil status perangkat terbaru per gerbong untuk trainset tertentu
+// Mengambil status perangkat terbaru per IP gerbong untuk trainset tertentu
 $query = "
     SELECT l1.device_name, l1.device_ip, l1.device_type, l1.trainset, l1.location, l1.status, l1.timestamp
     FROM monitoring_logs l1
@@ -20,6 +20,7 @@ $query = "
         WHERE trainset = ?
         GROUP BY device_ip
     ) l2 ON l1.id = l2.max_id
+    ORDER BY l1.location ASC, l1.device_name ASC
 ";
 
 $stmt = $pdo->prepare($query);
