@@ -3,14 +3,8 @@
 header('Content-Type: application/json');
 require_once 'db.php';
 
-$trainset = $_GET['trainset'] ?? null;
+$trainset = $_GET['trainset'] ?? 'Argo Wilis';
 
-if (!$trainset) {
-    echo json_encode([]);
-    exit;
-}
-
-// Mengambil status perangkat terbaru per IP gerbong untuk trainset tertentu
 $query = "
     SELECT l1.device_name, l1.device_ip, l1.device_type, l1.trainset, l1.location, l1.status, l1.timestamp
     FROM monitoring_logs l1
@@ -20,7 +14,7 @@ $query = "
         WHERE trainset = ?
         GROUP BY device_ip
     ) l2 ON l1.id = l2.max_id
-    ORDER BY l1.location ASC, l1.device_name ASC
+    ORDER BY l1.location ASC, INET_ATON(l1.device_ip) ASC
 ";
 
 $stmt = $pdo->prepare($query);
