@@ -16,198 +16,179 @@
         }
 
         .dashboard-header {
-            padding: 20px 0 10px 0;
+            padding: 10px 0 6px 0;
             text-align: center;
         }
 
         .dashboard-title {
             font-weight: 800;
             letter-spacing: 2px;
-            font-size: 2rem;
+            font-size: 1.5rem;
             margin-bottom: 2px;
         }
 
-        .train-card {
+        .car-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
-            padding: 20px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-        }
-
-        .car-box {
-            background-color: #4a5568;
-            color: #ffffff;
-            border-radius: 8px;
-            padding: 12px 4px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25 ease;
-            user-select: none;
-        }
-
-        .car-box:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.15);
-        }
-
-        .car-box.active-car {
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
-        }
-
-        /* Status Colors Gerbong */
-        .car-box.up { background-color: #28a745 !important; }
-        .car-box.warning { background-color: #fd7e14 !important; }
-        .car-box.down { background-color: #dc3545 !important; }
-
-        /* Panel Expansion 15 Device */
-        .device-panel {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
+            padding: 12px 14px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            height: 100%;
         }
 
-        .device-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 8px;
+        .car-header {
+            font-weight: 700;
             font-size: 0.82rem;
-            font-weight: 600;
-            width: 100%;
-            text-align: left;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
+            margin-bottom: 10px;
         }
 
-        .device-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+        /* GRID PRESISI 5 MENYAMPING X 3 KE BAWAH */
+        .device-grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 38px); /* Kunci 5 kolom dengan lebar 38px */
+            grid-template-rows: repeat(3, 38px);    /* Kunci 3 baris dengan tinggi 38px */
+            gap: 8px;                                /* Jarak rapi antar kotak */
+            justify-content: center;                 /* Posisikan persis di tengah card */
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        /* KOTAK PERSEGI SAMA UKURAN (38px x 38px) */
+        .device-box {
+            background-color: #4a5568;
             color: #ffffff;
-            transform: translateX(3px);
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            font-size: 0.6rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: none;
+            
+            width: 38px !important;
+            height: 38px !important;
+            aspect-ratio: 1 / 1 !important;
+            flex-shrink: 0;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
         }
 
-        .dot-status {
-            height: 10px;
-            width: 10px;
-            border-radius: 50%;
-            display: inline-block;
+        .device-box:hover {
+            transform: scale(1.12);
+            filter: brightness(1.25);
         }
 
-        .dot-online { background-color: #28a745; box-shadow: 0 0 6px #28a745; }
-        .dot-warning { background-color: #fd7e14; box-shadow: 0 0 6px #fd7e14; }
-        .dot-offline { background-color: #dc3545; box-shadow: 0 0 6px #dc3545; }
+        /* Status Warna Penuh */
+        .device-box.st-online {
+            background-color: #28a745 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
+        }
+
+        .device-box.st-warning {
+            background-color: #fd7e14 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 6px rgba(253, 126, 20, 0.6);
+        }
+
+        .device-box.st-offline {
+            background-color: #dc3545 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+        }
+
+        .badge-status {
+            font-size: 0.6rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
 
         /* Styling Modal Pop-Up */
         .modal-content {
             background-color: #1e293b;
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 14px;
+            border-radius: 12px;
         }
         
         .modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
-<body class="p-3 p-md-4">
+<body class="p-2 p-md-3">
 
     <!-- Header Dashboard -->
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">SSM DASHBOARD</h1>
-        <p class="text-light opacity-75 small mb-0">Real-Time Train Monitoring System</p>
-    </div>
-
-    <!-- Main Container -->
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-xl-11">
-                
-                <!-- Card Utama Kereta Argo Wilis -->
-                <div class="train-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0"><i class="bi bi-train-front me-2"></i>KERETA ARGO WILIS</h4>
-                        <span class="badge bg-success px-3 py-2 rounded-pill fw-bold" id="badge-train">ONLINE</span>
-                    </div>
-
-                    <!-- 6 Kotak Gerbong Unik Kereta SS NG -->
-                    <div class="row g-2 mb-2" id="car-boxes-container">
-                        <!-- Gerbong di-render via JavaScript -->
-                    </div>
-
-                    <div class="text-center text-light opacity-75 mt-3" style="font-size: 0.78rem;">
-                        <i class="bi bi-clock me-1"></i> Last update: <span id="last-update">No data</span>
-                    </div>
-                </div>
-
-                <!-- Panel Expansion: 15 Nama Device (3 Baris Kebawah / 3 Kolom Responsif) -->
-                <div class="device-panel" id="device-panel">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="fw-bold mb-0 text-info">
-                            <i class="bi bi-cpu me-2"></i>Daftar Perangkat Gerbong: <span id="selected-car-title" class="text-white"></span>
-                        </h6>
-                        <span class="small text-light opacity-75">Klik nama perangkat untuk melihat detail status</span>
-                    </div>
-
-                    <!-- Layout Grid 3 Kolom (15 Device disusun 3 baris kebawah secara responsif) -->
-                    <div class="row g-2" id="device-grid">
-                        <!-- 15 Device akan di-render di sini -->
-                    </div>
-                </div>
-
-            </div>
+        <p class="text-light opacity-75 small mb-1">Real-Time Train Monitoring System</p>
+        <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-3 py-1 rounded-pill small" style="font-size: 0.75rem;">
+            <i class="bi bi-train-front text-info"></i>
+            <span class="fw-bold">KERETA ARGO WILIS</span>
+            <span class="text-muted">|</span>
+            <i class="bi bi-clock text-warning"></i>
+            <span>Last update: <span id="last-update">No data</span></span>
         </div>
     </div>
 
-    <!-- Modal Pop-Up Detail Device -->
+    <!-- Layout Grid 2 Kolom Menyamping -->
+    <div class="container" style="max-width: 1100px;">
+        <div class="row g-3" id="cars-grid">
+            <!-- 6 Kartu Gerbong -->
+        </div>
+    </div>
+
+    <!-- Modal Pop-Up Detail Status Perangkat -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h5>
+                <div class="modal-header py-2">
+                    <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <table class="table table-dark table-borderless mb-0">
-                        <tbody>
+                <div class="modal-body p-3">
+                    <table class="table table-dark table-borderless table-sm mb-0">
+                        <tbody style="font-size: 0.8rem;">
                             <tr>
                                 <td class="text-light opacity-75">IP Address</td>
                                 <td class="fw-bold text-end" id="modalDeviceIP">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Tipe Perangkat</td>
+                                <td class="text-light opacity-75">Tipe</td>
                                 <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Lokasi Gerbong</td>
+                                <td class="text-light opacity-75">Gerbong</td>
                                 <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Status Koneksi</td>
+                                <td class="text-light opacity-75">Status</td>
                                 <td class="text-end" id="modalDeviceStatus">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Kondisi Operasional</td>
+                                <td class="text-light opacity-75">Kondisi</td>
                                 <td class="text-end" id="modalDeviceState">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Waktu Update Terakhir</td>
+                                <td class="text-light opacity-75">Update</td>
                                 <td class="text-end small" id="modalDeviceTime">-</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                <div class="modal-footer py-1">
+                    <button type="button" class="btn btn-secondary btn-sm py-0 px-2" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
@@ -217,83 +198,52 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
-        let selectedCar = null;
         let globalDeviceData = [];
         const deviceModal = new bootstrap.Modal(document.getElementById('deviceModal'));
 
-        // 1. Render 6 Kotak Gerbong Beranda
-        const carContainer = document.getElementById('car-boxes-container');
+        // Helper Singkatan Nama Perangkat
+        function getShortName(fullName) {
+            const name = (fullName || '').trim().toUpperCase();
+
+            if (name.includes('NVR')) return 'NVR';
+            if (name.includes('CAM 3') || name.includes('CCTV 3')) return 'CAM3';
+            if (name.includes('CAM 1') || name.includes('CCTV 1')) return 'CAM1';
+            if (name.includes('CAM 2') || name.includes('CCTV 2')) return 'CAM2';
+            if (name.includes('INDOOR 1') || name.includes('RTI 1')) return 'IND1';
+            if (name.includes('INDOOR 2') || name.includes('RTI 2')) return 'IND2';
+            if (name.includes('OUTDOOR 1') || name.includes('RTO R')) return 'OUT1';
+            if (name.includes('OUTDOOR 2') || name.includes('RTO L')) return 'OUT2';
+            if (name.includes('TV 1') || name.includes('CSOT U1')) return 'TV1';
+            if (name.includes('TV 2') || name.includes('CSOT U2')) return 'TV2';
+            if (name.includes('MINI PC') || name.includes('CPU')) return 'MPC';
+            if (name.includes('SWITCH')) return 'SW';
+            if (name.includes('ROUTER')) return 'RTR';
+            if (name.includes('MODEM')) return 'MDM';
+            if (name.includes('WIFI') || name.includes('ACCESS POINT')) return 'AP';
+            if (name.includes('PLSVCU') || name.includes('VCU')) return 'VCU';
+
+            return name.substring(0, 4);
+        }
+
+        // 1. Render Kartu 6 Gerbong (2 Kolom Menyamping `col-lg-6`)
+        const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
-            carContainer.innerHTML += `
-                <div class="col-4 col-md-2">
-                    <div class="car-box" id="car-${car}" onclick="selectCar('${car}')">
-                        <div>${car}</div>
+            grid.innerHTML += `
+                <div class="col-12 col-lg-6">
+                    <div class="car-card">
+                        <div class="car-header">
+                            <span><i class="bi bi-distribute-vertical me-1 text-info"></i>Gerbong ${car}</span>
+                            <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
+                        </div>
+                        <div class="device-grid-container" id="body-${car}">
+                            <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat perangkat...</div>
+                        </div>
                     </div>
                 </div>
             `;
         });
 
-        // 2. Fungsi Pilih Gerbong (Menampilkan 15 Device dalam 3 Kolom Responsif)
-        function selectCar(carCode) {
-            selectedCar = carCode;
-
-            // Highlight Gerbong Aktif
-            uniqueCars.forEach(c => {
-                const elem = document.getElementById(`car-${c}`);
-                if (c === carCode) elem.classList.add('active-car');
-                else elem.classList.remove('active-car');
-            });
-
-            document.getElementById('selected-car-title').innerText = carCode;
-            document.getElementById('device-panel').style.display = 'block';
-
-            renderDevices();
-        }
-
-        // 3. Render 15 Perangkat Gerbong Terpilih
-        function renderDevices() {
-            if (!selectedCar) return;
-
-            const grid = document.getElementById('device-grid');
-            grid.innerHTML = '';
-
-            // Filter data perangkat sesuai gerbong yang dipilih
-            const devices = globalDeviceData.filter(d => d.location === selectedCar);
-
-            if (devices.length === 0) {
-                grid.innerHTML = `<div class="col-12 text-center text-light opacity-50 py-3">Tidak ada data perangkat aktif untuk gerbong ${selectedCar}</div>`;
-                return;
-            }
-
-            // Membagi 15 perangkat ke dalam 3 kolom responsif (5 perangkat per kolom kebawah)
-            const col1 = devices.slice(0, 5);
-            const col2 = devices.slice(5, 10);
-            const col3 = devices.slice(10, 15);
-
-            const columns = [col1, col2, col3];
-
-            columns.forEach(colDevices => {
-                let colHTML = `<div class="col-12 col-md-4"><div class="d-flex flex-column gap-2">`;
-                colDevices.forEach(dev => {
-                    const st = (dev.status || '').toUpperCase();
-                    let dotClass = 'dot-offline';
-                    if (st === 'ONLINE' || st === 'UP') dotClass = 'dot-online';
-                    else if (st === 'WARNING') dotClass = 'dot-warning';
-
-                    // Simpan data perangkat di attribute HTML untuk modal
-                    colHTML += `
-                        <button class="device-btn" onclick='showDeviceDetail(${JSON.stringify(dev)})'>
-                            <span>${dev.device_name}</span>
-                            <span class="dot-status ${dotClass}"></span>
-                        </button>
-                    `;
-                });
-                colHTML += `</div></div>`;
-                grid.innerHTML += colHTML;
-            });
-        }
-
-        // 4. Pop-up Modal Detail Saat Nama Device Dipencet
+        // 2. Pop-up Modal Detail Saat Kotak Dipencet
         function showDeviceDetail(dev) {
             document.getElementById('modalDeviceName').innerText = dev.device_name;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
@@ -307,19 +257,79 @@
 
             if (st === 'ONLINE' || st === 'UP') {
                 statusElem.innerHTML = `<span class="badge bg-success">ONLINE</span>`;
-                stateElem.innerHTML = `<span class="fw-bold text-success"><i class="bi bi-arrow-up-circle-fill me-1"></i> UP (Normal)</span>`;
+                stateElem.innerHTML = `<span class="fw-bold text-success">UP (Normal)</span>`;
             } else if (st === 'WARNING') {
                 statusElem.innerHTML = `<span class="badge bg-warning text-dark">WARNING</span>`;
-                stateElem.innerHTML = `<span class="fw-bold text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i> WARNING (Siaga)</span>`;
+                stateElem.innerHTML = `<span class="fw-bold text-warning">WARNING (Siaga)</span>`;
             } else {
                 statusElem.innerHTML = `<span class="badge bg-danger">OFFLINE</span>`;
-                stateElem.innerHTML = `<span class="fw-bold text-danger"><i class="bi bi-arrow-down-circle-fill me-1"></i> DOWN (Rusak / Terputus)</span>`;
+                stateElem.innerHTML = `<span class="fw-bold text-danger">DOWN (Rusak)</span>`;
             }
 
             deviceModal.show();
         }
 
-        // 5. Auto Scan Fetch Data Real-Time
+        // 3. Render Perangkat Mungil Grid 5x3 Presisi
+        function renderAllCars() {
+            uniqueCars.forEach(car => {
+                const bodyElem = document.getElementById(`body-${car}`);
+                const badgeElem = document.getElementById(`badge-${car}`);
+                const devices = globalDeviceData.filter(d => d.location === car);
+
+                if (devices.length === 0) {
+                    bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data perangkat di ${car}</div>`;
+                    if (badgeElem) {
+                        badgeElem.className = 'badge-status bg-secondary';
+                        badgeElem.innerText = 'NO DATA';
+                    }
+                    return;
+                }
+
+                let hasOffline = false, hasWarning = false;
+                let carHTML = '';
+
+                devices.forEach(dev => {
+                    const st = (dev.status || '').toUpperCase();
+                    let stClass = 'st-offline';
+
+                    if (st === 'ONLINE' || st === 'UP') {
+                        stClass = 'st-online';
+                    } else if (st === 'WARNING') {
+                        stClass = 'st-warning';
+                        hasWarning = true;
+                    } else {
+                        hasOffline = true;
+                    }
+
+                    const shortLabel = getShortName(dev.device_name);
+
+                    // Tombol Kapsul Persegi (38px x 38px)
+                    carHTML += `
+                        <button class="device-box ${stClass}" onclick='showDeviceDetail(${JSON.stringify(dev)})' title="${dev.device_name} (${dev.device_ip})">
+                            ${shortLabel}
+                        </button>
+                    `;
+                });
+
+                bodyElem.innerHTML = carHTML;
+
+                if (badgeElem) {
+                    badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
+                    if (hasOffline) {
+                        badgeElem.classList.add('bg-danger');
+                        badgeElem.innerText = 'OFFLINE';
+                    } else if (hasWarning) {
+                        badgeElem.classList.add('bg-warning', 'text-dark');
+                        badgeElem.innerText = 'WARNING';
+                    } else {
+                        badgeElem.classList.add('bg-success');
+                        badgeElem.innerText = 'ONLINE';
+                    }
+                }
+            });
+        }
+
+        // 4. Auto Scan Data Real-Time
         function scanData() {
             fetch('api_detail_status.php?trainset=Argo%20Wilis')
                 .then(res => res.json())
@@ -330,41 +340,13 @@
                         document.getElementById('last-update').innerText = data[0].timestamp;
                     }
 
-                    // Map status warna tiap gerbong
-                    const carStatusMap = {};
-                    uniqueCars.forEach(c => carStatusMap[c] = { hasOffline: false, hasWarning: false, hasData: false });
-
-                    data.forEach(item => {
-                        if (carStatusMap[item.location]) {
-                            carStatusMap[item.location].hasData = true;
-                            const st = (item.status || '').toUpperCase();
-                            if (st === 'OFFLINE' || st === 'DOWN') carStatusMap[item.location].hasOffline = true;
-                            else if (st === 'WARNING') carStatusMap[item.location].hasWarning = true;
-                        }
-                    });
-
-                    // Update warna kotak gerbong di beranda
-                    uniqueCars.forEach(car => {
-                        const carElem = document.getElementById(`car-${car}`);
-                        if (carElem) {
-                            carElem.classList.remove('up', 'warning', 'down');
-                            const info = carStatusMap[car];
-                            if (info.hasData) {
-                                if (info.hasOffline) carElem.classList.add('down');
-                                else if (info.hasWarning) carElem.classList.add('warning');
-                                else carElem.classList.add('up');
-                            }
-                        }
-                    });
-
-                    // Refresh panel jika gerbong sedang dipilih
-                    if (selectedCar) renderDevices();
+                    renderAllCars();
                 })
                 .catch(err => console.error("Error scan:", err));
         }
 
-        setInterval(scanData, 1000);
         scanData();
+        setInterval(scanData, 1000);
     </script>
 </body>
 </html>
