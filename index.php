@@ -159,7 +159,9 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
+                    <!-- HIDDEN INPUT IP DAN LOKASI GERBONG -->
                     <input type="hidden" name="device_ip" id="uploadDeviceIP">
+                    <input type="hidden" name="location" id="uploadDeviceLocation">
 
                     <div class="modal-header py-2">
                         <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
@@ -219,7 +221,6 @@
                         </div>
                     </div>
 
-                    <!-- PISAHKAN TOMBOL KE FOOTER UNTUK MERAPATKAN FITUR SIMPAN -->
                     <div class="modal-footer py-2 d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary btn-sm py-1 px-3" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
                         <button type="submit" class="btn btn-primary btn-sm py-1 px-3" id="btnSubmitForm" style="font-size:0.75rem;">
@@ -235,13 +236,13 @@
     <script>
         const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
         let globalDeviceData = [];
-        let activeModalIP = null; // Menjaga isi modal saat terbuka
+        let activeModalKey = null;
         
         const deviceModalElem = document.getElementById('deviceModal');
         const deviceModal = new bootstrap.Modal(deviceModalElem);
 
         deviceModalElem.addEventListener('hidden.bs.modal', function () {
-            activeModalIP = null; // Reset saat modal ditutup
+            activeModalKey = null;
         });
 
         function getShortName(fullName) {
@@ -284,19 +285,22 @@
             `;
         });
 
-        function showDeviceDetailByIP(deviceIP) {
-            const dev = globalDeviceData.find(d => d.device_ip === deviceIP);
+        // POP-UP SPESIFIK BERDASARKAN LOKASI GERBONG + IP ADDRESS
+        function showDeviceDetailByLocationAndIP(location, deviceIP) {
+            const dev = globalDeviceData.find(d => d.location === location && d.device_ip === deviceIP);
             if (!dev) return;
 
-            activeModalIP = deviceIP;
+            activeModalKey = `${location}_${deviceIP}`;
 
             document.getElementById('modalDeviceName').innerText = dev.device_name || dev.device_type;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
-            document.getElementById('uploadDeviceIP').value = dev.device_ip;
 
-            // AMBIL NOTES DARI MEMORI/DATABASE DENGAN BENAR
+            // SET HIDDEN INPUT UNTUK GERBONG & IP
+            document.getElementById('uploadDeviceIP').value = dev.device_ip;
+            document.getElementById('uploadDeviceLocation').value = dev.location;
+
             document.getElementById('modalDeviceNotes').value = dev.notes ? dev.notes : '';
 
             const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
@@ -379,7 +383,7 @@
                     const shortLabel = getShortName(dev.device_name);
 
                     carHTML += `
-                        <button class="device-box ${stClass}" onclick="showDeviceDetailByIP('${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
+                        <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
                             ${shortLabel}
                         </button>
                     `;

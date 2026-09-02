@@ -4,27 +4,29 @@ require_once 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $deviceIP = $_POST['device_ip'] ?? null;
-    $notes = trim($_POST['notes'] ?? '');
+    $location = $_POST['location'] ?? null; // Menangkap lokasi gerbong
+    $notes    = trim($_POST['notes'] ?? '');
 
-    if (!$deviceIP) {
-        die("Device IP tidak ditemukan.");
+    if (!$deviceIP || !$location) {
+        die("Device IP atau Lokasi Gerbong tidak ditemukan.");
     }
 
     try {
-        // Update catatan pada semua log perangkat ini
-        $stmtNotes = $pdo->prepare("UPDATE monitoring_logs SET notes = ? WHERE device_ip = ?");
-        $stmtNotes->execute([$notes, $deviceIP]);
+        // 1. Update catatan khusus untuk gerbong dan IP perangkat ini saja
+        $stmtNotes = $pdo->prepare("UPDATE monitoring_logs SET notes = ? WHERE location = ? AND device_ip = ?");
+        $stmtNotes->execute([$notes, $location, $deviceIP]);
 
-        // Jika ada unggahan gambar baru
+        // 2. Jika ada unggahan gambar baru
         if (isset($_FILES['device_image']) && $_FILES['device_image']['error'] === UPLOAD_ERR_OK) {
             
-            $stmtCheck = $pdo->prepare("SELECT MAX(upload_count) as total FROM monitoring_logs WHERE device_ip = ?");
-            $stmtCheck->execute([$deviceIP]);
+            // Cek jumlah upload spesifik per gerbong dan per IP
+            $stmtCheck = $pdo->prepare("SELECT upload_count FROM monitoring_logs WHERE location = ? AND device_ip = ? LIMIT 1");
+            $stmtCheck->execute([$location, $deviceIP]);
             $deviceData = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-            $currentCount = (int)($deviceData['total'] ?? 0);
+            $currentCount = (int)($deviceData['upload_count'] ?? 0);
 
             if ($currentCount >= 4) {
-                echo "<script>alert('Batas maksimal upload foto (4 kali) telah tercapai!'); window.history.back();</script>";
+                echo "<script>alert('Batas maksimal upload foto (4 kali) untuk gerbong ini telah tercapai!'); window.history.back();</script>";
                 exit;
             }
 
@@ -38,19 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mkdir($uploadDir, 0777, true);
                 }
 
-                $newFileName = 'dev_' . md5($deviceIP . time()) . '.' . $ext;
+                // Nama file dibuat unik menyertakan gerbong dan IP
+                $newFileName = 'dev_' . md5($location . '_' . $deviceIP . '_' . time()) . '.' . $ext;
                 $targetPath = $uploadDir . $newFileName;
 
                 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
                     $newCount = $currentCount + 1;
+                    
+                    // Update gambar, hitungan upload, dan timestamp HANYA pada gerbong yang diklik
                     $stmtImg = $pdo->prepare("
                         UPDATE monitoring_logs 
                         SET image = ?, 
                             upload_count = ?, 
                             image_updated_at = NOW() 
-                        WHERE device_ip = ?
+                        WHERE location = ? AND device_ip = ?
                     ");
-                    $stmtImg->execute([$newFileName, $newCount, $deviceIP]);
+                    $stmtImg->execute([$newFileName, $newCount, $location, $deviceIP]);
                 }
             }
         }
