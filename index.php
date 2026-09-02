@@ -91,7 +91,6 @@
             filter: brightness(1.25);
         }
 
-        /* Status Warna Penuh */
         .device-box.st-online {
             background-color: #28a745 !important;
             color: #ffffff !important;
@@ -117,7 +116,6 @@
             font-weight: 700;
         }
 
-        /* Styling Modal Pop-Up & Gambar */
         .modal-content {
             background-color: #1e293b;
             color: #ffffff;
@@ -152,14 +150,14 @@
         </div>
     </div>
 
-    <!-- Layout Grid 2 Kolom Menyamping Pas Ukuran 38px -->
+    <!-- Layout Grid 2 Kolom -->
     <div class="container" style="max-width: 600px;">
         <div class="row g-3 justify-content-center" id="cars-grid">
             <!-- 6 Kartu Gerbong -->
         </div>
     </div>
 
-    <!-- Modal Pop-Up Detail Status + Gambar Perangkat -->
+    <!-- Modal Pop-Up Detail Status + Gambar + Catatan -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -168,54 +166,61 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-3">
-                    <!-- Tabel Data Perangkat -->
-                    <table class="table table-dark table-borderless table-sm mb-3">
-                        <tbody style="font-size: 0.8rem;">
-                            <tr>
-                                <td class="text-light opacity-75">IP Address</td>
-                                <td class="fw-bold text-end" id="modalDeviceIP">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Tipe Perangkat</td>
-                                <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Lokasi Gerbong</td>
-                                <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Status Connection</td>
-                                <td class="text-end" id="modalDeviceStatus">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Kondisi Sistem</td>
-                                <td class="text-end" id="modalDeviceState">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Waktu Log</td>
-                                <td class="text-end small" id="modalDeviceTime">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Form Gabungan Ke save_device_info.php -->
+                    <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="device_ip" id="uploadDeviceIP">
 
-                    <hr class="my-2 border-secondary">
+                        <!-- Tabel Data Perangkat -->
+                        <table class="table table-dark table-borderless table-sm mb-3">
+                            <tbody style="font-size: 0.8rem;">
+                                <tr>
+                                    <td class="text-light opacity-75">IP Address</td>
+                                    <td class="fw-bold text-end" id="modalDeviceIP">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Tipe Perangkat</td>
+                                    <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Lokasi Gerbong</td>
+                                    <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Status Connection</td>
+                                    <td class="text-end" id="modalDeviceStatus">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Kondisi Sistem</td>
+                                    <td class="text-end" id="modalDeviceState">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Waktu Log / Photo</td>
+                                    <td class="text-end small" id="modalDeviceTime">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- Area Tampilan Gambar & Upload -->
-                    <div class="mt-2">
-                        <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-image me-1"></i>Foto Fisik Perangkat</label>
-                        <div class="text-center mb-3">
-                            <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
+                        <!-- Fitur Teman: Catatan / Tindak Lanjut -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-journal-text me-1"></i>Catatan Perangkat</label>
+                            <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm bg-dark text-light border-secondary" rows="2" placeholder="Masukkan catatan / penanganan..."></textarea>
                         </div>
 
-                        <!-- Form Upload Foto -->
-                        <form action="upload_image.php" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="device_ip" id="uploadDeviceIP">
-                            <div class="input-group input-group-sm">
-                                <input type="file" name="device_image" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*" required>
-                                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-upload me-1"></i>Upload</button>
+                        <hr class="my-2 border-secondary">
+
+                        <!-- Fitur Kamu: Tampilan Gambar & Upload (Batas 4x) -->
+                        <div class="mt-2">
+                            <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-image me-1"></i>Foto Fisik Perangkat</label>
+                            <div class="text-center mb-3">
+                                <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
                             </div>
-                        </form>
-                    </div>
+
+                            <div class="input-group input-group-sm">
+                                <input type="file" name="device_image" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*">
+                                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-save me-1"></i>Simpan</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer py-1">
                     <button type="button" class="btn btn-secondary btn-sm py-0 px-2" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
@@ -272,7 +277,7 @@
             `;
         });
 
-        // Pop-up Modal Detail + Foto Saat Kotak Dipencet
+        // Pop-up Modal Detail Saat Kotak Dipencet
         function showDeviceDetail(dev) {
             document.getElementById('modalDeviceName').innerText = dev.device_name;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
@@ -280,7 +285,10 @@
             document.getElementById('modalDeviceLocation').innerText = dev.location;
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
 
-            // Tampilkan Timestamp Foto Terakhir (Jika ada foto), jika belum ada gunakan timestamp log sistem
+            // Load Catatan dari Teman
+            document.getElementById('modalDeviceNotes').value = dev.notes || '';
+
+            // Dynamic Timestamp Foto Terakhir
             const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
             document.getElementById('modalDeviceTime').innerText = lastPhotoTime;
 
@@ -292,23 +300,23 @@
                 imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
             }
 
-            // Pengecekan sisa kuota upload (Maksimal 4 kali)
+            // Pengecekan Batas Upload (Maksimal 4 Kali)
             const uploadBtn = document.querySelector('#deviceModal form button[type="submit"]');
             const uploadInput = document.querySelector('#deviceModal form input[type="file"]');
             const uploadCount = parseInt(dev.upload_count || 0);
 
             if (uploadCount >= 4) {
-                if (uploadBtn) {
-                    uploadBtn.disabled = true;
-                    uploadBtn.innerText = "Batas Upload Habis (4/4)";
-                }
                 if (uploadInput) uploadInput.disabled = true;
-            } else {
                 if (uploadBtn) {
                     uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = `<i class="bi bi-upload me-1"></i>Upload (${uploadCount}/4)`;
+                    uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan Catatan (Upload 4/4 Habis)`;
                 }
+            } else {
                 if (uploadInput) uploadInput.disabled = false;
+                if (uploadBtn) {
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan (${uploadCount}/4 Upload)`;
+                }
             }
 
             const st = (dev.status || '').toUpperCase();
@@ -329,7 +337,6 @@
             deviceModal.show();
         }
 
-        // Render Perangkat Presisi 38px x 38px
         function renderAllCars() {
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
