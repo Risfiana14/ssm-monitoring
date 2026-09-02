@@ -27,7 +27,6 @@
             margin-bottom: 2px;
         }
 
-        /* Card Gerbong Menyesuaikan Lebar Konten Kotak di Dalamnya */
         .car-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -35,7 +34,7 @@
             padding: 12px 14px;
             backdrop-filter: blur(5px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            display: inline-block; /* Card menyusut pas sesuai isi grid */
+            display: inline-block;
             width: 100%;
         }
 
@@ -50,18 +49,17 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* GRID PRESISI 5 MENYAMPING X 3 KE BAWAH */
+        /* GRID PRESISI 5 MENYAMPING X 3 KE BAWAH (38px x 38px) */
         .device-grid-container {
             display: grid;
-            grid-template-columns: repeat(5, 38px); /* Kunci 5 kolom tepat 38px */
-            grid-template-rows: repeat(3, 38px);    /* Kunci 3 baris tepat 38px */
-            gap: 8px;                                /* Jarak rapi antar kotak */
-            justify-content: center;                 /* Posisikan di tengah card */
+            grid-template-columns: repeat(5, 38px);
+            grid-template-rows: repeat(3, 38px);
+            gap: 8px;
+            justify-content: center;
             align-items: center;
             padding: 4px 0;
         }
 
-        /* KOTAK PERSEGI TETAP 38px x 38px */
         .device-box {
             background-color: #4a5568;
             color: #ffffff;
@@ -119,7 +117,7 @@
             font-weight: 700;
         }
 
-        /* Styling Modal Pop-Up */
+        /* Styling Modal Pop-Up & Gambar */
         .modal-content {
             background-color: #1e293b;
             color: #ffffff;
@@ -129,6 +127,14 @@
         
         .modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .device-img-preview {
+            max-height: 180px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 <body class="p-2 p-md-3">
@@ -146,50 +152,70 @@
         </div>
     </div>
 
-    <!-- Layout Grid 2 Kolom Menyamping Pas dengan Ukuran Kotak 38px -->
+    <!-- Layout Grid 2 Kolom Menyamping Pas Ukuran 38px -->
     <div class="container" style="max-width: 600px;">
         <div class="row g-3 justify-content-center" id="cars-grid">
             <!-- 6 Kartu Gerbong -->
         </div>
     </div>
 
-    <!-- Modal Pop-Up Detail Status Perangkat -->
+    <!-- Modal Pop-Up Detail Status + Gambar Perangkat -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header py-2">
                     <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-3">
-                    <table class="table table-dark table-borderless table-sm mb-0">
+                    <!-- Tabel Data Perangkat -->
+                    <table class="table table-dark table-borderless table-sm mb-3">
                         <tbody style="font-size: 0.8rem;">
                             <tr>
                                 <td class="text-light opacity-75">IP Address</td>
                                 <td class="fw-bold text-end" id="modalDeviceIP">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Tipe</td>
+                                <td class="text-light opacity-75">Tipe Perangkat</td>
                                 <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Gerbong</td>
+                                <td class="text-light opacity-75">Lokasi Gerbong</td>
                                 <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Status</td>
+                                <td class="text-light opacity-75">Status Connection</td>
                                 <td class="text-end" id="modalDeviceStatus">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Kondisi</td>
+                                <td class="text-light opacity-75">Kondisi Sistem</td>
                                 <td class="text-end" id="modalDeviceState">-</td>
                             </tr>
                             <tr>
-                                <td class="text-light opacity-75">Update</td>
+                                <td class="text-light opacity-75">Waktu Log</td>
                                 <td class="text-end small" id="modalDeviceTime">-</td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <hr class="my-2 border-secondary">
+
+                    <!-- Area Tampilan Gambar & Upload -->
+                    <div class="mt-2">
+                        <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-image me-1"></i>Foto Fisik Perangkat</label>
+                        <div class="text-center mb-3">
+                            <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
+                        </div>
+
+                        <!-- Form Upload Foto -->
+                        <form action="upload_image.php" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="device_ip" id="uploadDeviceIP">
+                            <div class="input-group input-group-sm">
+                                <input type="file" name="device_image" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*" required>
+                                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-upload me-1"></i>Upload</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer py-1">
                     <button type="button" class="btn btn-secondary btn-sm py-0 px-2" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
@@ -205,7 +231,6 @@
         let globalDeviceData = [];
         const deviceModal = new bootstrap.Modal(document.getElementById('deviceModal'));
 
-        // Helper Singkatan Nama Perangkat
         function getShortName(fullName) {
             const name = (fullName || '').trim().toUpperCase();
 
@@ -229,7 +254,7 @@
             return name.substring(0, 4);
         }
 
-        // 1. Render Kartu 6 Gerbong (Presisi Menyesuaikan Lebar Konten)
+        // Render Kartu 6 Gerbong
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
             grid.innerHTML += `
@@ -247,13 +272,22 @@
             `;
         });
 
-        // 2. Pop-up Modal Detail Saat Kotak Dipencet
+        // Pop-up Modal Detail + Foto Saat Kotak Dipencet
         function showDeviceDetail(dev) {
             document.getElementById('modalDeviceName').innerText = dev.device_name;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
             document.getElementById('modalDeviceTime').innerText = dev.timestamp;
+            document.getElementById('uploadDeviceIP').value = dev.device_ip;
+
+            // Set Preview Gambar
+            const imgElem = document.getElementById('modalDeviceImage');
+            if (dev.image && dev.image.trim() !== '') {
+                imgElem.src = `uploads/${dev.image}`;
+            } else {
+                imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
+            }
 
             const st = (dev.status || '').toUpperCase();
             const statusElem = document.getElementById('modalDeviceStatus');
@@ -273,7 +307,7 @@
             deviceModal.show();
         }
 
-        // 3. Render Perangkat Mungil Grid 5x3 Presisi (38px x 38px)
+        // Render Perangkat Presisi 38px x 38px
         function renderAllCars() {
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
@@ -307,7 +341,6 @@
 
                     const shortLabel = getShortName(dev.device_name);
 
-                    // Tombol Kapsul Persegi (38px x 38px)
                     carHTML += `
                         <button class="device-box ${stClass}" onclick='showDeviceDetail(${JSON.stringify(dev)})' title="${dev.device_name} (${dev.device_ip})">
                             ${shortLabel}
@@ -333,7 +366,6 @@
             });
         }
 
-        // 4. Auto Scan Data Real-Time
         function scanData() {
             fetch('api_detail_status.php?trainset=Argo%20Wilis')
                 .then(res => res.json())
