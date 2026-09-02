@@ -278,8 +278,11 @@
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
-            document.getElementById('modalDeviceTime').innerText = dev.timestamp;
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
+
+            // Tampilkan Timestamp Foto Terakhir (Jika ada foto), jika belum ada gunakan timestamp log sistem
+            const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
+            document.getElementById('modalDeviceTime').innerText = lastPhotoTime;
 
             // Set Preview Gambar
             const imgElem = document.getElementById('modalDeviceImage');
@@ -287,6 +290,25 @@
                 imgElem.src = `uploads/${dev.image}`;
             } else {
                 imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
+            }
+
+            // Pengecekan sisa kuota upload (Maksimal 4 kali)
+            const uploadBtn = document.querySelector('#deviceModal form button[type="submit"]');
+            const uploadInput = document.querySelector('#deviceModal form input[type="file"]');
+            const uploadCount = parseInt(dev.upload_count || 0);
+
+            if (uploadCount >= 4) {
+                if (uploadBtn) {
+                    uploadBtn.disabled = true;
+                    uploadBtn.innerText = "Batas Upload Habis (4/4)";
+                }
+                if (uploadInput) uploadInput.disabled = true;
+            } else {
+                if (uploadBtn) {
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = `<i class="bi bi-upload me-1"></i>Upload (${uploadCount}/4)`;
+                }
+                if (uploadInput) uploadInput.disabled = false;
             }
 
             const st = (dev.status || '').toUpperCase();
