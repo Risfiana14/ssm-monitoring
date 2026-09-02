@@ -16,17 +16,18 @@
         }
 
         .dashboard-header {
-            padding: 10px 0 6px 0;
+            padding: 15px 0 10px 0;
             text-align: center;
         }
 
         .dashboard-title {
             font-weight: 800;
             letter-spacing: 2px;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 2px;
         }
 
+        /* Card Gerbong Menyesuaikan Lebar Konten Kotak di Dalamnya */
         .car-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -34,30 +35,33 @@
             padding: 12px 14px;
             backdrop-filter: blur(5px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            height: 100%;
+            display: inline-block; /* Card menyusut pas sesuai isi grid */
+            width: 100%;
         }
 
         .car-header {
             font-weight: 700;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* GRID PRESISI 5 MENYAMPING X 3 KE BAWAH */
         .device-grid-container {
             display: grid;
-            grid-template-columns: repeat(5, 38px); /* Kunci 5 kolom dengan lebar 38px */
-            grid-template-rows: repeat(3, 38px);    /* Kunci 3 baris dengan tinggi 38px */
+            grid-template-columns: repeat(5, 38px); /* Kunci 5 kolom tepat 38px */
+            grid-template-rows: repeat(3, 38px);    /* Kunci 3 baris tepat 38px */
             gap: 8px;                                /* Jarak rapi antar kotak */
-            justify-content: center;                 /* Posisikan persis di tengah card */
+            justify-content: center;                 /* Posisikan di tengah card */
             align-items: center;
             padding: 4px 0;
         }
 
-        /* KOTAK PERSEGI SAMA UKURAN (38px x 38px) */
+        /* KOTAK PERSEGI TETAP 38px x 38px */
         .device-box {
             background-color: #4a5568;
             color: #ffffff;
@@ -142,9 +146,9 @@
         </div>
     </div>
 
-    <!-- Layout Grid 2 Kolom Menyamping -->
-    <div class="container" style="max-width: 1100px;">
-        <div class="row g-3" id="cars-grid">
+    <!-- Layout Grid 2 Kolom Menyamping Pas dengan Ukuran Kotak 38px -->
+    <div class="container" style="max-width: 600px;">
+        <div class="row g-3 justify-content-center" id="cars-grid">
             <!-- 6 Kartu Gerbong -->
         </div>
     </div>
@@ -225,18 +229,18 @@
             return name.substring(0, 4);
         }
 
-        // 1. Render Kartu 6 Gerbong (2 Kolom Menyamping `col-lg-6`)
+        // 1. Render Kartu 6 Gerbong (Presisi Menyesuaikan Lebar Konten)
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
             grid.innerHTML += `
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-sm-6 d-flex justify-content-center">
                     <div class="car-card">
                         <div class="car-header">
                             <span><i class="bi bi-distribute-vertical me-1 text-info"></i>Gerbong ${car}</span>
                             <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
                         </div>
                         <div class="device-grid-container" id="body-${car}">
-                            <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat perangkat...</div>
+                            <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
                         </div>
                     </div>
                 </div>
@@ -269,7 +273,7 @@
             deviceModal.show();
         }
 
-        // 3. Render Perangkat Mungil Grid 5x3 Presisi
+        // 3. Render Perangkat Mungil Grid 5x3 Presisi (38px x 38px)
         function renderAllCars() {
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
@@ -277,7 +281,7 @@
                 const devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
-                    bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data perangkat di ${car}</div>`;
+                    bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
                     if (badgeElem) {
                         badgeElem.className = 'badge-status bg-secondary';
                         badgeElem.innerText = 'NO DATA';
