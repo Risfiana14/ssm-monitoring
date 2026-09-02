@@ -1,6 +1,6 @@
 <?php
 // db.php
-$host = '192.168.8.194';
+$host = 'localhost';
 $user = 'root';
 $pass = ''; // Default password MySQL Laragon adalah kosong
 $db   = 'railmap';
