@@ -203,6 +203,8 @@
             <div class="modal-content">
                 <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="device_ip" id="uploadDeviceIP">
+                    <!-- DIPERBAIKI: Menambahkan kembali hidden input location agar terbaca oleh backend -->
+                    <input type="hidden" name="location" id="uploadDeviceLocation">
 
                     <div class="modal-header py-2">
                         <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
@@ -329,10 +331,8 @@
             carElements.forEach(el => {
                 const carID = el.getAttribute('data-car-id').toLowerCase();
                 
-                // Menghilangkan huruf awal (misal: "k102436" menjadi "102436")
                 const numericOnly = carID.replace(/^[a-z]+/, '');
 
-                // Pencocokan fleksibel: bisa pakai angka saja ("102436") atau lengkap ("K102436")
                 if (carID.includes(inputVal) || numericOnly.includes(inputVal)) {
                     el.style.setProperty('display', 'flex', 'important');
                 } else {
@@ -341,15 +341,19 @@
             });
         }
 
-        function showDeviceDetailByIP(deviceIP) {
-            const dev = globalDeviceData.find(d => d.device_ip === deviceIP);
+        // DIPERBAIKI: Menerima parameter lokasi gerbong & IP agar pencarian data spesifik
+        function showDeviceDetailByLocationAndIP(location, deviceIP) {
+            const dev = globalDeviceData.find(d => d.location === location && d.device_ip === deviceIP);
             if (!dev) return;
 
             document.getElementById('modalDeviceName').innerText = dev.device_name || dev.device_type;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
+            
+            // Set nilai ke hidden input form
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
+            document.getElementById('uploadDeviceLocation').value = dev.location;
 
             document.getElementById('modalDeviceNotes').value = dev.notes ? dev.notes : '';
 
@@ -432,8 +436,9 @@
 
                     const shortLabel = getShortName(dev.device_name);
 
+                    // DIPERBAIKI: Memanggil fungsi baru dengan mengirim parameter location dan device_ip
                     carHTML += `
-                        <button class="device-box ${stClass}" onclick="showDeviceDetailByIP('${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
+                        <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
                             ${shortLabel}
                         </button>
                     `;
@@ -456,7 +461,6 @@
                 }
             });
 
-            // Jalankan filter ulang saat data di-render ulang per detik
             filterCars();
         }
 
