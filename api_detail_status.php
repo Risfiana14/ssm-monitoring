@@ -6,9 +6,9 @@ require_once 'db.php';
 $trainset = $_GET['trainset'] ?? 'Argo Wilis';
 
 try {
-    // Query Sederhana & Aman tanpa subquery rumit yang menyebabkan crash
+    // Ambil kolom notes dan image agar modal detail bisa membaca foto & catatan perbaikan
     $query = "
-        SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image
+        SELECT id, device_name, device_ip, device_type, trainset, location, status, image, notes, timestamp
         FROM monitoring_logs
         WHERE trainset = ?
         ORDER BY id ASC
@@ -18,14 +18,14 @@ try {
     $stmt->execute([$trainset]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Filter Ambil Log Terakhir per Gerbong & per Perangkat di PHP (100% Bebas Error SQL)
+    // Filter Ambil Log Terakhir per Gerbong & per Perangkat di PHP
     $latestDevices = [];
     foreach ($rows as $row) {
         $key = $row['location'] . '_' . $row['device_name'];
         $latestDevices[$key] = $row;
     }
 
-    // Urutkan Nama Perangkat Sesuai Urutan 1-16
+    // Urutkan Nama Perangkat Sesuai Urutan Standar
     $orderedNames = [
         'NVR', 'CCTV 1', 'CCTV 2', 'INDOOR 1', 'INDOOR 2', 
         'OUTDOOR 1', 'OUTDOOR 2', 'SOT TV 1', 'SOT TV 2', 

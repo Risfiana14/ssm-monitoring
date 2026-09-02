@@ -129,7 +129,7 @@
         .modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); }
 
         .device-img-preview {
-            max-height: 180px;
+            max-height: 160px;
             width: 100%;
             object-fit: cover;
             border-radius: 8px;
@@ -159,67 +159,79 @@
         </div>
     </div>
 
-    <!-- Modal Pop-Up Detail Status + Gambar Perangkat -->
+    <!-- Modal Pop-Up Detail Status + Catatan + Gambar Perangkat -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-3">
-                    <!-- Tabel Data Perangkat -->
-                    <table class="table table-dark table-borderless table-sm mb-3">
-                        <tbody style="font-size: 0.8rem;">
-                            <tr>
-                                <td class="text-light opacity-75">IP Address</td>
-                                <td class="fw-bold text-end" id="modalDeviceIP">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Tipe Perangkat</td>
-                                <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Lokasi Gerbong</td>
-                                <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Status Connection</td>
-                                <td class="text-end" id="modalDeviceStatus">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Kondisi Sistem</td>
-                                <td class="text-end" id="modalDeviceState">-</td>
-                            </tr>
-                            <tr>
-                                <td class="text-light opacity-75">Waktu Log</td>
-                                <td class="text-end small" id="modalDeviceTime">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="device_ip" id="uploadDeviceIP">
 
-                    <hr class="my-2 border-secondary">
+                    <div class="modal-header py-2">
+                        <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body p-3">
+                        <!-- Tabel Data Perangkat -->
+                        <table class="table table-dark table-borderless table-sm mb-3">
+                            <tbody style="font-size: 0.8rem;">
+                                <tr>
+                                    <td class="text-light opacity-75">IP Address</td>
+                                    <td class="fw-bold text-end" id="modalDeviceIP">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Tipe Perangkat</td>
+                                    <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Lokasi Gerbong</td>
+                                    <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Status Connection</td>
+                                    <td class="text-end" id="modalDeviceStatus">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Kondisi Sistem</td>
+                                    <td class="text-end" id="modalDeviceState">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-light opacity-75">Waktu Log</td>
+                                    <td class="text-end small" id="modalDeviceTime">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- Area Tampilan Gambar & Upload -->
-                    <div class="mt-2">
-                        <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-image me-1"></i>Foto Fisik Perangkat</label>
-                        <div class="text-center mb-3">
-                            <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
+                        <hr class="my-2 border-secondary">
+
+                        <!-- INPUTAN CATATAN / TINDAK LANJUT -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-light opacity-75 mb-1">
+                                <i class="bi bi-pencil-square me-1 text-warning"></i>Catatan / Tindak Lanjut
+                            </label>
+                            <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm bg-dark text-light border-secondary" rows="2" placeholder="Tuliskan catatan perbaikan atau kondisi perangkat..."></textarea>
                         </div>
 
-                        <!-- Form Upload Foto -->
-                        <form action="upload_image.php" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="device_ip" id="uploadDeviceIP">
-                            <div class="input-group input-group-sm">
-                                <input type="file" name="device_image" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*" required>
-                                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-upload me-1"></i>Upload</button>
+                        <!-- AREA FOTO FISIK PERANGKAT & UPLOAD -->
+                        <div class="mb-2">
+                            <label class="form-label fw-bold small text-light opacity-75 mb-1">
+                                <i class="bi bi-image me-1 text-info"></i>Foto Fisik Perangkat
+                            </label>
+                            <div class="text-center mb-2">
+                                <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
                             </div>
-                        </form>
+
+                            <div class="input-group input-group-sm">
+                                <input type="file" name="device_image" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*">
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer py-1">
-                    <button type="button" class="btn btn-secondary btn-sm py-0 px-2" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
-                </div>
+
+                    <div class="modal-footer py-2 d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary btn-sm py-1 px-3" style="font-size:0.75rem;" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary btn-sm py-1 px-3" style="font-size:0.75rem;"><i class="bi bi-save me-1"></i>Simpan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -272,7 +284,7 @@
             `;
         });
 
-        // Pop-up Modal Detail + Foto Saat Kotak Dipencet
+        // Pop-up Modal Detail + Catatan + Foto Saat Kotak Dipencet
         function showDeviceDetail(dev) {
             document.getElementById('modalDeviceName').innerText = dev.device_name;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
@@ -281,7 +293,10 @@
             document.getElementById('modalDeviceTime').innerText = dev.timestamp;
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
 
-            // Set Preview Gambar
+            // Load Catatan dari Database (jika ada)
+            document.getElementById('modalDeviceNotes').value = dev.notes || '';
+
+            // Load Preview Gambar (jika ada)
             const imgElem = document.getElementById('modalDeviceImage');
             if (dev.image && dev.image.trim() !== '') {
                 imgElem.src = `uploads/${dev.image}`;
