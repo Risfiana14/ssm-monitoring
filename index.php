@@ -27,6 +27,41 @@
             margin-bottom: 2px;
         }
 
+        /* Search Bar Styling */
+        .search-container {
+            max-width: 320px;
+            margin: 12px auto 0 auto;
+        }
+
+        .search-input {
+            background-color: rgba(15, 23, 42, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+            border-radius: 20px !important;
+            font-size: 0.85rem;
+            padding-left: 38px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input:focus {
+            border-color: #0dcaf0 !important;
+            box-shadow: 0 0 8px rgba(13, 202, 240, 0.4) !important;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
         .car-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -136,6 +171,7 @@
 </head>
 <body class="p-2 p-md-3">
 
+    <!-- Header Dashboard -->
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">SSM DASHBOARD</h1>
         <p class="text-light opacity-75 small mb-1">Real-Time Train Monitoring System</p>
@@ -146,22 +182,27 @@
             <i class="bi bi-clock text-warning"></i>
             <span>Last update: <span id="last-update">No data</span></span>
         </div>
+
+        <!-- SEARCH BAR FILTER GERBONG -->
+        <div class="search-container position-relative">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor gerbong (misal: 102436)..." oninput="filterCars()">
+        </div>
     </div>
 
+    <!-- Layout Grid Kartu Gerbong -->
     <div class="container" style="max-width: 600px;">
         <div class="row g-3 justify-content-center" id="cars-grid">
             <!-- 6 Kartu Gerbong -->
         </div>
     </div>
 
-    <!-- Modal Pop-Up Detail -->
+    <!-- Modal Pop-Up Detail Status -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
-                    <!-- HIDDEN INPUT IP DAN LOKASI GERBONG -->
                     <input type="hidden" name="device_ip" id="uploadDeviceIP">
-                    <input type="hidden" name="location" id="uploadDeviceLocation">
 
                     <div class="modal-header py-2">
                         <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
@@ -198,7 +239,6 @@
                             </tbody>
                         </table>
 
-                        <!-- INPUT CATATAN PERANGKAT -->
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-light opacity-75 mb-1">
                                 <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
@@ -208,7 +248,6 @@
 
                         <hr class="my-2 border-secondary">
 
-                        <!-- INPUT FOTO PERANGKAT -->
                         <div class="mt-2">
                             <label class="form-label fw-bold small text-light opacity-75 mb-1">
                                 <i class="bi bi-image me-1 text-info"></i>Foto Fisik Perangkat
@@ -232,18 +271,14 @@
         </div>
     </div>
 
+    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
         let globalDeviceData = [];
-        let activeModalKey = null;
         
         const deviceModalElem = document.getElementById('deviceModal');
         const deviceModal = new bootstrap.Modal(deviceModalElem);
-
-        deviceModalElem.addEventListener('hidden.bs.modal', function () {
-            activeModalKey = null;
-        });
 
         function getShortName(fullName) {
             const name = (fullName || '').trim().toUpperCase();
@@ -268,10 +303,11 @@
             return name.substring(0, 4);
         }
 
+        // Render struktur tempat kartu gerbong
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
             grid.innerHTML += `
-                <div class="col-12 col-sm-6 d-flex justify-content-center">
+                <div class="col-12 col-sm-6 d-flex justify-content-center car-wrapper" data-car-id="${car}">
                     <div class="car-card">
                         <div class="car-header">
                             <span><i class="bi bi-distribute-vertical me-1 text-info"></i>Gerbong ${car}</span>
@@ -285,21 +321,35 @@
             `;
         });
 
-        // POP-UP SPESIFIK BERDASARKAN LOKASI GERBONG + IP ADDRESS
-        function showDeviceDetailByLocationAndIP(location, deviceIP) {
-            const dev = globalDeviceData.find(d => d.location === location && d.device_ip === deviceIP);
-            if (!dev) return;
+        // LOGIKA PENYARINGAN REAL-TIME SEARCH BAR
+        function filterCars() {
+            const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
+            const carElements = document.querySelectorAll('.car-wrapper');
 
-            activeModalKey = `${location}_${deviceIP}`;
+            carElements.forEach(el => {
+                const carID = el.getAttribute('data-car-id').toLowerCase();
+                
+                // Menghilangkan huruf awal (misal: "k102436" menjadi "102436")
+                const numericOnly = carID.replace(/^[a-z]+/, '');
+
+                // Pencocokan fleksibel: bisa pakai angka saja ("102436") atau lengkap ("K102436")
+                if (carID.includes(inputVal) || numericOnly.includes(inputVal)) {
+                    el.style.setProperty('display', 'flex', 'important');
+                } else {
+                    el.style.setProperty('display', 'none', 'important');
+                }
+            });
+        }
+
+        function showDeviceDetailByIP(deviceIP) {
+            const dev = globalDeviceData.find(d => d.device_ip === deviceIP);
+            if (!dev) return;
 
             document.getElementById('modalDeviceName').innerText = dev.device_name || dev.device_type;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
-
-            // SET HIDDEN INPUT UNTUK GERBONG & IP
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
-            document.getElementById('uploadDeviceLocation').value = dev.location;
 
             document.getElementById('modalDeviceNotes').value = dev.notes ? dev.notes : '';
 
@@ -383,7 +433,7 @@
                     const shortLabel = getShortName(dev.device_name);
 
                     carHTML += `
-                        <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
+                        <button class="device-box ${stClass}" onclick="showDeviceDetailByIP('${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
                             ${shortLabel}
                         </button>
                     `;
@@ -405,6 +455,9 @@
                     }
                 }
             });
+
+            // Jalankan filter ulang saat data di-render ulang per detik
+            filterCars();
         }
 
         function scanData() {
