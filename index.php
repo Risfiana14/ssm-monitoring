@@ -49,7 +49,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* GRID PRESISI 5 MENYAMPING X 3 KE BAWAH (38px x 38px) */
         .device-grid-container {
             display: grid;
             grid-template-columns: repeat(5, 38px);
@@ -137,7 +136,6 @@
 </head>
 <body class="p-2 p-md-3">
 
-    <!-- Header Dashboard -->
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">SSM DASHBOARD</h1>
         <p class="text-light opacity-75 small mb-1">Real-Time Train Monitoring System</p>
@@ -150,27 +148,25 @@
         </div>
     </div>
 
-    <!-- Layout Grid 2 Kolom -->
     <div class="container" style="max-width: 600px;">
         <div class="row g-3 justify-content-center" id="cars-grid">
             <!-- 6 Kartu Gerbong -->
         </div>
     </div>
 
-    <!-- Modal Pop-Up Detail Status + Gambar + Catatan -->
+    <!-- Modal Pop-Up Detail -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-3">
-                    <!-- Form Gabungan Ke save_device_info.php -->
-                    <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="device_ip" id="uploadDeviceIP">
+                <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="device_ip" id="uploadDeviceIP">
 
-                        <!-- Tabel Data Perangkat -->
+                    <div class="modal-header py-2">
+                        <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body p-3">
                         <table class="table table-dark table-borderless table-sm mb-3">
                             <tbody style="font-size: 0.8rem;">
                                 <tr>
@@ -200,41 +196,53 @@
                             </tbody>
                         </table>
 
-                        <!-- Fitur Teman: Catatan / Tindak Lanjut -->
+                        <!-- INPUT CATATAN PERANGKAT -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-journal-text me-1"></i>Catatan Perangkat</label>
+                            <label class="form-label fw-bold small text-light opacity-75 mb-1">
+                                <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
+                            </label>
                             <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm bg-dark text-light border-secondary" rows="2" placeholder="Masukkan catatan / penanganan..."></textarea>
                         </div>
 
                         <hr class="my-2 border-secondary">
 
-                        <!-- Fitur Kamu: Tampilan Gambar & Upload (Batas 4x) -->
+                        <!-- INPUT FOTO PERANGKAT -->
                         <div class="mt-2">
-                            <label class="form-label fw-bold small text-light opacity-75 mb-1"><i class="bi bi-image me-1"></i>Foto Fisik Perangkat</label>
+                            <label class="form-label fw-bold small text-light opacity-75 mb-1">
+                                <i class="bi bi-image me-1 text-info"></i>Foto Fisik Perangkat
+                            </label>
                             <div class="text-center mb-3">
                                 <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
                             </div>
 
-                            <div class="input-group input-group-sm">
-                                <input type="file" name="device_image" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*">
-                                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-save me-1"></i>Simpan</button>
-                            </div>
+                            <input type="file" name="device_image" id="inputDeviceImage" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*">
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer py-1">
-                    <button type="button" class="btn btn-secondary btn-sm py-0 px-2" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
-                </div>
+                    </div>
+
+                    <!-- PISAHKAN TOMBOL KE FOOTER UNTUK MERAPATKAN FITUR SIMPAN -->
+                    <div class="modal-footer py-2 d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary btn-sm py-1 px-3" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary btn-sm py-1 px-3" id="btnSubmitForm" style="font-size:0.75rem;">
+                            <i class="bi bi-save me-1"></i>Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
         let globalDeviceData = [];
-        const deviceModal = new bootstrap.Modal(document.getElementById('deviceModal'));
+        let activeModalIP = null; // Menjaga isi modal saat terbuka
+        
+        const deviceModalElem = document.getElementById('deviceModal');
+        const deviceModal = new bootstrap.Modal(deviceModalElem);
+
+        deviceModalElem.addEventListener('hidden.bs.modal', function () {
+            activeModalIP = null; // Reset saat modal ditutup
+        });
 
         function getShortName(fullName) {
             const name = (fullName || '').trim().toUpperCase();
@@ -259,7 +267,6 @@
             return name.substring(0, 4);
         }
 
-        // Render Kartu 6 Gerbong
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
             grid.innerHTML += `
@@ -277,22 +284,24 @@
             `;
         });
 
-        // Pop-up Modal Detail Saat Kotak Dipencet
-        function showDeviceDetail(dev) {
-            document.getElementById('modalDeviceName').innerText = dev.device_name;
+        function showDeviceDetailByIP(deviceIP) {
+            const dev = globalDeviceData.find(d => d.device_ip === deviceIP);
+            if (!dev) return;
+
+            activeModalIP = deviceIP;
+
+            document.getElementById('modalDeviceName').innerText = dev.device_name || dev.device_type;
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
 
-            // Load Catatan dari Teman
-            document.getElementById('modalDeviceNotes').value = dev.notes || '';
+            // AMBIL NOTES DARI MEMORI/DATABASE DENGAN BENAR
+            document.getElementById('modalDeviceNotes').value = dev.notes ? dev.notes : '';
 
-            // Dynamic Timestamp Foto Terakhir
             const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
             document.getElementById('modalDeviceTime').innerText = lastPhotoTime;
 
-            // Set Preview Gambar
             const imgElem = document.getElementById('modalDeviceImage');
             if (dev.image && dev.image.trim() !== '') {
                 imgElem.src = `uploads/${dev.image}`;
@@ -300,9 +309,8 @@
                 imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
             }
 
-            // Pengecekan Batas Upload (Maksimal 4 Kali)
-            const uploadBtn = document.querySelector('#deviceModal form button[type="submit"]');
-            const uploadInput = document.querySelector('#deviceModal form input[type="file"]');
+            const uploadBtn = document.getElementById('btnSubmitForm');
+            const uploadInput = document.getElementById('inputDeviceImage');
             const uploadCount = parseInt(dev.upload_count || 0);
 
             if (uploadCount >= 4) {
@@ -371,7 +379,7 @@
                     const shortLabel = getShortName(dev.device_name);
 
                     carHTML += `
-                        <button class="device-box ${stClass}" onclick='showDeviceDetail(${JSON.stringify(dev)})' title="${dev.device_name} (${dev.device_ip})">
+                        <button class="device-box ${stClass}" onclick="showDeviceDetailByIP('${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
                             ${shortLabel}
                         </button>
                     `;

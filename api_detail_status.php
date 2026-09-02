@@ -7,7 +7,7 @@ $trainset = $_GET['trainset'] ?? 'Argo Wilis';
 
 try {
     $query = "
-        SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at
+        SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
         FROM monitoring_logs
         WHERE trainset = ?
         ORDER BY id ASC
@@ -20,6 +20,22 @@ try {
     $latestDevices = [];
     foreach ($rows as $row) {
         $key = $row['location'] . '_' . $row['device_name'];
+        
+        // Simpan atau pertahankan notes & image terakhir jika baris log baru bernilai kosong/null
+        if (isset($latestDevices[$key])) {
+            // Jika baris log baru tidak punya notes, pertahankan notes dari log sebelumnya
+            if (empty($row['notes']) || trim($row['notes']) === '') {
+                $row['notes'] = $latestDevices[$key]['notes'] ?? null;
+            }
+            
+            // Jika baris log baru tidak punya image, pertahankan image dari log sebelumnya
+            if (empty($row['image']) || trim($row['image']) === '') {
+                $row['image'] = $latestDevices[$key]['image'] ?? null;
+                $row['upload_count'] = $latestDevices[$key]['upload_count'] ?? 0;
+                $row['image_updated_at'] = $latestDevices[$key]['image_updated_at'] ?? null;
+            }
+        }
+
         $latestDevices[$key] = $row;
     }
 
