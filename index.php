@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM DASHBOARD - Kereta Argo Wilis</title>
+    <title>RAILMAP - Kereta Argo Wilis</title>
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -194,7 +194,7 @@
 
     <!-- Header Dashboard -->
     <div class="dashboard-header mb-3">
-        <h1 class="dashboard-title">SSM DASHBOARD</h1>
+        <h1 class="dashboard-title">RAILMAP</h1>
         <p class="text-light opacity-75 small mb-1">Real-Time Train Monitoring System</p>
         <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-3 py-1 rounded-pill small" style="font-size: 0.75rem;">
             <i class="bi bi-train-front text-info"></i>
@@ -357,6 +357,9 @@
                         <div class="device-grid-container" id="body-${car}">
                             <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
                         </div>
+                        <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
+                            <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -456,6 +459,7 @@
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
+                const timeElem = document.getElementById(`time-${car}`);
                 const devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
@@ -464,11 +468,13 @@
                         badgeElem.className = 'badge-status bg-secondary';
                         badgeElem.innerText = 'NO DATA';
                     }
+                    if (timeElem) timeElem.innerText = '-';
                     return;
                 }
 
                 let hasOffline = false, hasWarning = false;
                 let carHTML = '';
+                let latestTimestamp = '';
 
                 devices.forEach(dev => {
                     const st = (dev.status || '').toUpperCase();
@@ -483,6 +489,10 @@
                         hasOffline = true;
                     }
 
+                    if (dev.timestamp && (!latestTimestamp || dev.timestamp > latestTimestamp)) {
+                        latestTimestamp = dev.timestamp;
+                    }
+
                     const shortLabel = getShortName(dev.device_name);
 
                     carHTML += `
@@ -493,6 +503,10 @@
                 });
 
                 bodyElem.innerHTML = carHTML;
+
+                if (timeElem) {
+                    timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
+                }
 
                 if (badgeElem) {
                     badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
