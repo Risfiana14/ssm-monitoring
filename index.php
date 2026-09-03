@@ -23,7 +23,7 @@
         .dashboard-title {
             font-weight: 800;
             letter-spacing: 2px;
-            font-size: 1.6rem;
+            font-size: 2.1rem; /* Diperbesar */
             margin-bottom: 2px;
         }
 
@@ -195,13 +195,12 @@
     <!-- Header Dashboard -->
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">RAILMAP</h1>
-        <p class="text-light opacity-75 small mb-1">Real-Time Train Monitoring System</p>
-        <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-3 py-1 rounded-pill small" style="font-size: 0.75rem;">
-            <i class="bi bi-train-front text-info"></i>
-            <span class="fw-bold">KERETA ARGO WILIS</span>
-            <span class="text-muted">|</span>
-            <i class="bi bi-clock text-warning"></i>
-            <span>Last update: <span id="last-update">No data</span></span>
+        <p class="text-light opacity-75 small mb-2">Real-Time Train Monitoring System</p>
+        
+        <!-- Nama Kereta Diperbesar & Last update utama dihapus -->
+        <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-4 py-2 rounded-pill shadow-sm" style="font-size: 0.95rem;">
+            <i class="bi bi-train-front text-info fs-5"></i>
+            <span class="fw-bold tracking-wide">KERETA ARGO WILIS</span>
         </div>
 
         <!-- SEARCH BAR FILTER GERBONG -->
@@ -489,7 +488,6 @@
                         hasOffline = true;
                     }
 
-                    // PERBAIKAN: Cek waktu terbaru antara timestamp log atau waktu update gambar terakhir
                     const effectiveTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
                     
                     if (effectiveTime) {
@@ -536,11 +534,6 @@
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;
-
-                    if (data && data.length > 0) {
-                        document.getElementById('last-update').innerText = data[0].timestamp;
-                    }
-
                     renderAllCars();
                 })
                 .catch(err => console.error("Error scan:", err));
