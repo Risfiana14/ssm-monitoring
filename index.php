@@ -167,6 +167,27 @@
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
+        /* Penyesuaian Warna Read-Only (Samakan dengan Tabel Detail) */
+        .saved-notes-display {
+            background-color: #212529; /* Warna gelap sama seperti tabel detail */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #ffffff;
+            max-height: 80px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Penyesuaian Textarea Input Catatan Baru */
+        .input-notes-area {
+            background-color: #0f172a !important; /* Latar agak kontras untuk menandakan input aktif */
+            color: #ffffff !important;
+            border: 1px solid #0dcaf0 !important; /* Border terang highlight cyan */
+        }
     </style>
 </head>
 <body class="p-2 p-md-3">
@@ -203,7 +224,6 @@
             <div class="modal-content">
                 <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="device_ip" id="uploadDeviceIP">
-                    <!-- DIPERBAIKI: Menambahkan kembali hidden input location agar terbaca oleh backend -->
                     <input type="hidden" name="location" id="uploadDeviceLocation">
 
                     <div class="modal-header py-2">
@@ -241,11 +261,31 @@
                             </tbody>
                         </table>
 
+                        <!-- TAMPILAN CATATAN TERAPLIKASI -->
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-light opacity-75 mb-1">
                                 <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
                             </label>
-                            <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm bg-dark text-light border-secondary" rows="2" placeholder="Masukkan catatan / penanganan..."></textarea>
+                            
+                            <!-- Box Read-Only Samakan dengan Warna Tabel Detail -->
+                            <div class="mb-2">
+                                <div class="saved-notes-display" id="modalDisplayNotes">
+                                    <em class="opacity-50">Belum ada catatan tersimpan.</em>
+                                </div>
+                            </div>
+
+                            <!-- Header Input Baru + Tombol Clear -->
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-light opacity-75" style="font-size: 0.72rem;">
+                                    <i class="bi bi-pencil-square me-1 text-info"></i>Isi Catatan Baru:
+                                </span>
+                                <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" style="font-size: 0.68rem;" onclick="clearNotesInput()" title="Hapus teks di kolom input">
+                                    <i class="bi bi-trash me-1"></i>Clear Input
+                                </button>
+                            </div>
+
+                            <!-- Textarea Input Catatan Baru dengan Border Highlight -->
+                            <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm input-notes-area" rows="2" placeholder="Masukkan catatan penanganan baru..."></textarea>
                         </div>
 
                         <hr class="my-2 border-secondary">
@@ -305,7 +345,6 @@
             return name.substring(0, 4);
         }
 
-        // Render struktur tempat kartu gerbong
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
             grid.innerHTML += `
@@ -323,14 +362,12 @@
             `;
         });
 
-        // LOGIKA PENYARINGAN REAL-TIME SEARCH BAR
         function filterCars() {
             const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
             const carElements = document.querySelectorAll('.car-wrapper');
 
             carElements.forEach(el => {
                 const carID = el.getAttribute('data-car-id').toLowerCase();
-                
                 const numericOnly = carID.replace(/^[a-z]+/, '');
 
                 if (carID.includes(inputVal) || numericOnly.includes(inputVal)) {
@@ -341,7 +378,11 @@
             });
         }
 
-        // DIPERBAIKI: Menerima parameter lokasi gerbong & IP agar pencarian data spesifik
+        function clearNotesInput() {
+            document.getElementById('modalDeviceNotes').value = '';
+            document.getElementById('modalDeviceNotes').focus();
+        }
+
         function showDeviceDetailByLocationAndIP(location, deviceIP) {
             const dev = globalDeviceData.find(d => d.location === location && d.device_ip === deviceIP);
             if (!dev) return;
@@ -351,11 +392,19 @@
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
             
-            // Set nilai ke hidden input form
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
             document.getElementById('uploadDeviceLocation').value = dev.location;
 
-            document.getElementById('modalDeviceNotes').value = dev.notes ? dev.notes : '';
+            const displayNotesElem = document.getElementById('modalDisplayNotes');
+            const notesInputElem = document.getElementById('modalDeviceNotes');
+
+            if (dev.notes && dev.notes.trim() !== '') {
+                displayNotesElem.innerText = dev.notes;
+            } else {
+                displayNotesElem.innerHTML = '<em class="opacity-50">Belum ada catatan tersimpan.</em>';
+            }
+            
+            notesInputElem.value = '';
 
             const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
             document.getElementById('modalDeviceTime').innerText = lastPhotoTime;
@@ -436,7 +485,6 @@
 
                     const shortLabel = getShortName(dev.device_name);
 
-                    // DIPERBAIKI: Memanggil fungsi baru dengan mengirim parameter location dan device_ip
                     carHTML += `
                         <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
                             ${shortLabel}
