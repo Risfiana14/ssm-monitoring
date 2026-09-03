@@ -489,8 +489,13 @@
                         hasOffline = true;
                     }
 
-                    if (dev.timestamp && (!latestTimestamp || dev.timestamp > latestTimestamp)) {
-                        latestTimestamp = dev.timestamp;
+                    // PERBAIKAN: Cek waktu terbaru antara timestamp log atau waktu update gambar terakhir
+                    const effectiveTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
+                    
+                    if (effectiveTime) {
+                        if (!latestTimestamp || new Date(effectiveTime) > new Date(latestTimestamp)) {
+                            latestTimestamp = effectiveTime;
+                        }
                     }
 
                     const shortLabel = getShortName(dev.device_name);
