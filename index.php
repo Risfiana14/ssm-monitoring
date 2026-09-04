@@ -189,16 +189,15 @@
 
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">RAILMAP</h1>
-        <p class="text-light opacity-75 small mb-2">Real-Time Train Monitoring System</p>
         
-        <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-4 py-2 rounded-pill shadow-sm" style="font-size: 0.95rem;">
+        <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1 rem;">
             <i class="bi bi-train-front text-info fs-5"></i>
-            <span class="fw-bold tracking-wide">KERETA ARGO WILIS</span>
+            <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
         </div>
 
         <div class="search-container position-relative">
             <i class="bi bi-search search-icon"></i>
-            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor gerbong (misal: 102436)..." oninput="filterCars()">
+            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor gerbong (misal: K102436)..." oninput="filterCars()">
         </div>
     </div>
 
