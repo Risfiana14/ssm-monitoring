@@ -23,11 +23,10 @@
         .dashboard-title {
             font-weight: 800;
             letter-spacing: 2px;
-            font-size: 2.1rem; /* Diperbesar */
+            font-size: 2.1rem;
             margin-bottom: 2px;
         }
 
-        /* Search Bar Styling */
         .search-container {
             max-width: 320px;
             margin: 12px auto 0 auto;
@@ -106,12 +105,10 @@
             transition: all 0.15s ease;
             user-select: none;
             border: none;
-            
             width: 38px !important;
             height: 38px !important;
             aspect-ratio: 1 / 1 !important;
             flex-shrink: 0;
-            
             display: flex;
             align-items: center;
             justify-content: center;
@@ -168,9 +165,8 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Penyesuaian Warna Read-Only (Samakan dengan Tabel Detail) */
         .saved-notes-display {
-            background-color: #212529; /* Warna gelap sama seperti tabel detail */
+            background-color: #212529;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
             padding: 8px 12px;
@@ -182,38 +178,33 @@
             word-break: break-word;
         }
 
-        /* Penyesuaian Textarea Input Catatan Baru */
         .input-notes-area {
-            background-color: #0f172a !important; /* Latar agak kontras untuk menandakan input aktif */
+            background-color: #0f172a !important;
             color: #ffffff !important;
-            border: 1px solid #0dcaf0 !important; /* Border terang highlight cyan */
+            border: 1px solid #0dcaf0 !important;
         }
     </style>
 </head>
 <body class="p-2 p-md-3">
 
-    <!-- Header Dashboard -->
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">RAILMAP</h1>
         <p class="text-light opacity-75 small mb-2">Real-Time Train Monitoring System</p>
         
-        <!-- Nama Kereta Diperbesar & Last update utama dihapus -->
         <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-4 py-2 rounded-pill shadow-sm" style="font-size: 0.95rem;">
             <i class="bi bi-train-front text-info fs-5"></i>
             <span class="fw-bold tracking-wide">KERETA ARGO WILIS</span>
         </div>
 
-        <!-- SEARCH BAR FILTER GERBONG -->
         <div class="search-container position-relative">
             <i class="bi bi-search search-icon"></i>
             <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor gerbong (misal: 102436)..." oninput="filterCars()">
         </div>
     </div>
 
-    <!-- Layout Grid Kartu Gerbong -->
     <div class="container" style="max-width: 600px;">
         <div class="row g-3 justify-content-center" id="cars-grid">
-            <!-- 6 Kartu Gerbong -->
+            <!-- Grid Kartu Gerbong -->
         </div>
     </div>
 
@@ -260,20 +251,17 @@
                             </tbody>
                         </table>
 
-                        <!-- TAMPILAN CATATAN TERAPLIKASI -->
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-light opacity-75 mb-1">
                                 <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
                             </label>
                             
-                            <!-- Box Read-Only Samakan dengan Warna Tabel Detail -->
                             <div class="mb-2">
                                 <div class="saved-notes-display" id="modalDisplayNotes">
                                     <em class="opacity-50">Belum ada catatan tersimpan.</em>
                                 </div>
                             </div>
 
-                            <!-- Header Input Baru + Tombol Clear -->
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-light opacity-75" style="font-size: 0.72rem;">
                                     <i class="bi bi-pencil-square me-1 text-info"></i>Isi Catatan Baru:
@@ -283,7 +271,6 @@
                                 </button>
                             </div>
 
-                            <!-- Textarea Input Catatan Baru dengan Border Highlight -->
                             <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm input-notes-area" rows="2" placeholder="Masukkan catatan penanganan baru..."></textarea>
                         </div>
 
@@ -315,6 +302,9 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        
+        // Deklarasi Daftar Gerbong (Location ID)
+        
         const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
         let globalDeviceData = [];
         
@@ -343,6 +333,8 @@
 
             return name.substring(0, 4);
         }
+
+        // Render Kartu Gerbong ke UI
 
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
@@ -454,11 +446,15 @@
             deviceModal.show();
         }
 
+        // Render Status Independen Per Gerbong
+
         function renderAllCars() {
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
                 const timeElem = document.getElementById(`time-${car}`);
+                
+                // Memfilter data berdasarkan lokasi gerbong secara spesifik
                 const devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
@@ -488,11 +484,10 @@
                         hasOffline = true;
                     }
 
-                    const effectiveTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
-                    
-                    if (effectiveTime) {
-                        if (!latestTimestamp || new Date(effectiveTime) > new Date(latestTimestamp)) {
-                            latestTimestamp = effectiveTime;
+                    // Last update merujuk pada waktu upload foto
+                    if (dev.image_updated_at) {
+                        if (!latestTimestamp || new Date(dev.image_updated_at) > new Date(latestTimestamp)) {
+                            latestTimestamp = dev.image_updated_at;
                         }
                     }
 
@@ -517,7 +512,7 @@
                         badgeElem.classList.add('bg-danger');
                         badgeElem.innerText = 'OFFLINE';
                     } else if (hasWarning) {
-                        badgeElem.classList.add('bg-warning', 'text-dark');
+                        badgeElem.classList.add('badge', 'bg-warning', 'text-dark');
                         badgeElem.innerText = 'WARNING';
                     } else {
                         badgeElem.classList.add('bg-success');
@@ -529,6 +524,7 @@
             filterCars();
         }
 
+        // Fetching Data Berkala dari API
         function scanData() {
             fetch('api_detail_status.php?trainset=Argo%20Wilis')
                 .then(res => res.json())

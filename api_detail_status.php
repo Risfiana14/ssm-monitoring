@@ -1,11 +1,15 @@
 <?php
-// api_detail_status.php
+
+// Inisialisasi API & Database
 header('Content-Type: application/json');
 require_once 'db.php';
 
 $trainset = $_GET['trainset'] ?? 'Argo Wilis';
 
 try {
+
+    // Query Database Monitoring
+
     $query = "
         SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
         FROM monitoring_logs
@@ -16,6 +20,9 @@ try {
     $stmt = $pdo->prepare($query);
     $stmt->execute([$trainset]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+    // Mapping Unik Perangkat per Gerbong (Location ID)
 
     $latestDevices = [];
     foreach ($rows as $row) {
@@ -44,6 +51,9 @@ try {
     ];
 
     $result = array_values($latestDevices);
+
+
+    // Sorting Data Berdasarkan Gerbong & Nama Perangkat
 
     usort($result, function($a, $b) use ($orderedNames) {
         if ($a['location'] !== $b['location']) {

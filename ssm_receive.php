@@ -1,28 +1,32 @@
 <?php
-// ssm_receive.php
+
+// Endpoint Penerima Data Netwatch MikroTik
 require_once 'db.php';
 
+// Menangkap parameter dinamis yang dikirimkan oleh router MikroTik
 $deviceName   = $_GET['device_name'] ?? null;
 $deviceIP     = $_GET['device_ip'] ?? null;
 $deviceType   = $_GET['device_type'] ?? null;
 $trainset     = $_GET['trainset'] ?? null;
-$locationCode = $_GET['location_code'] ?? null;
+$locationCode = $_GET['location_code'] ?? null; // Berperan sebagai ID Gerbong / Location ID
 $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
 
 if ($deviceIP && $locationCode) {
-    // 1. Cek dulu status terakhir perangkat ini di database
+
+    // Cek Status Terakhir (Pencegahan Database Bloat / Spam Request)
+
     $checkStmt = $pdo->prepare("SELECT status FROM monitoring_logs WHERE device_ip = ? AND location = ? LIMIT 1");
     $checkStmt->execute([$deviceIP, $locationCode]);
     $lastData = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
-    // 2. Jika datanya sudah ada dan statusnya SAMA PERSIS dengan yang dikirim, 
-    //    jangan lakukan apa-apa (abaikan, tidak perlu update database).
+    // Jika status sama persis dengan database, abaikan proses (tidak update)
     if ($lastData && $lastData['status'] === $status) {
         echo "NO_CHANGE";
         exit;
     }
+    
+    // Upsert Database Berdasarkan IP dan Lokasi Gerbong
 
-    // 3. Jika statusnya BERUBAH (atau data belum ada), baru simpan/perbarui ke database
     $stmt = $pdo->prepare("
         INSERT INTO monitoring_logs (device_name, device_ip, device_type, trainset, location, status, timestamp) 
         VALUES (?, ?, ?, ?, ?, ?, NOW())
