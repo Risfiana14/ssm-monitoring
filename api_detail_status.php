@@ -8,17 +8,26 @@ $trainset = $_GET['trainset'] ?? 'DAOP_8';
 
 try {
 
-    // Query Database Monitoring
+    // DIPERBAIKI: Logika Query SQL untuk mendukung DAOP_8 (Semua Kereta)
+    if ($trainset === 'DAOP_8' || $trainset === 'ALL' || empty($trainset)) {
+        $query = "
+            SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
+            FROM monitoring_logs
+            ORDER BY id ASC
+        ";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+    } else {
+        $query = "
+            SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
+            FROM monitoring_logs
+            WHERE trainset = ?
+            ORDER BY id ASC
+        ";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$trainset]);
+    }
 
-    $query = "
-        SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
-        FROM monitoring_logs
-        WHERE trainset = ?
-        ORDER BY id ASC
-    ";
-
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([$trainset]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
