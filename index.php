@@ -505,13 +505,19 @@
             deviceModal.show();
         }
 
+        // Fungsi helper untuk konversi IP string ke angka agar bisa diurutkan secara akurat
+        function ipToInt(ip) {
+            if (!ip) return 0;
+            return ip.split('.').reduce((acc, octet) => ((acc << 8) + parseInt(octet, 10)), 0) >>> 0;
+        }
+
         function renderAllCars() {
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
                 const timeElem = document.getElementById(`time-${car}`);
                 
-                const devices = globalDeviceData.filter(d => d.location === car);
+                let devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
                     bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
@@ -522,6 +528,9 @@
                     if (timeElem) timeElem.innerText = '-';
                     return;
                 }
+
+                // URUTKAN PERANGKAT BERDASARKAN IP ADDRESS (DARI .1 SAMPAI .254)
+                devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
 
                 let hasOffline = false, hasWarning = false;
                 let carHTML = '';
@@ -540,9 +549,11 @@
                         hasOffline = true;
                     }
 
-                    if (dev.image_updated_at) {
-                        if (!latestTimestamp || Date.parse(dev.image_updated_at) > Date.parse(latestTimestamp)) {
-                            latestTimestamp = dev.image_updated_at;
+                    // Ambil timestamp terbaru dari seluruh perangkat di gerbong ini (termasuk timestamp log/update)
+                    const devTime = dev.image_updated_at || dev.timestamp;
+                    if (devTime) {
+                        if (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp)) {
+                            latestTimestamp = devTime;
                         }
                     }
 
