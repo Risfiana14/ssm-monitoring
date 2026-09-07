@@ -368,7 +368,7 @@
         const deviceModal = new bootstrap.Modal(deviceModalElem);
 
         function getShortName(fullName) {
-            const name = (fullName || '').trim().toUpperCase();
+            const name = (fullName || '').trim().toUpperCase().replace(/_/g, ' ');
 
             if (name.includes('NVR')) return 'NVR';
             if (name.includes('CAM 3') || name.includes('CCTV 3')) return 'CAM3';
@@ -378,14 +378,14 @@
             if (name.includes('INDOOR 2') || name.includes('RTI 2')) return 'IND2';
             if (name.includes('OUTDOOR 1') || name.includes('RTO R')) return 'OUT1';
             if (name.includes('OUTDOOR 2') || name.includes('RTO L')) return 'OUT2';
-            if (name.includes('TV 1') || name.includes('CSOT U1')) return 'TV1';
-            if (name.includes('TV 2') || name.includes('CSOT U2')) return 'TV2';
+            if (name.includes('SOT TV 1') || name.includes('CSOT U1')) return 'TV1';
+            if (name.includes('SOT TV 2') || name.includes('CSOT U2')) return 'TV2';
             if (name.includes('MINI PC') || name.includes('CPU')) return 'MPC';
             if (name.includes('SWITCH')) return 'SW';
             if (name.includes('ROUTER')) return 'RTR';
             if (name.includes('MODEM')) return 'MDM';
             if (name.includes('WIFI') || name.includes('ACCESS POINT')) return 'AP';
-            if (name.includes('PLSVCU') || name.includes('VCU')) return 'VCU';
+            if (name.includes('PLCVCU') || name.includes('VCU')) return 'VCU';
 
             return name.substring(0, 4);
         }
