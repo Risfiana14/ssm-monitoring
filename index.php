@@ -72,15 +72,25 @@
             width: 100%;
         }
 
+        /* HEADER KARTU GERBONG (RAPID & FLEKSIBEL) */
         .car-header {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
             padding-bottom: 4px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 4px;
+        }
+
+        .car-title-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
         }
 
         .device-grid-container {
@@ -145,6 +155,8 @@
             padding: 2px 7px;
             border-radius: 10px;
             font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .modal-content {
@@ -183,6 +195,53 @@
             color: #ffffff !important;
             border: 1px solid #0dcaf0 !important;
         }
+
+        /* ---------------------------------------------------- */
+        /* CSS RESPONSIVE & PENYESUAIAN HEADER MOBIL (2 KOLOM) */
+        /* ---------------------------------------------------- */
+        @media (max-width: 575.98px) {
+            .car-card {
+                padding: 8px 6px !important;
+            }
+
+            .car-header {
+                font-size: 0.68rem !important;
+                margin-bottom: 6px !important;
+                padding-bottom: 2px !important;
+            }
+
+            .car-title-long {
+                display: none !important;
+            }
+
+            .car-title-short {
+                display: inline !important;
+            }
+
+            .device-grid-container {
+                grid-template-columns: repeat(5, 28px) !important;
+                grid-template-rows: repeat(3, 28px) !important;
+                gap: 4px !important;
+            }
+
+            .device-box {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 0.48rem !important;
+                border-radius: 5px !important;
+            }
+
+            .badge-status {
+                font-size: 0.5rem !important;
+                padding: 1px 4px !important;
+            }
+        }
+
+        @media (min-width: 576px) {
+            .car-title-short {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="p-2 p-md-3">
@@ -190,7 +249,7 @@
     <div class="dashboard-header mb-3">
         <h1 class="dashboard-title">RAILMAP</h1>
         
-        <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1 rem;">
+        <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
             <i class="bi bi-train-front text-info fs-5"></i>
             <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
         </div>
@@ -201,8 +260,9 @@
         </div>
     </div>
 
-    <div class="container" style="max-width: 600px;">
-        <div class="row g-3 justify-content-center" id="cars-grid">
+    <!-- Container Utama Dashboard -->
+    <div class="container-fluid px-2 px-md-4" style="max-width: 1400px;">
+        <div class="row g-2 g-md-3 justify-content-center" id="cars-grid">
             <!-- Grid Kartu Gerbong -->
         </div>
     </div>
@@ -301,9 +361,6 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        
-        // Deklarasi Daftar Gerbong (Location ID)
-        
         const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
         let globalDeviceData = [];
         
@@ -333,15 +390,18 @@
             return name.substring(0, 4);
         }
 
-        // Render Kartu Gerbong ke UI
-
+        // HEADER KARTU DIBUAT DUAL-FORMAT (LENGKAP DI PC, RINGKAS DI HP)
         const grid = document.getElementById('cars-grid');
         uniqueCars.forEach(car => {
             grid.innerHTML += `
-                <div class="col-12 col-sm-6 d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
                     <div class="car-card">
                         <div class="car-header">
-                            <span><i class="bi bi-distribute-vertical me-1 text-info"></i>Gerbong ${car}</span>
+                            <span class="car-title-text">
+                                <i class="bi bi-distribute-vertical me-1 text-info"></i>
+                                <span class="car-title-long">Gerbong ${car}</span>
+                                <span class="car-title-short">${car}</span>
+                            </span>
                             <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
                         </div>
                         <div class="device-grid-container" id="body-${car}">
@@ -445,15 +505,12 @@
             deviceModal.show();
         }
 
-        // Render Status Independen Per Gerbong
-
         function renderAllCars() {
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
                 const timeElem = document.getElementById(`time-${car}`);
                 
-                // Memfilter data berdasarkan lokasi gerbong secara spesifik
                 const devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
@@ -483,7 +540,6 @@
                         hasOffline = true;
                     }
 
-                    // Last update merujuk pada waktu upload foto
                     if (dev.image_updated_at) {
                         if (!latestTimestamp || new Date(dev.image_updated_at) > new Date(latestTimestamp)) {
                             latestTimestamp = dev.image_updated_at;
@@ -511,7 +567,7 @@
                         badgeElem.classList.add('bg-danger');
                         badgeElem.innerText = 'OFFLINE';
                     } else if (hasWarning) {
-                        badgeElem.classList.add('badge', 'bg-warning', 'text-dark');
+                        badgeElem.classList.add('bg-warning', 'text-dark');
                         badgeElem.innerText = 'WARNING';
                     } else {
                         badgeElem.classList.add('bg-success');
@@ -523,7 +579,6 @@
             filterCars();
         }
 
-        // Fetching Data Berkala dari API
         function scanData() {
             fetch('api_detail_status.php?trainset=Argo%20Wilis')
                 .then(res => res.json())
