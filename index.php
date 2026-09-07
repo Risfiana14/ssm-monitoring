@@ -541,7 +541,7 @@
                     }
 
                     if (dev.image_updated_at) {
-                        if (!latestTimestamp || new Date(dev.image_updated_at) > new Date(latestTimestamp)) {
+                        if (!latestTimestamp || Date.parse(dev.image_updated_at) > Date.parse(latestTimestamp)) {
                             latestTimestamp = dev.image_updated_at;
                         }
                     }
