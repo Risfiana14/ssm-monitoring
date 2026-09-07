@@ -12,9 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // 1. Update catatan khusus untuk gerbong dan IP perangkat ini saja
-        $stmtNotes = $pdo->prepare("UPDATE monitoring_logs SET notes = ? WHERE location = ? AND device_ip = ?");
-        $stmtNotes->execute([$notes, $location, $deviceIP]);
+        // 1. PERBAIKAN: Update catatan HANYA jika ada teks baru yang diisi, sekaligus update timestamp
+        if ($notes !== '') {
+            $stmtNotes = $pdo->prepare("
+                UPDATE monitoring_logs 
+                SET notes = ?, 
+                    image_updated_at = NOW() 
+                WHERE location = ? AND device_ip = ?
+            ");
+            $stmtNotes->execute([$notes, $location, $deviceIP]);
+        }
 
         // 2. Jika ada unggahan gambar baru
         if (isset($_FILES['device_image']) && $_FILES['device_image']['error'] === UPLOAD_ERR_OK) {
