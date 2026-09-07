@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAILMAP - Kereta Argo Wilis</title>
+    <title>RAILMAP - DAOP 8</title>
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -580,7 +580,7 @@
         }
 
         function scanData() {
-            fetch('api_detail_status.php?trainset=Argo%20Wilis')
+            fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;

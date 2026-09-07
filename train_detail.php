@@ -1,5 +1,5 @@
 <?php
-$trainset = $_GET['id'] ?? 'Argo Wilis';
+$trainset = $_GET['id'] ?? 'DAOP_8';
 ?>
 <!DOCTYPE html>
 <html lang="id">

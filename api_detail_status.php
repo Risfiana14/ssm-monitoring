@@ -4,7 +4,7 @@
 header('Content-Type: application/json');
 require_once 'db.php';
 
-$trainset = $_GET['trainset'] ?? 'Argo Wilis';
+$trainset = $_GET['trainset'] ?? 'DAOP_8';
 
 try {
 
