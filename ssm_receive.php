@@ -11,11 +11,17 @@ $trainset     = $_GET['trainset'] ?? null;
 $locationCode = $_GET['location_code'] ?? null; // Berperan sebagai ID Gerbong / Location ID
 $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
 
+// Validasi nilai status agar tidak menyimpan data sampah (perbaikan tambahan)
+if (!in_array($status, ['ONLINE', 'OFFLINE'])) {
+    $status = 'OFFLINE';
+}
+
 if ($deviceIP && $locationCode) {
 
     // Cek Status Terakhir (Pencegahan Database Bloat / Spam Request)
-
-    $checkStmt = $pdo->prepare("SELECT status FROM monitoring_logs WHERE device_ip = ? AND location = ? LIMIT 1");
+    // Perbaikan: tambah ORDER BY timestamp DESC supaya selalu ambil baris TERBARU,
+    // bukan baris acak/lama jika ada lebih dari satu row untuk device_ip+location yang sama
+    $checkStmt = $pdo->prepare("SELECT status FROM monitoring_logs WHERE device_ip = ? AND location = ? ORDER BY timestamp DESC LIMIT 1");
     $checkStmt->execute([$deviceIP, $locationCode]);
     $lastData = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
