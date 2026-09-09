@@ -381,8 +381,9 @@
                     let hasWarnA = devA.some(d => (d.status || '').toUpperCase() === 'WARNING');
                     if (hasOffA) priorityA = 1;       // Paling tinggi (Offline)
                     else if (hasWarnA) priorityA = 2;  // Sedang (Warning)
+                    else priorityA = 3;                // Online
                 } else {
-                    priorityA = 0; 
+                    priorityA = 4; // <--- No Data ditaruh di Paling Bawah
                 }
 
                 if (devB.length > 0) {
@@ -393,8 +394,9 @@
                     let hasWarnB = devB.some(d => (d.status || '').toUpperCase() === 'WARNING');
                     if (hasOffB) priorityB = 1;
                     else if (hasWarnB) priorityB = 2;
+                    else priorityB = 3;
                 } else {
-                    priorityB = 0;
+                    priorityB = 4; // <--- No Data ditaruh di Paling Bawah
                 }
 
                 return priorityA - priorityB;
