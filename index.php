@@ -597,7 +597,7 @@
             }
             if (netBadgeElem) {
                 netBadgeElem.className = 'badge-status bg-secondary';
-                netBadgeElem.innerText = 'NO INT';
+                netBadgeElem.innerText = 'NO INTERNET';
             }
             if (timeElem) timeElem.innerText = '-';
             return;
@@ -656,7 +656,7 @@
                 netBadgeElem.innerText = 'INTERNET';
             } else {
                 netBadgeElem.classList.add('bg-danger');
-                netBadgeElem.innerText = 'NO INT';
+                netBadgeElem.innerText = 'NO INTERNET';
             }
         }
 
