@@ -72,7 +72,7 @@
             width: 100%;
         }
 
-        /* HEADER KARTU GERBONG (RAPID & FLEKSIBEL) */
+        /* HEADER KARTU Kereta (RAPID & FLEKSIBEL) */
         .car-header {
             font-weight: 700;
             font-size: 0.82rem;
@@ -256,14 +256,14 @@
 
         <div class="search-container position-relative">
             <i class="bi bi-search search-icon"></i>
-            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor gerbong (misal: K102436)..." oninput="filterCars()">
+            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor kereta (misal: K102436)..." oninput="filterCars()">
         </div>
     </div>
 
     <!-- Container Utama Dashboard -->
     <div class="container-fluid px-2 px-md-4" style="max-width: 1400px;">
         <div class="row g-2 g-md-3 justify-content-center" id="cars-grid">
-            <!-- Grid Kartu Gerbong -->
+            <!-- Grid Kartu Kereta -->
         </div>
     </div>
 
@@ -292,7 +292,7 @@
                                     <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-light opacity-75">Lokasi Gerbong</td>
+                                    <td class="text-light opacity-75">Lokasi Kereta</td>
                                     <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
                                 </tr>
                                 <tr>
@@ -364,7 +364,7 @@
         let uniqueCars = ['K102436', 'K102437', 'K102438', 'K102439', 'K302452', 'K3024102', 'M102411', 'K302450','K302461','K302464','M102420','K102450','K102451','K102353', 'P02416'];
         let globalDeviceData = [];
         
-        // Fungsi untuk menyortir gerbong bermasalah (Offline/Warning) ke urutan paling atas
+        // Fungsi untuk menyortir Kereta bermasalah (Offline/Warning) ke urutan paling atas
         function sortCarsByStatus() {
             uniqueCars.sort((a, b) => {
                 let devA = globalDeviceData.filter(d => d.location === a);
@@ -436,7 +436,7 @@
                         <div class="car-header">
                             <span class="car-title-text">
                                 <i class="bi bi-distribute-vertical me-1 text-info"></i>
-                                <span class="car-title-long">Gerbong ${car}</span>
+                                <span class="car-title-long"> ${car}</span>
                                 <span class="car-title-short">${car}</span>
                             </span>
                             <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
@@ -552,6 +552,7 @@
     // Re-render ulang urutan DOM HTML grid berdasarkan uniqueCars yang sudah disortir
     const gridContainer = document.getElementById('cars-grid');
     gridContainer.innerHTML = '';
+    
     uniqueCars.forEach(car => {
         gridContainer.innerHTML += `
             <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
@@ -559,7 +560,7 @@
                     <div class="car-header">
                         <span class="car-title-text">
                             <i class="bi bi-distribute-vertical me-1 text-info"></i>
-                            <span class="car-title-long">Gerbong ${car}</span>
+                            <span class="car-title-long">${car}</span>
                             <span class="car-title-short">${car}</span>
                         </span>
                         
@@ -583,7 +584,7 @@
     uniqueCars.forEach(car => {
         const bodyElem = document.getElementById(`body-${car}`);
         const badgeElem = document.getElementById(`badge-${car}`);
-        const netBadgeElem = document.getElementById(`internet-badge-${car}`); // Elemen Badge Internet Baru
+        const netBadgeElem = document.getElementById(`internet-badge-${car}`);
         const timeElem = document.getElementById(`time-${car}`);
         
         let devices = globalDeviceData.filter(d => d.location === car);
@@ -644,20 +645,13 @@
             timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
         }
 
-        // 1. LOGIKA BADGE INTERNET (BERDASARKAN STATUS DEVICE ROUTER/MODEM)
-        const routerDev = devices.find(d => {
-            const label = getShortName(d.device_name);
-            return label === 'RTR' || label === 'MDM';
-        });
-
-        // Router terhubung jika ada data internet_status === 'INTERNET' atau status RTR-nya 'ONLINE'
-        const isInternetActive = routerDev 
-            ? (routerDev.internet_status === 'INTERNET' || (routerDev.status || '').toUpperCase() === 'ONLINE')
-            : false;
+        // 1. LOGIKA BADGE INTERNET (BERDASARKAN FRESHNESS LAST UPDATE)
+        // Mengecek apakah minimal ada 1 device di gerbong yang internet_status nya 'INTERNET'
+        const isInternetConnected = devices.some(d => d.internet_status === 'INTERNET');
 
         if (netBadgeElem) {
             netBadgeElem.classList.remove('bg-secondary', 'bg-info', 'bg-dark', 'bg-danger');
-            if (isInternetActive) {
+            if (isInternetConnected) {
                 netBadgeElem.classList.add('bg-info', 'text-dark');
                 netBadgeElem.innerText = 'INTERNET';
             } else {
@@ -666,7 +660,7 @@
             }
         }
 
-        // 2. LOGIKA BADGE STATUS DEVICE LAMA (TETAP SAMA)
+        // 2. LOGIKA BADGE STATUS DEVICE (BERDASARKAN STATUS APLIKASI/PERANGKAT)
         if (badgeElem) {
             badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
             if (hasOffline) {
@@ -690,7 +684,7 @@
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;
-                    sortCarsByStatus(); // <-- Dipanggil di sini agar urutan kartu gerbong langsung menyortir ulang
+                    sortCarsByStatus(); // <-- Dipanggil di sini agar urutan kartu Kereta langsung menyortir ulang
                     renderAllCars();
                 })
                 .catch(err => console.error("Error scan:", err));
