@@ -549,109 +549,142 @@
         }
 
         function renderAllCars() {
-            // Re-render ulang urutan DOM HTML grid berdasarkan uniqueCars yang sudah disortir
-            const gridContainer = document.getElementById('cars-grid');
-            gridContainer.innerHTML = '';
-            uniqueCars.forEach(car => {
-                gridContainer.innerHTML += `
-                    <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
-                        <div class="car-card">
-                            <div class="car-header">
-                                <span class="car-title-text">
-                                    <i class="bi bi-distribute-vertical me-1 text-info"></i>
-                                    <span class="car-title-long">Gerbong ${car}</span>
-                                    <span class="car-title-short">${car}</span>
-                                </span>
-                                <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
-                            </div>
-                            <div class="device-grid-container" id="body-${car}">
-                                <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
-                            </div>
-                            <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
-                                <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
-                            </div>
+    // Re-render ulang urutan DOM HTML grid berdasarkan uniqueCars yang sudah disortir
+    const gridContainer = document.getElementById('cars-grid');
+    gridContainer.innerHTML = '';
+    uniqueCars.forEach(car => {
+        gridContainer.innerHTML += `
+            <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                <div class="car-card">
+                    <div class="car-header">
+                        <span class="car-title-text">
+                            <i class="bi bi-distribute-vertical me-1 text-info"></i>
+                            <span class="car-title-long">Gerbong ${car}</span>
+                            <span class="car-title-short">${car}</span>
+                        </span>
+                        
+                        <!-- DUA BADGE BERDAMPINGAN: INTERNET STATUS & DEVICE STATUS -->
+                        <div class="d-flex align-items-center gap-1">
+                            <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
+                            <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
                         </div>
                     </div>
-                `;
-            });
+                    <div class="device-grid-container" id="body-${car}">
+                        <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
+                    </div>
+                    <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
+                        <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
 
-            uniqueCars.forEach(car => {
-                const bodyElem = document.getElementById(`body-${car}`);
-                const badgeElem = document.getElementById(`badge-${car}`);
-                const timeElem = document.getElementById(`time-${car}`);
-                
-                let devices = globalDeviceData.filter(d => d.location === car);
+    uniqueCars.forEach(car => {
+        const bodyElem = document.getElementById(`body-${car}`);
+        const badgeElem = document.getElementById(`badge-${car}`);
+        const netBadgeElem = document.getElementById(`internet-badge-${car}`); // Elemen Badge Internet Baru
+        const timeElem = document.getElementById(`time-${car}`);
+        
+        let devices = globalDeviceData.filter(d => d.location === car);
 
-                if (devices.length === 0) {
-                    bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
-                    if (badgeElem) {
-                        badgeElem.className = 'badge-status bg-secondary';
-                        badgeElem.innerText = 'NO DATA';
-                    }
-                    if (timeElem) timeElem.innerText = '-';
-                    return;
-                }
-
-                // URUTKAN PERANGKAT BERDASARKAN IP ADDRESS (DARI .1 SAMPAI .254)
-                devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
-
-                let hasOffline = false, hasWarning = false;
-                let carHTML = '';
-                let latestTimestamp = '';
-
-                devices.forEach(dev => {
-                    const st = (dev.status || '').toUpperCase();
-                    let stClass = 'st-offline';
-
-                    if (st === 'ONLINE' || st === 'UP') {
-                        stClass = 'st-online';
-                    } else if (st === 'WARNING') {
-                        stClass = 'st-warning';
-                        hasWarning = true;
-                    } else {
-                        hasOffline = true;
-                    }
-
-                    const devTime = dev.image_updated_at || dev.timestamp;
-                    if (devTime) {
-                        if (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp)) {
-                            latestTimestamp = devTime;
-                        }
-                    }
-
-                    const shortLabel = getShortName(dev.device_name);
-
-                    carHTML += `
-                        <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
-                            ${shortLabel}
-                        </button>
-                    `;
-                });
-
-                bodyElem.innerHTML = carHTML;
-
-                if (timeElem) {
-                    timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
-                }
-
-                if (badgeElem) {
-                    badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
-                    if (hasOffline) {
-                        badgeElem.classList.add('bg-danger');
-                        badgeElem.innerText = 'OFFLINE';
-                    } else if (hasWarning) {
-                        badgeElem.classList.add('bg-warning', 'text-dark');
-                        badgeElem.innerText = 'WARNING';
-                    } else {
-                        badgeElem.classList.add('bg-success');
-                        badgeElem.innerText = 'ONLINE';
-                    }
-                }
-            });
-
-            filterCars();
+        if (devices.length === 0) {
+            bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
+            if (badgeElem) {
+                badgeElem.className = 'badge-status bg-secondary';
+                badgeElem.innerText = 'NO DATA';
+            }
+            if (netBadgeElem) {
+                netBadgeElem.className = 'badge-status bg-secondary';
+                netBadgeElem.innerText = 'NO INT';
+            }
+            if (timeElem) timeElem.innerText = '-';
+            return;
         }
 
+        // URUTKAN PERANGKAT BERDASARKAN IP ADDRESS (DARI .1 SAMPAI .254)
+        devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
+
+        let hasOffline = false, hasWarning = false;
+        let carHTML = '';
+        let latestTimestamp = '';
+
+        devices.forEach(dev => {
+            const st = (dev.status || '').toUpperCase();
+            let stClass = 'st-offline';
+
+            if (st === 'ONLINE' || st === 'UP') {
+                stClass = 'st-online';
+            } else if (st === 'WARNING') {
+                stClass = 'st-warning';
+                hasWarning = true;
+            } else {
+                hasOffline = true;
+            }
+
+            const devTime = dev.image_updated_at || dev.timestamp;
+            if (devTime) {
+                if (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp)) {
+                    latestTimestamp = devTime;
+                }
+            }
+
+            const shortLabel = getShortName(dev.device_name);
+
+            carHTML += `
+                <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
+                    ${shortLabel}
+                </button>
+            `;
+        });
+
+        bodyElem.innerHTML = carHTML;
+
+        if (timeElem) {
+            timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
+        }
+
+        // 1. LOGIKA BADGE INTERNET (BERDASARKAN STATUS DEVICE ROUTER/MODEM)
+        const routerDev = devices.find(d => {
+            const label = getShortName(d.device_name);
+            return label === 'RTR' || label === 'MDM';
+        });
+
+        // Router terhubung jika ada data internet_status === 'INTERNET' atau status RTR-nya 'ONLINE'
+        const isInternetActive = routerDev 
+            ? (routerDev.internet_status === 'INTERNET' || (routerDev.status || '').toUpperCase() === 'ONLINE')
+            : false;
+
+        if (netBadgeElem) {
+            netBadgeElem.classList.remove('bg-secondary', 'bg-info', 'bg-dark', 'bg-danger');
+            if (isInternetActive) {
+                netBadgeElem.classList.add('bg-info', 'text-dark');
+                netBadgeElem.innerText = 'INTERNET';
+            } else {
+                netBadgeElem.classList.add('bg-danger');
+                netBadgeElem.innerText = 'NO INT';
+            }
+        }
+
+        // 2. LOGIKA BADGE STATUS DEVICE LAMA (TETAP SAMA)
+        if (badgeElem) {
+            badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
+            if (hasOffline) {
+                badgeElem.classList.add('bg-danger');
+                badgeElem.innerText = 'OFFLINE';
+            } else if (hasWarning) {
+                badgeElem.classList.add('bg-warning', 'text-dark');
+                badgeElem.innerText = 'WARNING';
+            } else {
+                badgeElem.classList.add('bg-success');
+                badgeElem.innerText = 'ONLINE';
+            }
+        }
+    });
+
+    filterCars();
+}
+        
         function scanData() {
             fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
