@@ -361,9 +361,48 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const uniqueCars = ['K102436', 'K102437', 'K102438', 'K102439', 'K302452', 'K3024102', 'M102411', 'K302450','K302461','K302464','M102420','K102450','K102451','K102353', 'P02416'];
+        let uniqueCars = ['K102436', 'K102437', 'K102438', 'K102439', 'K302452', 'K3024102', 'M102411', 'K302450','K302461','K302464','M102420','K102450','K102451','K102353', 'P02416'];
         let globalDeviceData = [];
         
+        // Fungsi untuk menyortir gerbong bermasalah (Offline/Warning) ke urutan paling atas
+        function sortCarsByStatus() {
+            uniqueCars.sort((a, b) => {
+                let devA = globalDeviceData.filter(d => d.location === a);
+                let devB = globalDeviceData.filter(d => d.location === b);
+
+                let priorityA = 3; 
+                let priorityB = 3;
+
+                if (devA.length > 0) {
+                    let hasOffA = devA.some(d => {
+                        let st = (d.status || '').toUpperCase();
+                        return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                    });
+                    let hasWarnA = devA.some(d => (d.status || '').toUpperCase() === 'WARNING');
+                    if (hasOffA) priorityA = 1;       // Paling tinggi (Offline)
+                    else if (hasWarnA) priorityA = 2;  // Sedang (Warning)
+                    else priorityA = 3;                // Online
+                } else {
+                    priorityA = 4; // <--- UBAH DARI 0 MENJADI 4 (No Data ditaruh paling bawah)
+                }
+
+                if (devB.length > 0) {
+                    let hasOffB = devB.some(d => {
+                        let st = (d.status || '').toUpperCase();
+                        return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                    });
+                    let hasWarnB = devB.some(d => (d.status || '').toUpperCase() === 'WARNING');
+                    if (hasOffB) priorityB = 1;
+                    else if (hasWarnB) priorityB = 2;
+                    else priorityB = 3;
+                } else {
+                    priorityB = 4; // <--- UBAH DARI 0 MENJADI 4
+                }
+
+                return priorityA - priorityB;
+            });
+        }
+
         const deviceModalElem = document.getElementById('deviceModal');
         const deviceModal = new bootstrap.Modal(deviceModalElem);
 
@@ -512,6 +551,32 @@
         }
 
         function renderAllCars() {
+            // Re-render ulang urutan DOM HTML grid berdasarkan uniqueCars yang sudah disortir
+            const gridContainer = document.getElementById('cars-grid');
+            gridContainer.innerHTML = '';
+            uniqueCars.forEach(car => {
+                gridContainer.innerHTML += `
+                    <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                        <div class="car-card">
+                            <div class="car-header">
+                                <span class="car-title-text">
+                                    <i class="bi bi-distribute-vertical me-1 text-info"></i>
+                                    <span class="car-title-long">Gerbong ${car}</span>
+                                    <span class="car-title-short">${car}</span>
+                                </span>
+                                <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
+                            </div>
+                            <div class="device-grid-container" id="body-${car}">
+                                <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
+                            </div>
+                            <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
+                                <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
@@ -549,7 +614,6 @@
                         hasOffline = true;
                     }
 
-                    // Ambil timestamp terbaru dari seluruh perangkat di gerbong ini (termasuk timestamp log/update)
                     const devTime = dev.image_updated_at || dev.timestamp;
                     if (devTime) {
                         if (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp)) {
@@ -595,6 +659,7 @@
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;
+                    sortCarsByStatus(); // <-- Dipanggil di sini agar urutan kartu gerbong langsung menyortir ulang
                     renderAllCars();
                 })
                 .catch(err => console.error("Error scan:", err));
