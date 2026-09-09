@@ -361,7 +361,7 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let uniqueCars = ['K102436', 'K102437', 'K102438', 'K102439', 'K302452', 'K3024102', 'M102411', 'K102450','K302461','K302464','M102420','K102450','K102451','K102353', 'P02416'];
+        let uniqueCars = ['K102436', 'K102437', 'K102438', 'K102439', 'K302452', 'K3024102', 'M102411', 'K302450','K302461','K302464','M102420','K102450','K102451','K102353', 'P02416'];
         let globalDeviceData = [];
         
         // Fungsi untuk menyortir Kereta bermasalah (Offline/Warning) ke urutan paling atas
