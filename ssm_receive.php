@@ -3,36 +3,45 @@
 // Endpoint Penerima Data Netwatch MikroTik
 require_once 'db.php';
 
-// Menangkap parameter dinamis yang dikirimkan oleh router MikroTik
 $deviceName   = $_GET['device_name'] ?? null;
 $deviceIP     = $_GET['device_ip'] ?? null;
 $deviceType   = $_GET['device_type'] ?? null;
 $trainset     = $_GET['trainset'] ?? null;
-$locationCode = $_GET['location_code'] ?? null; // Berperan sebagai ID Gerbong / Location ID
+$locationCode = $_GET['location_code'] ?? null; 
 $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
+$internetStatus = strtoupper($_GET['internet_status'] ?? '');
 
-// Validasi nilai status agar tidak menyimpan data sampah (perbaikan tambahan)
+// =========================================================================
+// PERBAIKAN: Update internet_status pada baris data gerbong yang sudah ada 
+// TANPA membuat baris baru/kotak perangkat baru di database.
+// =========================================================================
+if ($locationCode && $internetStatus) {
+    $stmt = $pdo->prepare("
+        UPDATE monitoring_logs 
+        SET internet_status = ? 
+        WHERE location = ?
+    ");
+    $stmt->execute([$internetStatus, $locationCode]);
+    echo "INTERNET_STATUS_UPDATED";
+    exit;
+}
+// =========================================================================
+
+// Validasi nilai status perangkat
 if (!in_array($status, ['ONLINE', 'OFFLINE'])) {
     $status = 'OFFLINE';
 }
 
 if ($deviceIP && $locationCode) {
-
-    // Cek Status Terakhir (Pencegahan Database Bloat / Spam Request)
-    // Perbaikan: tambah ORDER BY timestamp DESC supaya selalu ambil baris TERBARU,
-    // bukan baris acak/lama jika ada lebih dari satu row untuk device_ip+location yang sama
     $checkStmt = $pdo->prepare("SELECT status FROM monitoring_logs WHERE device_ip = ? AND location = ? ORDER BY timestamp DESC LIMIT 1");
     $checkStmt->execute([$deviceIP, $locationCode]);
     $lastData = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
-    // Jika status sama persis dengan database, abaikan proses (tidak update)
     if ($lastData && $lastData['status'] === $status) {
         echo "NO_CHANGE";
         exit;
     }
     
-    // Upsert Database Berdasarkan IP dan Lokasi Gerbong
-
     $stmt = $pdo->prepare("
         INSERT INTO monitoring_logs (device_name, device_ip, device_type, trainset, location, status, timestamp) 
         VALUES (?, ?, ?, ?, ?, ?, NOW())

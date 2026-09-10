@@ -12,7 +12,7 @@ try {
 
     if ($trainset === 'DAOP_8' || $trainset === 'ALL' || empty($trainset)) {
         $query = "
-            SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
+            SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes, internet_status
             FROM monitoring_logs
             ORDER BY id ASC
         ";
@@ -20,7 +20,7 @@ try {
         $stmt->execute();
     } else {
         $query = "
-            SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes
+            SELECT id, device_name, device_ip, device_type, trainset, location, status, timestamp, image, upload_count, image_updated_at, notes, internet_status
             FROM monitoring_logs
             WHERE trainset = ?
             ORDER BY id ASC
@@ -61,31 +61,20 @@ try {
     $result = array_values($latestDevices);
 
     // -------------------------------------------------------------------------
-    // LOGIKA KHUSUS INTERNET STATUS (BERDASARKAN LAST UPDATE DATA)
+    // LOGIKA KHUSUS INTERNET STATUS (BERDASARKAN KIRIMAN NETWATCH 8.8.8.8)
     // -------------------------------------------------------------------------
-    $currentTime = time();
-    $toleransiDetik = 1 * 60; // GANTI DISINI: 1 Menit (60 detik). Kalau mau 5 menit: 5 * 60
-
     foreach ($result as &$device) {
-        // Ambil string timestamp dari DB
-        $lastUpdateString = !empty($device['image_updated_at']) ? $device['image_updated_at'] : ($device['timestamp'] ?? null);
-        
-        // Parse timestamp ke UNIX Seconds
-        $lastUpdateUnix = $lastUpdateString ? strtotime($lastUpdateString) : 0;
-        
-        // Hitung selisih detik
-        $selisihDetik = $currentTime - $lastUpdateUnix;
+        // Ambil langsung dari kolom internet_status database (hasil kiriman Netwatch MikroTik)
+        $dbNetStatus = strtoupper(trim($device['internet_status'] ?? ''));
 
-        // KALAU KURANG DARI TOLERANSI (MASIH RUTIN UPDATE) = INTERNET
-        // KALAU LEBIH DARI TOLERANSI ATAU TIDAK ADA DATA = NO INTERNET
-        if ($lastUpdateUnix > 0 && $selisihDetik <= $toleransiDetik) {
+        if ($dbNetStatus === 'INTERNET') {
             $device['internet_status'] = 'INTERNET';
+        } else if ($dbNetStatus === 'NO_INTERNET' || $dbNetStatus === 'NO INTERNET') {
+            $device['internet_status'] = 'NO INTERNET';
         } else {
+            // Fallback default jika gerbong belum pernah mengirim data internet
             $device['internet_status'] = 'NO INTERNET';
         }
-
-        // BISA DIGUNAKAN UNTUK DEBUGGING DI CONSOLE
-        $device['selisih_detik'] = $selisihDetik;
     }
     unset($device);
 
