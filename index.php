@@ -28,8 +28,8 @@
         }
 
         .search-container {
-            max-width: 320px;
-            margin: 12px auto 0 auto;
+            max-width: 400px;
+            margin: 10px auto 0 auto;
         }
 
         .search-input {
@@ -42,8 +42,9 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        #searchCarInput::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+            opacity: 1 !important;
         }
 
         .search-input:focus {
@@ -59,6 +60,11 @@
             z-index: 5;
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
+        }
+
+        .search-container:focus-within {
+            border-color: #0dcaf0 !important;
+            box-shadow: 0 0 8px rgba(13, 202, 240, 0.4) !important;
         }
 
         .car-card {
@@ -246,19 +252,45 @@
 </head>
 <body class="p-2 p-md-3">
 
-    <div class="dashboard-header mb-3">
-        <h1 class="dashboard-title">RAILMAP</h1>
-        
-        <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
-            <i class="bi bi-train-front text-info fs-5"></i>
-            <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
-        </div>
+   <div class="dashboard-header mb-3">
+    <h1 class="dashboard-title">RAILMAP</h1>
+    
+    <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
+        <i class="bi bi-train-front text-info fs-5"></i>
+        <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
+    </div>
 
-        <div class="search-container position-relative">
-            <i class="bi bi-search search-icon"></i>
-            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor kereta (misal: K102436)..." oninput="filterCars()">
+    <!-- Wrapper Tengah -->
+    <div style="width: 100%; text-align: center;">
+        <div style="display: inline-block; width: 520px; max-width: 95%;">
+            
+            <!-- KAPSUL UTUH DENGAN GARIS BORDER DAN BACKGROUND JELAS -->
+            <div class="search-container position-relative d-flex align-items-center mb-0 px-3" style="width: 100%; background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50px; padding: 6px 12px; backdrop-filter: blur(5px);">
+                
+                <!-- Sisi Kiri: Dropdown Filter (F) -->
+                <select id="statusFilterDropdown" class="form-select form-select-sm bg-transparent text-light border-0 shadow-none" style="width: 140px; cursor: pointer; font-size: 0.85rem;" onchange="filterCars()">
+                    <option value="all" style="background-color: #1a233a; color: #fff;">Semua Status</option>
+                    <option value="online" style="background-color: #1a233a; color: #fff;">Online</option>
+                    <option value="warning" style="background-color: #1a233a; color: #fff;">Warning</option>
+                    <option value="offline" style="background-color: #1a233a; color: #fff;">Offline</option>
+                    <option value="internet" style="background-color: #1a233a; color: #fff;">Internet</option>
+                    <option value="no internet" style="background-color: #1a233a; color: #fff;">No Internet</option>
+                    <option value="no data" style="background-color: #1a233a; color: #fff;">No Data</option>
+                </select>
+
+                <!-- Garis Pemisah Tipis di Tengah -->
+                <div style="width: 1px; height: 20px; background-color: rgba(255, 255, 255, 0.2); margin: 0 8px; flex-shrink: 0;"></div>
+
+                <!-- Sisi Kanan: Kolom Input Search (S) -->
+                <input type="text" id="searchCarInput" class="form-control form-control-sm border-0 bg-transparent text-light shadow-none ps-2" placeholder="Cari nomor kereta..." oninput="filterCars()" style="font-size: 0.85rem; box-shadow: none !important;">
+                <!-- Ikon Search di Ujung Kanan -->
+                <i class="bi bi-search text-light opacity-75 ps-2 pe-1" style="font-size: 0.85rem;"></i>
+
+            </div>
+
         </div>
     </div>
+</div>
 
     <!-- Container Utama Dashboard -->
     <div class="container-fluid px-2 px-md-4" style="max-width: 1400px;">
@@ -454,21 +486,52 @@
             `;
         });
 
-        function filterCars() {
-            const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
-            const carElements = document.querySelectorAll('.car-wrapper');
+       let currentStatusFilter = 'all';
 
-            carElements.forEach(el => {
-                const carID = el.getAttribute('data-car-id').toLowerCase();
-                const numericOnly = carID.replace(/^[a-z]+/, '');
+function setStatusFilterDropdown(status) {
+    currentStatusFilter = status;
+    filterCars(); // Jalankan ulang filter setiap kali dropdown diubah
+}
 
-                if (carID.includes(inputVal) || numericOnly.includes(inputVal)) {
-                    el.style.setProperty('display', 'flex', 'important');
-                } else {
-                    el.style.setProperty('display', 'none', 'important');
-                }
-            });
+function filterCars() {
+    const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
+    const selectedStatus = document.getElementById('statusFilterDropdown').value.toLowerCase();
+    const carElements = document.querySelectorAll('.car-wrapper');
+
+    carElements.forEach(el => {
+        const carID = el.getAttribute('data-car-id').toLowerCase();
+        const numericOnly = carID.replace(/^[a-z]+/, '');
+        
+        // Ambil seluruh teks di dalam kartu untuk mendeteksi statusnya secara otomatis
+        const cardText = el.textContent.toLowerCase();
+
+        // 1. Validasi Pencarian Teks (Nomor Kereta)
+        const matchesSearch = carID.includes(inputVal) || numericOnly.includes(inputVal);
+
+        // 2. Validasi Filter Status Dropdown
+        let matchesStatus = true;
+        if (selectedStatus === 'online') {
+            matchesStatus = cardText.includes('online');
+        } else if (selectedStatus === 'warning') {
+            matchesStatus = cardText.includes('warning');
+        } else if (selectedStatus === 'offline') {
+            matchesStatus = cardText.includes('offline');
+        } else if (selectedStatus === 'internet') {
+            matchesStatus = cardText.includes('internet') && !cardText.includes('no internet');
+        } else if (selectedStatus === 'no internet') {
+            matchesStatus = cardText.includes('no internet');
+        } else if (selectedStatus === 'no data') {
+            matchesStatus = cardText.includes('no data');
         }
+
+        // Tampilkan hanya jika pencarian nomor dan statusnya sesuai
+        if (matchesSearch && matchesStatus) {
+            el.style.setProperty('display', 'flex', 'important');
+        } else {
+            el.style.setProperty('display', 'none', 'important');
+        }
+    });
+}
 
         function clearNotesInput() {
             document.getElementById('modalDeviceNotes').value = '';
