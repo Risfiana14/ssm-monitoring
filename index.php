@@ -696,9 +696,11 @@ function filterCars() {
             timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
         }
 
-        // 1. LOGIKA BADGE INTERNET (BERDASARKAN FRESHNESS LAST UPDATE)
-        // Mengecek apakah minimal ada 1 device di gerbong yang internet_status nya 'INTERNET'
-        const isInternetConnected = devices.some(d => d.internet_status === 'INTERNET');
+        // 1. LOGIKA BADGE INTERNET (BERDASARKAN TABEL CARRIAGES)
+        let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+        // Mengambil status internet langsung dari data objek gerbong (carData.internet_status)
+        const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
+        const isInternetConnected = (carriageInternet === 'INTERNET');
 
         if (netBadgeElem) {
             netBadgeElem.classList.remove('bg-secondary', 'bg-info', 'bg-dark', 'bg-danger');
@@ -743,11 +745,17 @@ function filterCars() {
 
         // Mengambil daftar kereta AKTIF dari database (tabel carriages)
         // lewat get_cars.php. Menggantikan array uniqueCars yang dulu hardcode.
+        let globalCarriagesData = [];
+
         function loadCarList() {
             return fetch('get_cars.php')
                 .then(res => res.json())
                 .then(cars => {
-                    uniqueCars = cars;
+                    // Simpan data mentah lengkap dari database ke variabel global
+                    globalCarriagesData = cars; 
+                    
+                    // Ekstrak hanya location_code-nya saja untuk dimasukkan ke uniqueCars
+                    uniqueCars = cars.map(item => item.location_code);
                 });
         }
 

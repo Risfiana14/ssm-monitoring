@@ -17,8 +17,6 @@ $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 // pastikan kereta itu terdaftar di tabel carriages. Kalau row-nya sudah
 // pernah dihapus (di-delete lewat dashboard) lalu kereta ini kirim data
 // lagi, baris ini otomatis membuatnya muncul lagi tanpa aksi manual.
-// ON DUPLICATE KEY UPDATE dipakai supaya tidak error saat location_code
-// sudah ada (UNIQUE constraint), dan tidak mengubah id yang sudah ada.
 // =========================================================================
 if ($locationCode) {
     $regStmt = $pdo->prepare("
@@ -31,17 +29,18 @@ if ($locationCode) {
 // =========================================================================
 
 // =========================================================================
-// PERBAIKAN: Update internet_status pada baris data gerbong yang sudah ada 
-// TANPA membuat baris baru/kotak perangkat baru di database.
+// PERBAIKAN: Update internet_status khusus di tabel carriages
+// agar tersimpan secara permanen per gerbong dan tidak tertimpa/bentrok 
+// dengan detak jantung perangkat lain di monitoring_logs.
 // =========================================================================
 if ($locationCode && $internetStatus) {
     $stmt = $pdo->prepare("
-        UPDATE monitoring_logs 
-        SET internet_status = ?, timestamp = NOW() 
-        WHERE location = ?
+        INSERT INTO carriages (location_code, internet_status) 
+        VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE internet_status = VALUES(internet_status)
     ");
-    $stmt->execute([$internetStatus, $locationCode]);
-    echo "INTERNET_STATUS_UPDATED";
+    $stmt->execute([$locationCode, $internetStatus]);
+    echo "CARRIAGE_INTERNET_UPDATED_" . $internetStatus;
     exit;
 }
 // =========================================================================
