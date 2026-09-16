@@ -18,7 +18,7 @@ $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 if ($locationCode && $internetStatus) {
     $stmt = $pdo->prepare("
         UPDATE monitoring_logs 
-        SET internet_status = ? 
+        SET internet_status = ?, timestamp = NOW() 
         WHERE location = ?
     ");
     $stmt->execute([$internetStatus, $locationCode]);
