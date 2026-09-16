@@ -393,7 +393,13 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let uniqueCars = ['K102436', 'K102437', 'K102438', 'K102439', 'K302452', 'K3024102', 'M102411', 'K302450','K302461','K302464','M102420','K102450','K102451','K102353', 'P02416'];
+        // uniqueCars TIDAK lagi hardcode di sini.
+        // Daftar kereta sekarang diambil secara dinamis dari get_cars.php
+        // (yang membaca tabel `carriages` di database). Ini membuat:
+        // - Kereta baru otomatis muncul begitu kirim data pertama kali.
+        // - Kereta yang di-delete langsung hilang dari tampilan.
+        // - Kereta yang di-delete lalu kirim data lagi otomatis muncul lagi.
+        let uniqueCars = [];
         let globalDeviceData = [];
         
         // Fungsi untuk menyortir Kereta bermasalah (Offline/Warning) ke urutan paling atas
@@ -460,31 +466,6 @@
 
             return name.substring(0, 4);
         }
-
-        // HEADER KARTU DIBUAT DUAL-FORMAT (LENGKAP DI PC, RINGKAS DI HP)
-        const grid = document.getElementById('cars-grid');
-        uniqueCars.forEach(car => {
-            grid.innerHTML += `
-                <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
-                    <div class="car-card">
-                        <div class="car-header">
-                            <span class="car-title-text">
-                                <i class="bi bi-distribute-vertical me-1 text-info"></i>
-                                <span class="car-title-long"> ${car}</span>
-                                <span class="car-title-short">${car}</span>
-                            </span>
-                            <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
-                        </div>
-                        <div class="device-grid-container" id="body-${car}">
-                            <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
-                        </div>
-                        <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
-                            <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
 
        let currentStatusFilter = 'all';
 
@@ -633,6 +614,11 @@ function filterCars() {
                         <div class="d-flex align-items-center gap-1">
                             <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
                             <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
+                            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1"
+                                    style="font-size:0.65rem; line-height:1;"
+                                    onclick="deleteCar('${car}')" title="Hapus kereta ini dari dashboard">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="device-grid-container" id="body-${car}">
@@ -755,8 +741,56 @@ function filterCars() {
                 .catch(err => console.error("Error scan:", err));
         }
 
-        scanData();
-        setInterval(scanData, 1000);
+        // Mengambil daftar kereta AKTIF dari database (tabel carriages)
+        // lewat get_cars.php. Menggantikan array uniqueCars yang dulu hardcode.
+        function loadCarList() {
+            return fetch('get_cars.php')
+                .then(res => res.json())
+                .then(cars => {
+                    uniqueCars = cars;
+                });
+        }
+
+        // Fungsi tombol delete di setiap kartu kereta.
+        // Ini hanya menghapus kereta dari tabel `carriages` (tampilan dashboard),
+        // data historis di monitoring_logs tetap aman. Kalau kereta ini
+        // mengirim data lagi lewat ssm_receive.php, otomatis muncul lagi.
+        function deleteCar(car) {
+            if (!confirm(`Yakin ingin menghapus kereta ${car} dari dashboard?`)) return;
+
+            fetch('delete_car.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `location_code=${encodeURIComponent(car)}`
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 'ok') {
+                    uniqueCars = uniqueCars.filter(c => c !== car);
+                    globalDeviceData = globalDeviceData.filter(d => d.location !== car);
+                    renderAllCars();
+                } else {
+                    alert('Gagal menghapus: ' + (result.message || 'unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error('Error delete car:', err);
+                alert('Terjadi kesalahan saat menghapus kereta.');
+            });
+        }
+
+        // Inisialisasi: muat daftar kereta dulu, baru mulai polling data device.
+        // loadCarList() dipanggil ulang secara berkala supaya kereta baru
+        // (yang baru pertama kali kirim data) atau kereta yang baru
+        // "muncul lagi" setelah dihapus, otomatis kedeteksi tanpa reload halaman.
+        loadCarList().then(() => {
+            scanData();
+            setInterval(scanData, 1000);
+        });
+
+        setInterval(() => {
+            loadCarList();
+        }, 5000);
     </script>
 </body>
 </html>

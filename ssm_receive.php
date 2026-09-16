@@ -12,6 +12,25 @@ $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
 $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 
 // =========================================================================
+// AUTO-REGISTER KERETA
+// Setiap kali ada data (apapun jenisnya) masuk untuk suatu location_code,
+// pastikan kereta itu terdaftar di tabel carriages. Kalau row-nya sudah
+// pernah dihapus (di-delete lewat dashboard) lalu kereta ini kirim data
+// lagi, baris ini otomatis membuatnya muncul lagi tanpa aksi manual.
+// ON DUPLICATE KEY UPDATE dipakai supaya tidak error saat location_code
+// sudah ada (UNIQUE constraint), dan tidak mengubah id yang sudah ada.
+// =========================================================================
+if ($locationCode) {
+    $regStmt = $pdo->prepare("
+        INSERT INTO carriages (location_code)
+        VALUES (?)
+        ON DUPLICATE KEY UPDATE location_code = VALUES(location_code)
+    ");
+    $regStmt->execute([$locationCode]);
+}
+// =========================================================================
+
+// =========================================================================
 // PERBAIKAN: Update internet_status pada baris data gerbong yang sudah ada 
 // TANPA membuat baris baru/kotak perangkat baru di database.
 // =========================================================================
