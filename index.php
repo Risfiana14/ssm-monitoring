@@ -23,6 +23,7 @@
         width: 100%;
         min-height: 100vh;
         position: relative;
+        overflow-x: hidden;
     }
 
     /* ---------------------------------------------------- */
@@ -30,6 +31,7 @@
     /* ---------------------------------------------------- */
     .railmap-sidebar {
         width: 260px;
+        min-width: 260px;
         background-color: #122b59;
         border-right: 1px solid rgba(255, 255, 255, 0.12);
         display: flex;
@@ -41,11 +43,11 @@
         padding: 15px;
         overflow-y: auto;
         z-index: 1050;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease-in-out;
         transform: translateX(0); /* Posisi awal terbuka */
     }
 
-    /* Jika body ada class sidebar-closed, sidebar bergeser ke kiri (tertutup) */
+    /* Jika body ada class sidebar-closed, sidebar bergeser ke kiri (tertutup) di semua layar */
     body.sidebar-closed .railmap-sidebar {
         transform: translateX(-100%) !important;
     }
@@ -248,44 +250,45 @@
         align-items: center;
         font-size: 0.8rem;
     }
-.device-grid-container {
-            display: grid;
-            grid-template-columns: repeat(5, 38px);
-            grid-template-rows: repeat(3, 38px);
-            gap: 8px;
-            justify-content: center;
-            align-items: center;
-            padding: 4px 0;
-        }
 
-        .device-box {
-            background-color: #4a5568;
-            color: #ffffff;
-            border-radius: 8px;
-            padding: 0;
-            text-align: center;
-            font-size: 0.6rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            user-select: none;
-            border: none;
-            width: 38px !important;
-            height: 38px !important;
-            aspect-ratio: 1 / 1 !important;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-        }
+    .device-grid-container {
+        display: grid;
+        grid-template-columns: repeat(5, 38px);
+        grid-template-rows: repeat(3, 38px);
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+        padding: 4px 0;
+    }
 
-        .device-box:hover {
-            transform: scale(1.12);
-            filter: brightness(1.25);
-        }
+    .device-box {
+        background-color: #4a5568;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 0;
+        text-align: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+        border: none;
+        width: 38px !important;
+        height: 38px !important;
+        aspect-ratio: 1 / 1 !important;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .device-box:hover {
+        transform: scale(1.12);
+        filter: brightness(1.25);
+    }
 
     .device-box.st-online { background-color: #28a745 !important; }
     .device-box.st-warning { background-color: #fd7e14 !important; }
@@ -338,26 +341,35 @@
     }
 
     /* ---------------------------------------------------- */
-    /* MEDIA QUERIES RESPONSIF                               */
+    /* MEDIA QUERIES RESPONSIF (BERSIH & TANPA KONFLIK)    */
     /* ---------------------------------------------------- */
     @media (max-width: 1200px) {
         .car-col-item { width: 50% !important; } 
     }
 
     @media (max-width: 992px) {
-        /* Di layar kecil, sidebar otomatis hidden dengan class sidebar-closed */
-        body:not(.sidebar-closed) .railmap-sidebar {
-            transform: translateX(0);
-        }
-        body.sidebar-closed .railmap-sidebar {
+        /* Sidebar defaultnya tersembunyi di luar layar kiri */
+        .railmap-sidebar {
             transform: translateX(-100%) !important;
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1050;
+            transition: transform 0.3s ease-in-out !important;
         }
+
+        /* Saat class active ditambahkan, sidebar bergeser masuk ke dalam layar */
+        .railmap-sidebar.active {
+            transform: translateX(0) !important;
+        }
+
+        /* Konten utama di mobile menempati 100% lebar layar */
         .main-content {
             margin-left: 0 !important;
             width: 100% !important;
             padding-top: 60px;
         }
-        .car-col-item { width: 50% !important; }
     }
 
     @media (max-width: 575.98px) {
@@ -365,27 +377,6 @@
         .car-card { padding: 8px !important; }
         .device-box { height: 26px !important; font-size: 0.5rem !important; }
     }
-
-    @media (max-width: 768px) {
-    .railmap-sidebar {
-        position: fixed;
-        left: -260px; /* Sembunyikan sidebar di luar layar sebelah kiri secara default */
-        top: 0;
-        height: 100%;
-        z-index: 1050;
-        transition: left 0.3s ease-in-out;
-    }
-
-    .railmap-sidebar.active {
-        left: 0; /* Munculkan sidebar saat kelas active aktif */
-    }
-
-    .sidebar-toggle-btn {
-        display: inline-block;
-        z-index: 1060;
-        position: relative;
-    }
-}
 </style>
 </head>
 <body>
@@ -868,13 +859,30 @@
 
         function toggleRailmapSidebar() {
             const sidebar = document.getElementById('railmapSidebar');
-            sidebar.classList.toggle('show');
-
-            // Jika di desktop, tombol toggle juga bisa membuka/menutup sidebar secara penuh (mengubah 3 kolom jadi 4 kolom)
-            if (window.innerWidth > 992) {
+            
+            // Cek apakah sedang di mode tampilan mobile/responsive
+            if (window.innerWidth <= 992) {
+                sidebar.classList.toggle('active');
+            } else {
+                // Untuk versi desktop, tetap pakai fungsi ubah kolom (sidebar-closed)
                 document.body.classList.toggle('sidebar-closed');
             }
         }
+
+        // Menutup sidebar otomatis jika area luar diklik di mode mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('railmapSidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            if (window.innerWidth <= 992) {
+                if (sidebar && toggleBtn) {
+                    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        document.body.classList.add('sidebar-closed');
+                    }
+                }
+            }
+        });
 
         loadCarList().then(() => {
             scanData();
@@ -882,12 +890,6 @@
         });
 
         setInterval(() => loadCarList(), 5000);
-
-                
-        function toggleRailmapSidebar() {
-            const sidebar = document.getElementById('railmapSidebar');
-            sidebar.classList.toggle('active');
-        }
 
         // Opsional: Menutup sidebar jika pengguna mengklik area luar (konten utama) di layar HP
         document.addEventListener('click', function(event) {
