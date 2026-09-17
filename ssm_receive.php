@@ -52,14 +52,8 @@ if (!in_array($status, ['ONLINE', 'OFFLINE'])) {
 }
 
 if ($deviceIP && $locationCode) {
-    $checkStmt = $pdo->prepare("SELECT status FROM monitoring_logs WHERE device_ip = ? AND location = ? ORDER BY timestamp DESC LIMIT 1");
-    $checkStmt->execute([$deviceIP, $locationCode]);
-    $lastData = $checkStmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($lastData && $lastData['status'] === $status) {
-        echo "NO_CHANGE";
-        exit;
-    }
+    // Blok pengecekan $lastData status === $status yang menyebabkan duplikasi telah dihapus,
+    // sehingga sistem langsung memperbarui timestamp dan data pada baris yang sama.
     
     $stmt = $pdo->prepare("
         INSERT INTO monitoring_logs (device_name, device_ip, device_type, trainset, location, status, timestamp) 
