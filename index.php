@@ -421,7 +421,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center p-3">
-                    <p class="mb-1 text-light small">Yakin ingin menghapus gerbong:</p>
+                    <p class="mb-1 text-light small">Yakin ingin menghapus kereta:</p>
                     <h5 id="deleteCarTarget" class="fw-bold text-info mb-2">-</h5>
                     <p class="text-muted mb-0" style="font-size: 0.72rem;">Kereta akan disembunyikan dari dashboard, namun data log historis tetap aman.</p>
                 </div>
