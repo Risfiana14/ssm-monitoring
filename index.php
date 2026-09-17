@@ -696,11 +696,24 @@ function filterCars() {
             timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
         }
 
-        // 1. LOGIKA BADGE INTERNET (BERDASARKAN TABEL CARRIAGES)
+        // 1. LOGIKA BADGE INTERNET (BERDASARKAN TIMEOUT ROUTER / MONITORING_LOGS)
         let carData = globalCarriagesData.find(c => c.location_code === car) || {};
-        // Mengambil status internet langsung dari data objek gerbong (carData.internet_status)
         const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
-        const isInternetConnected = (carriageInternet === 'INTERNET');
+        
+        let isInternetConnected = false;
+        let lastInternetTime = carData.last_timestamp || '';
+
+        if (carriageInternet === 'INTERNET' && lastInternetTime) {
+            let lastTime = new Date(lastInternetTime).getTime();
+            let now = new Date().getTime();
+            let diffSeconds = (now - lastTime) / 1000;
+            
+            // Jika router terakhir lapor kurang dari 2 menit lalu, anggap INTERNET.
+            // Jika lebih dari 2 menit (router dicabut/mati), otomatis jadi NO INTERNET.
+            if (diffSeconds < 120) {
+                isInternetConnected = true;
+            }
+        }
 
         if (netBadgeElem) {
             netBadgeElem.classList.remove('bg-secondary', 'bg-info', 'bg-dark', 'bg-danger');

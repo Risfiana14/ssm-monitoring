@@ -13,10 +13,6 @@ $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 
 // =========================================================================
 // AUTO-REGISTER KERETA
-// Setiap kali ada data (apapun jenisnya) masuk untuk suatu location_code,
-// pastikan kereta itu terdaftar di tabel carriages. Kalau row-nya sudah
-// pernah dihapus (di-delete lewat dashboard) lalu kereta ini kirim data
-// lagi, baris ini otomatis membuatnya muncul lagi tanpa aksi manual.
 // =========================================================================
 if ($locationCode) {
     $regStmt = $pdo->prepare("
@@ -26,12 +22,9 @@ if ($locationCode) {
     ");
     $regStmt->execute([$locationCode]);
 }
-// =========================================================================
 
 // =========================================================================
-// PERBAIKAN: Update internet_status khusus di tabel carriages
-// agar tersimpan secara permanen per gerbong dan tidak tertimpa/bentrok 
-// dengan detak jantung perangkat lain di monitoring_logs.
+// PERBAIKAN: Update internet_status di carriages SEKALIGUS perbarui timestamp router
 // =========================================================================
 if ($locationCode && $internetStatus) {
     $stmt = $pdo->prepare("
@@ -40,10 +33,18 @@ if ($locationCode && $internetStatus) {
         ON DUPLICATE KEY UPDATE internet_status = VALUES(internet_status)
     ");
     $stmt->execute([$locationCode, $internetStatus]);
+
+    // Memperbarui monitoring_logs untuk router agar timestamp-nya tetap berjalan (detak jantung)
+    $logStmt = $pdo->prepare("
+        INSERT INTO monitoring_logs (device_name, device_ip, device_type, location, status, timestamp) 
+        VALUES ('ROUTER', '192.168.10.254', 'router', ?, 'ONLINE', NOW())
+        ON DUPLICATE KEY UPDATE timestamp = NOW(), status = 'ONLINE'
+    ");
+    $logStmt->execute([$locationCode]);
+
     echo "CARRIAGE_INTERNET_UPDATED_" . $internetStatus;
     exit;
 }
-// =========================================================================
 
 // Validasi nilai status perangkat
 if (!in_array($status, ['ONLINE', 'OFFLINE'])) {
