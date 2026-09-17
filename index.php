@@ -165,6 +165,26 @@
             flex-shrink: 0;
         }
 
+        /* Styling Tombol Delete yang baru, jelas, dan kontras */
+        .btn-delete-car {
+            background-color: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            color: #ff6b6b;
+            border-radius: 6px;
+            padding: 2px 7px;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-delete-car:hover {
+            background-color: #dc3545;
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(220, 53, 69, 0.6);
+            transform: scale(1.08);
+        }
+
         .modal-content {
             background-color: #1e293b;
             color: #ffffff;
@@ -390,19 +410,37 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Delete yang Modern & Jelas -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-danger shadow-lg">
+                <div class="modal-header border-bottom border-secondary bg-danger bg-opacity-25 py-2">
+                    <h6 class="modal-title fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>Konfirmasi Hapus
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-3">
+                    <p class="mb-1 text-light small">Yakin ingin menghapus gerbong:</p>
+                    <h5 id="deleteCarTarget" class="fw-bold text-info mb-2">-</h5>
+                    <p class="text-muted mb-0" style="font-size: 0.72rem;">Kereta akan disembunyikan dari dashboard, namun data log historis tetap aman.</p>
+                </div>
+                <div class="modal-footer border-top border-secondary py-2 d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" style="font-size:0.75rem;" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger btn-sm px-3" id="btnConfirmDelete" style="font-size:0.75rem;">
+                        <i class="bi bi-trash-fill me-1"></i>Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // uniqueCars TIDAK lagi hardcode di sini.
-        // Daftar kereta sekarang diambil secara dinamis dari get_cars.php
-        // (yang membaca tabel `carriages` di database). Ini membuat:
-        // - Kereta baru otomatis muncul begitu kirim data pertama kali.
-        // - Kereta yang di-delete langsung hilang dari tampilan.
-        // - Kereta yang di-delete lalu kirim data lagi otomatis muncul lagi.
         let uniqueCars = [];
         let globalDeviceData = [];
         
-        // Fungsi untuk menyortir Kereta bermasalah (Offline/Warning) ke urutan paling atas
         function sortCarsByStatus() {
             uniqueCars.sort((a, b) => {
                 let devA = globalDeviceData.filter(d => d.location === a);
@@ -417,11 +455,11 @@
                         return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
                     });
                     let hasWarnA = devA.some(d => (d.status || '').toUpperCase() === 'WARNING');
-                    if (hasOffA) priorityA = 1;       // Paling tinggi (Offline)
-                    else if (hasWarnA) priorityA = 2;  // Sedang (Warning)
-                    else priorityA = 3;                // Online
+                    if (hasOffA) priorityA = 1;       
+                    else if (hasWarnA) priorityA = 2;  
+                    else priorityA = 3;                
                 } else {
-                    priorityA = 4; // <--- No Data ditaruh di Paling Bawah
+                    priorityA = 4; 
                 }
 
                 if (devB.length > 0) {
@@ -434,7 +472,7 @@
                     else if (hasWarnB) priorityB = 2;
                     else priorityB = 3;
                 } else {
-                    priorityB = 4; // <--- No Data ditaruh di Paling Bawah
+                    priorityB = 4; 
                 }
 
                 return priorityA - priorityB;
@@ -467,52 +505,48 @@
             return name.substring(0, 4);
         }
 
-       let currentStatusFilter = 'all';
+        let currentStatusFilter = 'all';
 
-function setStatusFilterDropdown(status) {
-    currentStatusFilter = status;
-    filterCars(); // Jalankan ulang filter setiap kali dropdown diubah
-}
-
-function filterCars() {
-    const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
-    const selectedStatus = document.getElementById('statusFilterDropdown').value.toLowerCase();
-    const carElements = document.querySelectorAll('.car-wrapper');
-
-    carElements.forEach(el => {
-        const carID = el.getAttribute('data-car-id').toLowerCase();
-        const numericOnly = carID.replace(/^[a-z]+/, '');
-        
-        // Ambil seluruh teks di dalam kartu untuk mendeteksi statusnya secara otomatis
-        const cardText = el.textContent.toLowerCase();
-
-        // 1. Validasi Pencarian Teks (Nomor Kereta)
-        const matchesSearch = carID.includes(inputVal) || numericOnly.includes(inputVal);
-
-        // 2. Validasi Filter Status Dropdown
-        let matchesStatus = true;
-        if (selectedStatus === 'online') {
-            matchesStatus = cardText.includes('online');
-        } else if (selectedStatus === 'warning') {
-            matchesStatus = cardText.includes('warning');
-        } else if (selectedStatus === 'offline') {
-            matchesStatus = cardText.includes('offline');
-        } else if (selectedStatus === 'internet') {
-            matchesStatus = cardText.includes('internet') && !cardText.includes('no internet');
-        } else if (selectedStatus === 'no internet') {
-            matchesStatus = cardText.includes('no internet');
-        } else if (selectedStatus === 'no data') {
-            matchesStatus = cardText.includes('no data');
+        function setStatusFilterDropdown(status) {
+            currentStatusFilter = status;
+            filterCars(); 
         }
 
-        // Tampilkan hanya jika pencarian nomor dan statusnya sesuai
-        if (matchesSearch && matchesStatus) {
-            el.style.setProperty('display', 'flex', 'important');
-        } else {
-            el.style.setProperty('display', 'none', 'important');
+        function filterCars() {
+            const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
+            const selectedStatus = document.getElementById('statusFilterDropdown').value.toLowerCase();
+            const carElements = document.querySelectorAll('.car-wrapper');
+
+            carElements.forEach(el => {
+                const carID = el.getAttribute('data-car-id').toLowerCase();
+                const numericOnly = carID.replace(/^[a-z]+/, '');
+                
+                const cardText = el.textContent.toLowerCase();
+
+                const matchesSearch = carID.includes(inputVal) || numericOnly.includes(inputVal);
+
+                let matchesStatus = true;
+                if (selectedStatus === 'online') {
+                    matchesStatus = cardText.includes('online');
+                } else if (selectedStatus === 'warning') {
+                    matchesStatus = cardText.includes('warning');
+                } else if (selectedStatus === 'offline') {
+                    matchesStatus = cardText.includes('offline');
+                } else if (selectedStatus === 'internet') {
+                    matchesStatus = cardText.includes('internet') && !cardText.includes('no internet');
+                } else if (selectedStatus === 'no internet') {
+                    matchesStatus = cardText.includes('no internet');
+                } else if (selectedStatus === 'no data') {
+                    matchesStatus = cardText.includes('no data');
+                }
+
+                if (matchesSearch && matchesStatus) {
+                    el.style.setProperty('display', 'flex', 'important');
+                } else {
+                    el.style.setProperty('display', 'none', 'important');
+                }
+            });
         }
-    });
-}
 
         function clearNotesInput() {
             document.getElementById('modalDeviceNotes').value = '';
@@ -588,196 +622,180 @@ function filterCars() {
             deviceModal.show();
         }
 
-        // Fungsi helper untuk konversi IP string ke angka agar bisa diurutkan secara akurat
         function ipToInt(ip) {
             if (!ip) return 0;
             return ip.split('.').reduce((acc, octet) => ((acc << 8) + parseInt(octet, 10)), 0) >>> 0;
         }
 
         function renderAllCars() {
-    // Re-render ulang urutan DOM HTML grid berdasarkan uniqueCars yang sudah disortir
-    const gridContainer = document.getElementById('cars-grid');
-    gridContainer.innerHTML = '';
-    
-    uniqueCars.forEach(car => {
-        gridContainer.innerHTML += `
-            <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
-                <div class="car-card">
-                    <div class="car-header">
-                        <span class="car-title-text">
-                            <i class="bi bi-distribute-vertical me-1 text-info"></i>
-                            <span class="car-title-long">${car}</span>
-                            <span class="car-title-short">${car}</span>
-                        </span>
-                        
-                        <!-- DUA BADGE BERDAMPINGAN: INTERNET STATUS & DEVICE STATUS -->
-                        <div class="d-flex align-items-center gap-1">
-                            <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
-                            <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
-                            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1"
-                                    style="font-size:0.65rem; line-height:1;"
-                                    onclick="deleteCar('${car}')" title="Hapus kereta ini dari dashboard">
-                                <i class="bi bi-trash"></i>
-                            </button>
+            const gridContainer = document.getElementById('cars-grid');
+            gridContainer.innerHTML = '';
+            
+            uniqueCars.forEach(car => {
+                gridContainer.innerHTML += `
+                    <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                        <div class="car-card">
+                            <div class="car-header">
+                                <span class="car-title-text">
+                                    <i class="bi bi-distribute-vertical me-1 text-info"></i>
+                                    <span class="car-title-long">${car}</span>
+                                    <span class="car-title-short">${car}</span>
+                                </span>
+                                
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
+                                    <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
+                                    <button type="button" class="btn-delete-car ms-1"
+                                            onclick="confirmDeleteCar('${car}')" title="Hapus kereta ini dari dashboard">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="device-grid-container" id="body-${car}">
+                                <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
+                            </div>
+                            <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
+                                <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="device-grid-container" id="body-${car}">
-                        <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
-                    </div>
-                    <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
-                        <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
+                `;
+            });
 
-    uniqueCars.forEach(car => {
-        const bodyElem = document.getElementById(`body-${car}`);
-        const badgeElem = document.getElementById(`badge-${car}`);
-        const netBadgeElem = document.getElementById(`internet-badge-${car}`);
-        const timeElem = document.getElementById(`time-${car}`);
-        
-        let devices = globalDeviceData.filter(d => d.location === car);
+            uniqueCars.forEach(car => {
+                const bodyElem = document.getElementById(`body-${car}`);
+                const badgeElem = document.getElementById(`badge-${car}`);
+                const netBadgeElem = document.getElementById(`internet-badge-${car}`);
+                const timeElem = document.getElementById(`time-${car}`);
+                
+                let devices = globalDeviceData.filter(d => d.location === car);
 
-        if (devices.length === 0) {
-            bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
-            if (badgeElem) {
-                badgeElem.className = 'badge-status bg-secondary';
-                badgeElem.innerText = 'NO DATA';
-            }
-            if (netBadgeElem) {
-                netBadgeElem.className = 'badge-status bg-secondary';
-                netBadgeElem.innerText = 'NO INTERNET';
-            }
-            if (timeElem) timeElem.innerText = '-';
-            return;
-        }
-
-        // URUTKAN PERANGKAT BERDASARKAN IP ADDRESS (DARI .1 SAMPAI .254)
-        devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
-
-        let hasOffline = false, hasWarning = false;
-        let carHTML = '';
-        let latestTimestamp = '';
-
-        devices.forEach(dev => {
-            const st = (dev.status || '').toUpperCase();
-            let stClass = 'st-offline';
-
-            if (st === 'ONLINE' || st === 'UP') {
-                stClass = 'st-online';
-            } else if (st === 'WARNING') {
-                stClass = 'st-warning';
-                hasWarning = true;
-            } else {
-                hasOffline = true;
-            }
-
-            const devTime = dev.image_updated_at || dev.timestamp;
-            if (devTime) {
-                if (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp)) {
-                    latestTimestamp = devTime;
+                if (devices.length === 0) {
+                    bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
+                    if (badgeElem) {
+                        badgeElem.className = 'badge-status bg-secondary';
+                        badgeElem.innerText = 'NO DATA';
+                    }
+                    if (netBadgeElem) {
+                        netBadgeElem.className = 'badge-status bg-secondary';
+                        netBadgeElem.innerText = 'NO INTERNET';
+                    }
+                    if (timeElem) timeElem.innerText = '-';
+                    return;
                 }
-            }
 
-            const shortLabel = getShortName(dev.device_name);
+                devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
 
-            carHTML += `
-                <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
-                    ${shortLabel}
-                </button>
-            `;
-        });
+                let hasOffline = false, hasWarning = false;
+                let carHTML = '';
+                let latestTimestamp = '';
 
-        bodyElem.innerHTML = carHTML;
+                devices.forEach(dev => {
+                    const st = (dev.status || '').toUpperCase();
+                    let stClass = 'st-offline';
 
-        if (timeElem) {
-            timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
+                    if (st === 'ONLINE' || st === 'UP') {
+                        stClass = 'st-online';
+                    } else if (st === 'WARNING') {
+                        stClass = 'st-warning';
+                        hasWarning = true;
+                    } else {
+                        hasOffline = true;
+                    }
+
+                    const devTime = dev.image_updated_at || dev.timestamp;
+                    if (devTime) {
+                        if (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp)) {
+                            latestTimestamp = devTime;
+                        }
+                    }
+
+                    const shortLabel = getShortName(dev.device_name);
+
+                    carHTML += `
+                        <button class="device-box ${stClass}" onclick="showDeviceDetailByLocationAndIP('${dev.location}', '${dev.device_ip}')" title="${dev.device_name} (${dev.device_ip})">
+                            ${shortLabel}
+                        </button>
+                    `;
+                });
+
+                bodyElem.innerHTML = carHTML;
+
+                if (timeElem) {
+                    timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
+                }
+
+                let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+                const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
+                const isInternetConnected = (carriageInternet === 'INTERNET');
+
+                if (netBadgeElem) {
+                    netBadgeElem.classList.remove('bg-secondary', 'bg-info', 'bg-dark', 'bg-danger');
+                    if (isInternetConnected) {
+                        netBadgeElem.classList.add('bg-info', 'text-dark');
+                        netBadgeElem.innerText = 'INTERNET';
+                    } else {
+                        netBadgeElem.classList.add('bg-danger');
+                        netBadgeElem.innerText = 'NO INTERNET';
+                    }
+                }
+
+                if (badgeElem) {
+                    badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
+                    if (hasOffline) {
+                        badgeElem.classList.add('bg-danger');
+                        badgeElem.innerText = 'OFFLINE';
+                    } else if (hasWarning) {
+                        badgeElem.classList.add('bg-warning', 'text-dark');
+                        badgeElem.innerText = 'WARNING';
+                    } else {
+                        badgeElem.classList.add('bg-success');
+                        badgeElem.innerText = 'ONLINE';
+                    }
+                }
+            });
+
+            filterCars();
         }
-
-        // 1. LOGIKA BADGE INTERNET (BERDASARKAN TIMEOUT ROUTER / MONITORING_LOGS)
-        let carData = globalCarriagesData.find(c => c.location_code === car) || {};
-        const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
-        
-        let isInternetConnected = false;
-        let lastInternetTime = carData.last_timestamp || '';
-
-        if (carriageInternet === 'INTERNET' && lastInternetTime) {
-            let lastTime = new Date(lastInternetTime).getTime();
-            let now = new Date().getTime();
-            let diffSeconds = (now - lastTime) / 1000;
-            
-            // Jika router terakhir lapor kurang dari 2 menit lalu, anggap INTERNET.
-            // Jika lebih dari 2 menit (router dicabut/mati), otomatis jadi NO INTERNET.
-            if (diffSeconds < 120) {
-                isInternetConnected = true;
-            }
-        }
-
-        if (netBadgeElem) {
-            netBadgeElem.classList.remove('bg-secondary', 'bg-info', 'bg-dark', 'bg-danger');
-            if (isInternetConnected) {
-                netBadgeElem.classList.add('bg-info', 'text-dark');
-                netBadgeElem.innerText = 'INTERNET';
-            } else {
-                netBadgeElem.classList.add('bg-danger');
-                netBadgeElem.innerText = 'NO INTERNET';
-            }
-        }
-
-        // 2. LOGIKA BADGE STATUS DEVICE (BERDASARKAN STATUS APLIKASI/PERANGKAT)
-        if (badgeElem) {
-            badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
-            if (hasOffline) {
-                badgeElem.classList.add('bg-danger');
-                badgeElem.innerText = 'OFFLINE';
-            } else if (hasWarning) {
-                badgeElem.classList.add('bg-warning', 'text-dark');
-                badgeElem.innerText = 'WARNING';
-            } else {
-                badgeElem.classList.add('bg-success');
-                badgeElem.innerText = 'ONLINE';
-            }
-        }
-    });
-
-    filterCars();
-}
         
         function scanData() {
             fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;
-                    sortCarsByStatus(); // <-- Dipanggil di sini agar urutan kartu Kereta langsung menyortir ulang
+                    sortCarsByStatus(); 
                     renderAllCars();
                 })
                 .catch(err => console.error("Error scan:", err));
         }
 
-        // Mengambil daftar kereta AKTIF dari database (tabel carriages)
-        // lewat get_cars.php. Menggantikan array uniqueCars yang dulu hardcode.
         let globalCarriagesData = [];
 
         function loadCarList() {
             return fetch('get_cars.php')
                 .then(res => res.json())
                 .then(cars => {
-                    // Simpan data mentah lengkap dari database ke variabel global
                     globalCarriagesData = cars; 
-                    
-                    // Ekstrak hanya location_code-nya saja untuk dimasukkan ke uniqueCars
                     uniqueCars = cars.map(item => item.location_code);
                 });
         }
 
-        // Fungsi tombol delete di setiap kartu kereta.
-        // Ini hanya menghapus kereta dari tabel `carriages` (tampilan dashboard),
-        // data historis di monitoring_logs tetap aman. Kalau kereta ini
-        // mengirim data lagi lewat ssm_receive.php, otomatis muncul lagi.
-        function deleteCar(car) {
-            if (!confirm(`Yakin ingin menghapus kereta ${car} dari dashboard?`)) return;
+        // Variabel dan fungsi interaktif untuk Modal Delete Modern
+        let carToDelete = null;
+        const deleteModalElem = document.getElementById('deleteConfirmModal');
+        const deleteModal = new bootstrap.Modal(deleteModalElem);
+
+        function confirmDeleteCar(car) {
+            carToDelete = car;
+            document.getElementById('deleteCarTarget').innerText = car;
+            deleteModal.show();
+        }
+
+        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
+            if (!carToDelete) return;
+
+            const car = carToDelete;
+            deleteModal.hide();
 
             fetch('delete_car.php', {
                 method: 'POST',
@@ -798,12 +816,8 @@ function filterCars() {
                 console.error('Error delete car:', err);
                 alert('Terjadi kesalahan saat menghapus kereta.');
             });
-        }
+        });
 
-        // Inisialisasi: muat daftar kereta dulu, baru mulai polling data device.
-        // loadCarList() dipanggil ulang secara berkala supaya kereta baru
-        // (yang baru pertama kali kirim data) atau kereta yang baru
-        // "muncul lagi" setelah dihapus, otomatis kedeteksi tanpa reload halaman.
         loadCarList().then(() => {
             scanData();
             setInterval(scanData, 1000);
