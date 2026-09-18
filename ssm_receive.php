@@ -12,38 +12,34 @@ $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
 $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 
 // =========================================================================
-// AUTO-REGISTER KERETA
+// AUTO-REGISTER KERETA & UPDATE STATUS INTERNET
 // =========================================================================
 if ($locationCode) {
+    // 1. Pastikan gerbong terdaftar di tabel carriages
     $regStmt = $pdo->prepare("
         INSERT INTO carriages (location_code)
         VALUES (?)
         ON DUPLICATE KEY UPDATE location_code = VALUES(location_code)
     ");
     $regStmt->execute([$locationCode]);
-}
 
-// =========================================================================
-// PERBAIKAN: Update internet_status di carriages SEKALIGUS perbarui timestamp router
-// =========================================================================
-if ($locationCode && $internetStatus) {
-    $stmt = $pdo->prepare("
-        INSERT INTO carriages (location_code, internet_status) 
-        VALUES (?, ?)
-        ON DUPLICATE KEY UPDATE internet_status = VALUES(internet_status)
-    ");
-    $stmt->execute([$locationCode, $internetStatus]);
+    // 2. Jika parameter internet_status dikirim, perbarui status internetnya
+    if ($internetStatus) {
+        $internetStmt = $pdo->prepare("
+            UPDATE carriages 
+            SET internet_status = ? 
+            WHERE location_code = ?
+        ");
+        $internetStmt->execute([$internetStatus, $locationCode]);
 
-    // Memperbarui monitoring_logs untuk router agar timestamp-nya tetap berjalan (detak jantung)
-    $logStmt = $pdo->prepare("
-        INSERT INTO monitoring_logs (device_name, device_ip, device_type, location, status, timestamp) 
-        VALUES ('ROUTER', '192.168.10.254', 'router', ?, 'ONLINE', NOW())
-        ON DUPLICATE KEY UPDATE timestamp = NOW(), status = 'ONLINE'
-    ");
-    $logStmt->execute([$locationCode]);
-
-    echo "CARRIAGE_INTERNET_UPDATED_" . $internetStatus;
-    exit;
+        // Memperbarui monitoring_logs untuk router agar timestamp-nya tetap berjalan (detak jantung)
+        $logStmt = $pdo->prepare("
+            INSERT INTO monitoring_logs (device_name, device_ip, device_type, location, status, timestamp) 
+            VALUES ('ROUTER', '192.168.10.254', 'router', ?, 'ONLINE', NOW())
+            ON DUPLICATE KEY UPDATE timestamp = NOW(), status = 'ONLINE'
+        ");
+        $logStmt->execute([$locationCode]);
+    }
 }
 
 // Validasi nilai status perangkat
@@ -51,10 +47,10 @@ if (!in_array($status, ['ONLINE', 'OFFLINE'])) {
     $status = 'OFFLINE';
 }
 
+// =========================================================================
+// PENYIMPANAN / UPDATE DATA PERANGKAT MONITORING
+// =========================================================================
 if ($deviceIP && $locationCode) {
-    // Blok pengecekan $lastData status === $status yang menyebabkan duplikasi telah dihapus,
-    // sehingga sistem langsung memperbarui timestamp dan data pada baris yang sama.
-    
     $stmt = $pdo->prepare("
         INSERT INTO monitoring_logs (device_name, device_ip, device_type, trainset, location, status, timestamp) 
         VALUES (?, ?, ?, ?, ?, ?, NOW())
