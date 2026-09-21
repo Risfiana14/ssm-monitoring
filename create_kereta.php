@@ -8,11 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($depo_id) && !empty($nama_kereta)) {
         try {
-            // Gunakan prepared statement PDO untuk memasukkan data kereta baru
-            $stmt = $pdo->prepare("INSERT INTO carriages (location, depo_id, internet_status) VALUES (:location, :depo_id, 'NO_INTERNET')");
+            // Masukkan data ke tabel baru 'trains'
+            $stmt = $pdo->prepare("INSERT INTO trains (depo_id, nama_kereta, created_at) VALUES (:depo_id, :nama_kereta, NOW())");
             $stmt->execute([
-                'location' => $nama_kereta,
-                'depo_id' => $depo_id
+                'depo_id' => $depo_id,
+                'nama_kereta' => $nama_kereta
             ]);
 
             // Jika berhasil, arahkan kembali ke dashboard

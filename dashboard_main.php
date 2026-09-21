@@ -422,37 +422,68 @@
                 </button>
             </div>
 
-            <!-- Menu Dropdown Depo & Kereta -->
+            <!-- Menu Daftar Depo Dinamis -->
             <div class="train-group">
-                <button class="train-name" type="button" data-bs-toggle="collapse" data-bs-target="#createDepoCollapse" aria-expanded="false" aria-controls="createDepoCollapse">
-                    <i class="bi bi-chevron-down train-arrow"></i>
-                    <i class="bi bi-folder text-info"></i>
-                    <span>Daftar Depo</span>
-                </button>
-                <div class="collapse" id="createDepoCollapse">
-                    <div class="train-ids" style="padding-left: 20px;">
-                        <?php
-                        // Menghubungkan database untuk menampilkan daftar depo secara dinamis
-                        include 'db.php';
-                        
-                        try {
-                            $stmtDepo = $pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
-                            $deposList = $stmtDepo->fetchAll();
+    <div class="train-ids" style="padding-left: 0px;">
+        <?php
+        // Menghubungkan ke database
+        include 'db.php'; 
+        
+        try {
+            // Mengambil semua data depo dari tabel depos
+            $stmtDepo = $pdo->query("SELECT * FROM depos ORDER BY id ASC");
+            $deposList = $stmtDepo->fetchAll(PDO::FETCH_ASSOC);
 
-                            if (count($deposList) > 0) {
-                                foreach ($deposList as $depo) {
-                                    echo '<span class="train-id" style="font-size: 0.75rem; cursor: pointer;">' . htmlspecialchars($depo['nama_depo']) . '</span>';
+            if (count($deposList) > 0) {
+                foreach ($deposList as $depo) {
+                    $depoId = intval($depo['id']);
+                    $collapseId = 'depoCollapse_' . $depoId;
+                    $namaDepo = htmlspecialchars($depo['nama_depo']);
+                    
+                    echo '
+                    <div class="mb-2 w-100">
+                        <!-- Tombol Nama Depo -->
+                        <button class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
+                            <i class="bi bi-chevron-down train-arrow me-2"></i>
+                            <i class="bi bi-folder text-info me-2"></i>
+                            <span class="text-light">' . $namaDepo . '</span>
+                        </button>
+                        
+                        <!-- Area Dropdown untuk Nama Kereta (Level 2) dari tabel trains -->
+                        <div class="collapse" id="' . $collapseId . '">
+                            <div class="train-ids" style="padding-left: 25px;">';
+                            
+                            // Query untuk mengambil nama kereta berdasarkan depo_id
+                            $stmtTrain = $pdo->prepare("SELECT * FROM trains WHERE depo_id = ? ORDER BY id ASC");
+                            $stmtTrain->execute([$depoId]);
+                            $trainsList = $stmtTrain->fetchAll(PDO::FETCH_ASSOC);
+
+                            if (count($trainsList) > 0) {
+                                foreach ($trainsList as $train) {
+                                    $trainId = intval($train['id']); // Ambil ID kereta
+                                    $namaKereta = htmlspecialchars($train['nama_kereta']);
+                                    
+                                    // Ubah dari <span> menjadi <a> agar bisa diklik dan membawa parameter train_id
+                                    echo '<a href="dashboard_main.php?train_id=' . $trainId . '" class="train-id d-block text-light text-decoration-none py-1 ps-2 rounded" style="font-size: 0.8rem;">' . $namaKereta . '</a>';
                                 }
                             } else {
-                                echo '<span class="train-id text-muted" style="font-size: 0.75rem; cursor: default;">Belum ada depo</span>';
+                                echo '<span class="train-id text-muted d-block" style="font-size: 0.7rem; font-style: italic;">Belum ada kereta</span>';
                             }
-                        } catch (PDOException $e) {
-                            echo '<span class="train-id text-danger" style="font-size: 0.75rem;">Gagal memuat data</span>';
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
+
+                    echo '
+                            </div>
+                        </div>
+                    </div>';
+                }
+            } else {
+                echo '<div class="text-muted px-2" style="font-size: 0.75rem;">Belum ada depo</div>';
+            }
+        } catch (PDOException $e) {
+            echo '<div class="text-danger px-2" style="font-size: 0.75rem;">Error: ' . $e->getMessage() . '</div>';
+        }
+        ?>
+    </div>
+</div>
 
             <div class="sidebar-note">
                 Klik ikon plus (+) di sebelah tulisan Manajemen Data untuk membuat Depo atau Nama Kereta baru.
