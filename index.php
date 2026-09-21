@@ -274,14 +274,20 @@
 
    <div class="dashboard-header mb-3">
     <!-- Tombol Navigasi Notifikasi dan Dashboard -->
-    <div class="d-flex justify-content-between align-items-center px-3 px-md-5 mb-2">
-        <a href="dashboard_main.php" class="btn btn-sm btn-outline-info text-light d-flex align-items-center gap-1" style="border-radius: 20px; font-size: 0.75rem;">
-            <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
-        </a>
-        <a href="notifications.php" class="btn btn-sm btn-outline-warning text-light position-relative d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 50%;">
-            <i class="bi bi-bell-fill"></i>
-        </a>
-    </div>
+        <div class="d-flex justify-content-between align-items-center px-3 px-md-5 mb-2">
+            <a href="dashboard_main.php" class="btn btn-sm btn-outline-info text-light d-flex align-items-center gap-1" style="border-radius: 20px; font-size: 0.75rem;">
+                <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+            </a>
+            
+            <!-- Tombol Lonceng dengan ID dan Badge -->
+            <a href="notifications.php" class="btn btn-sm btn-outline-warning text-light position-relative d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 50%;" id="notifIconWrapper">
+                <i class="bi bi-bell-fill"></i>
+                <!-- Badge Angka Notifikasi -->
+                <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; display: none;">
+                    0
+                </span>
+            </a>
+        </div>
 
     <h1 class="dashboard-title">RAILMAP</h1>
     
@@ -894,6 +900,78 @@
             if (notifications.length > 50) notifications.pop();
             localStorage.setItem('railmap_notifications', JSON.stringify(notifications));
         }
-    </script>
+
+        </script>
+        <!-- Wadah Toast Pop-up di Pojok Kanan Atas -->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;" id="toastContainer"></div>
+
+        <script>
+        // Fungsi untuk memperbarui jumlah badge pada ikon lonceng
+        function updateNotificationBadge() {
+            let notifications = JSON.parse(localStorage.getItem('railmap_notifications') || '[]');
+            let badge = document.getElementById('notifBadge');
+            
+            if (notifications.length > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = notifications.length;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Fungsi untuk menampilkan pop-up Toast di pojok kanan atas
+        function showToastNotification(message) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // Buat elemen unik untuk toast
+            const toastId = 'toast-' + Date.now();
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-dark border-danger border shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body py-2 px-3">
+                            <div class="fw-bold text-danger mb-1" style="font-size: 0.75rem;">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i> PERINGATAN GANGGUAN
+                            </div>
+                            <div style="font-size: 0.8rem;">${message}</div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            
+            const toastElement = document.getElementById(toastId);
+            const bsToast = new bootstrap.Toast(toastElement, { delay: 4000 }); // Muncul selama 4 detik
+            bsToast.show();
+            
+            // Hapus elemen dari DOM setelah toast tertutup agar tidak menumpuk
+            toastElement.addEventListener('hidden.bs.toast', function () {
+                toastElement.remove();
+            });
+        }
+
+        // Simulasi pengecekan data lokal secara berkala (atau panggil fungsi ini saat sistem Anda mendeteksi error)
+        let lastNotificationCount = JSON.parse(localStorage.getItem('railmap_notifications') || '[]').length;
+
+        function checkNewNotifications() {
+            let notifications = JSON.parse(localStorage.getItem('railmap_notifications') || '[]');
+            
+            if (notifications.length > lastNotificationCount) {
+                // Ambil notifikasi paling baru yang masuk
+                let latestNotif = notifications[0]; 
+                showToastNotification(latestNotif.message || "Terjadi gangguan pada sistem kereta.");
+            }
+            
+            lastNotificationCount = notifications.length;
+            updateNotificationBadge();
+        }
+
+        // Jalankan saat halaman pertama kali dimuat
+        updateNotificationBadge();
+
+        // Cek perubahan localStorage secara berkala (misal tiap 2 detik jika ada tab/proses lain yang memperbarui data)
+        setInterval(checkNewNotifications, 2000);
+        </script>
 </body>
 </html>

@@ -3,471 +3,488 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAILMAP - Kereta Argo Wilis</title>
+    <title>RAILMAP - DAOP 8</title>
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        body {
-            background-color: #163673;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-        }
+    body {
+        background-color: #163673;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+    }
 
-        .dashboard-header {
-            padding: 15px 0 10px 0;
-            text-align: center;
-        }
+    /* Layout Wrapper Utama */
+    .app-wrapper {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
 
-        .dashboard-title {
-            font-weight: 800;
-            letter-spacing: 2px;
-            font-size: 2.1rem; /* Diperbesar */
-            margin-bottom: 2px;
-        }
+    /* ---------------------------------------------------- */
+    /* CSS SIDEBAR KIRI & ANIMASI TUTUPNYA                  */
+    /* ---------------------------------------------------- */
+    .railmap-sidebar {
+        width: 260px;
+        min-width: 260px;
+        background-color: #122b59;
+        border-right: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 15px;
+        overflow-y: auto;
+        z-index: 1050;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(0); /* Posisi awal terbuka */
+    }
 
-        /* Search Bar Styling */
-        .search-container {
-            max-width: 320px;
-            margin: 12px auto 0 auto;
-        }
+    /* Jika body ada class sidebar-closed, sidebar bergeser ke kiri (tertutup) di semua layar */
+    body.sidebar-closed .railmap-sidebar {
+        transform: translateX(-100%) !important;
+    }
 
-        .search-input {
-            background-color: rgba(15, 23, 42, 0.6) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            color: #ffffff !important;
-            border-radius: 20px !important;
-            font-size: 0.85rem;
-            padding-left: 38px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
+    /* Mengubah warna latar belakang tab saat aktif */
+    .nav-pills .nav-link.active {
+        background-color: #2890a7 !important; /* Ganti dengan kode warna yang diinginkan, misal hijau */
+        color: #fff !important;
+    }
+    /* Mengubah warna teks tab saat tidak aktif */
+    .nav-pills .nav-link {
+        color: #adb5bd; 
+    }
 
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
+    .sidebar-brand {
+        text-align: center;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 15px;
+    }
 
-        .search-input:focus {
-            border-color: #0dcaf0 !important;
-            box-shadow: 0 0 8px rgba(13, 202, 240, 0.4) !important;
-        }
+    .sidebar-brand-title {
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        margin: 0;
+        color: #fff;
+    }
 
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 5;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-        }
+    .sidebar-brand-subtitle {
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
 
-        .car-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 12px 14px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            display: inline-block;
-            width: 100%;
-        }
+    .sidebar-section-title {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.5);
+        margin: 0 9px 9px;
+    }
 
-        .car-header {
-            font-weight: 700;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    .train-group {
+        margin-bottom: 5px;
+    }
 
-        .device-grid-container {
-            display: grid;
-            grid-template-columns: repeat(5, 38px);
-            grid-template-rows: repeat(3, 38px);
-            gap: 8px;
-            justify-content: center;
-            align-items: center;
-            padding: 4px 0;
-        }
+    .train-name {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        text-align: left;
+        border-radius: 8px;
+        padding: 9px 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }
 
-        .device-box {
-            background-color: #4a5568;
-            color: #ffffff;
-            border-radius: 8px;
-            padding: 0;
-            text-align: center;
-            font-size: 0.6rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            user-select: none;
-            border: none;
-            
-            width: 38px !important;
-            height: 38px !important;
-            aspect-ratio: 1 / 1 !important;
-            flex-shrink: 0;
-            
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-        }
+    .train-name:hover,
+    .train-name.active {
+        background: rgba(13,202,240,0.15);
+    }
 
-        .device-box:hover {
-            transform: scale(1.12);
-            filter: brightness(1.25);
-        }
+    .train-name .train-arrow {
+        color: #0dcaf0;
+        width: 13px;
+        transition: transform 0.15s ease;
+    }
 
-        .device-box.st-online {
-            background-color: #28a745 !important;
-            color: #ffffff !important;
-            box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
-        }
+    .train-name.collapsed .train-arrow {
+        transform: rotate(-90deg);
+    }
 
-        .device-box.st-warning {
-            background-color: #fd7e14 !important;
-            color: #ffffff !important;
-            box-shadow: 0 0 6px rgba(253, 126, 20, 0.6);
-        }
+    .train-ids {
+        padding: 3px 0 7px 31px;
+    }
 
-        .device-box.st-offline {
-            background-color: #dc3545 !important;
-            color: #ffffff !important;
-            box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
-        }
+    .train-id {
+        display: block;
+        color: rgba(255,255,255,0.75);
+        text-decoration: none;
+        font-size: 0.74rem;
+        padding: 6px 9px;
+        border-left: 2px solid rgba(13,202,240,0.35);
+        margin-bottom: 2px;
+        border-radius: 0 6px 6px 0;
+    }
 
-        .badge-status {
-            font-size: 0.6rem;
-            padding: 2px 7px;
-            border-radius: 10px;
-            font-weight: 700;
-        }
+    .train-id:hover,
+    .train-id.active {
+        color: #fff;
+        background: rgba(255,255,255,0.08);
+        border-left-color: #0dcaf0;
+    }
 
-        .modal-content {
-            background-color: #1e293b;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-        }
-        
-        .modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+    .sidebar-status {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #28a745;
+        margin-left: auto;
+        box-shadow: 0 0 5px rgba(40,167,69,0.65);
+    }
 
-        .device-img-preview {
-            max-height: 180px;
-            width: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    .sidebar-note {
+        margin: 16px 6px 0;
+        padding: 9px 10px;
+        border-radius: 8px;
+        background: rgba(0,0,0,0.15);
+        color: rgba(255,255,255,0.5);
+        font-size: 0.62rem;
+        line-height: 1.45;
+    }
 
-        /* Penyesuaian Warna Read-Only (Samakan dengan Tabel Detail) */
-        .saved-notes-display {
-            background-color: #212529; /* Warna gelap sama seperti tabel detail */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.8rem;
-            color: #ffffff;
-            max-height: 80px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
+    /* Tombol Toggle Sidebar */
+    .sidebar-toggle-btn {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1100;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: #122b59;
+        color: #fff;
+        border-radius: 8px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        cursor: pointer;
+    }
 
-        /* Penyesuaian Textarea Input Catatan Baru */
-        .input-notes-area {
-            background-color: #0f172a !important; /* Latar agak kontras untuk menandakan input aktif */
-            color: #ffffff !important;
-            border: 1px solid #0dcaf0 !important; /* Border terang highlight cyan */
-        }
+    /* ---------------------------------------------------- */
+    /* CSS KONTEN UTAMA KANAN & ATUR KOLOM (3 vs 4)         */
+    /* ---------------------------------------------------- */
+    .main-content {
+        margin-left: 260px;
+        flex: 1;
+        width: calc(100% - 260px);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
 
-        /* ===== RAILMAP SIDEBAR - TAMBAHAN SAJA ===== */
+    /* Default saat Sidebar Terbuka: 3 Kolom */
+    .car-col-item {
+        flex: 0 0 auto;
+        width: 33.3333%; 
+    }
+
+    /* Jika Sidebar Ditutup: Margin kiri jadi 0, Kolom berubah jadi 4 (25%) */
+    body.sidebar-closed .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    body.sidebar-closed .car-col-item {
+        width: 25% !important; 
+    }
+
+    .dashboard-header {
+        padding: 5px 0 10px 0;
+        text-align: center;
+    }
+
+    .dashboard-title {
+        font-weight: 800;
+        letter-spacing: 2px;
+        font-size: 2.1rem;
+        margin-bottom: 2px;
+    }
+
+    /* ---------------------------------------------------- */
+    /* KARTU KERETA & TOMBOL DEVICE KECIL & RAPI            */
+    /* ---------------------------------------------------- */
+    .car-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 10px 12px;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .car-header {
+        font-weight: 700;
+        font-size: 0.82rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        gap: 6px;
+    }
+
+    .car-title-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+    }
+
+    .device-grid-container {
+        display: grid;
+        grid-template-columns: repeat(5, 38px);
+        grid-template-rows: repeat(3, 38px);
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+        padding: 4px 0;
+    }
+
+    .device-box {
+        background-color: #4a5568;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 0;
+        text-align: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+        border: none;
+        width: 38px !important;
+        height: 38px !important;
+        aspect-ratio: 1 / 1 !important;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .device-box:hover {
+        transform: scale(1.12);
+        filter: brightness(1.25);
+    }
+
+    .device-box.st-online { background-color: #28a745 !important; }
+    .device-box.st-warning { background-color: #fd7e14 !important; }
+    .device-box.st-offline { background-color: #dc3545 !important; }
+
+    .badge-status {
+        font-size: 0.55rem;
+        padding: 2px 5px;
+        border-radius: 8px;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .modal-content {
+        background-color: #1e293b;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+    }
+    
+    .modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+
+    .device-img-preview {
+        max-height: 180px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .saved-notes-display {
+        background-color: #212529;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        color: #ffffff;
+        max-height: 80px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .input-notes-area {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #0dcaf0 !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* MEDIA QUERIES RESPONSIF (BERSIH & TANPA KONFLIK)    */
+    /* ---------------------------------------------------- */
+    @media (max-width: 1200px) {
+        .car-col-item { width: 50% !important; } 
+    }
+
+    @media (max-width: 992px) {
+        /* Sidebar defaultnya tersembunyi di luar layar kiri */
         .railmap-sidebar {
-            position: fixed;
+            transform: translateX(-100%) !important;
+            position: fixed !important;
             top: 0;
             left: 0;
-            width: 245px;
             height: 100vh;
-            background: #102b5c;
-            border-right: 1px solid rgba(255,255,255,0.12);
-            padding: 22px 14px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.12);
+            z-index: 1050;
+            transition: transform 0.3s ease-in-out !important;
         }
 
-        .sidebar-brand {
-            text-align: center;
-            padding: 2px 5px 22px;
-            border-bottom: 1px solid rgba(255,255,255,0.10);
-            margin-bottom: 18px;
+        /* Saat class active ditambahkan, sidebar bergeser masuk ke dalam layar */
+        .railmap-sidebar.active {
+            transform: translateX(0) !important;
         }
 
-        .sidebar-brand-title {
-            font-size: 1.45rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin: 0;
+        /* Konten utama di mobile menempati 100% lebar layar */
+        .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+            padding-top: 60px;
         }
+    }
 
-        .sidebar-brand-subtitle {
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.55);
-            margin-top: 3px;
-        }
-
-        .sidebar-section-title {
-            font-size: 0.65rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: rgba(255,255,255,0.45);
-            margin: 0 9px 9px;
-        }
-
-        .train-group {
-            margin-bottom: 5px;
-        }
-
-        .train-name {
-            width: 100%;
-            border: 0;
-            background: transparent;
-            color: #fff;
-            text-align: left;
-            border-radius: 8px;
-            padding: 9px 10px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: background 0.15s ease;
-        }
-
-        .train-name:hover,
-        .train-name.active {
-            background: rgba(13,202,240,0.12);
-        }
-
-        .train-name .train-arrow {
-            color: #0dcaf0;
-            width: 13px;
-            transition: transform 0.15s ease;
-        }
-
-        .train-name.collapsed .train-arrow {
-            transform: rotate(-90deg);
-        }
-
-        .train-ids {
-            padding: 3px 0 7px 31px;
-        }
-
-        .train-id {
-            display: block;
-            color: rgba(255,255,255,0.72);
-            text-decoration: none;
-            font-size: 0.74rem;
-            padding: 6px 9px;
-            border-left: 2px solid rgba(13,202,240,0.35);
-            margin-bottom: 2px;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .train-id:hover,
-        .train-id.active {
-            color: #fff;
-            background: rgba(255,255,255,0.07);
-            border-left-color: #0dcaf0;
-        }
-
-        .sidebar-status {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #28a745;
-            margin-left: auto;
-            box-shadow: 0 0 5px rgba(40,167,69,0.65);
-        }
-
-        .sidebar-note {
-            margin: 16px 6px 0;
-            padding: 9px 10px;
-            border-radius: 8px;
-            background: rgba(0,0,0,0.12);
-            color: rgba(255,255,255,0.45);
-            font-size: 0.62rem;
-            line-height: 1.45;
-        }
-
-        .sidebar-toggle {
-            display: none;
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            z-index: 1100;
-            border: 1px solid rgba(255,255,255,0.18);
-            background: #102b5c;
-            color: #fff;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-        }
-
-        @media (min-width: 769px) {
-            body {
-                padding-left: 245px !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .railmap-sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.2s ease;
-            }
-
-            .railmap-sidebar.show {
-                transform: translateX(0);
-            }
-
-            .sidebar-toggle {
-                display: block;
-            }
-        }
-
-    </style>
+    @media (max-width: 575.98px) {
+        .car-col-item { width: 100% !important; } 
+        .car-card { padding: 8px !important; }
+        .device-box { height: 26px !important; font-size: 0.5rem !important; }
+    }
+</style>
 </head>
-<body class="p-2 p-md-3">
+<body>
 
-    <!-- ===== SIDEBAR RAILMAP: TAMBAHAN SAJA ===== -->
-    <button class="sidebar-toggle" type="button" onclick="toggleRailmapSidebar()" aria-label="Buka menu">
-        <i class="bi bi-list"></i>
+    <!-- Tombol Toggle Sidebar -->
+    <button class="sidebar-toggle-btn" type="button" onclick="toggleRailmapSidebar()" aria-label="Buka menu">
+        <i class="bi bi-list fs-5"></i>
     </button>
 
-    <aside class="railmap-sidebar" id="railmapSidebar">
-        <div class="sidebar-brand">
-            <h2 class="sidebar-brand-title">RAILMAP</h2>
-            <div class="sidebar-brand-subtitle">Real-Time Train Monitoring</div>
-        </div>
-
-        <div class="sidebar-section-title">MONITORING KERETA</div>
-
-        <!-- Nama kereta -->
-        <div class="train-group">
-            <button class="train-name active" type="button"
-                    onclick="toggleTrainGroup('argo-wilis-ids', this)">
-                <i class="bi bi-chevron-down train-arrow"></i>
-                <i class="bi bi-train-front text-info"></i>
-                <span>Argo Wilis</span>
-                <span class="sidebar-status"></span>
-            </button>
-
-            <!--
-                ID KERETA / RANGKAIAN.
-                Ganti AW001, AW002, dst. dengan ID asli milik Argo Wilis.
-                Bagian ini hanya navigasi visual; logic monitoring asli tidak diubah.
-            -->
-            <div class="train-ids" id="argo-wilis-ids">
-                <a href="#" class="train-id active">AW001</a>
-                <a href="#" class="train-id">AW002</a>
-                <a href="#" class="train-id">AW003</a>
+    <div class="app-wrapper">
+        <!-- SIDEBAR KIRI -->
+        <aside class="railmap-sidebar" id="railmapSidebar">
+            
+            <div class="sidebar-brand">
+                <h2 class="sidebar-brand-title">RAILMAP</h2>
+                <div class="sidebar-brand-subtitle">Real-Time Train Monitoring</div>
             </div>
-        </div>
 
-        <div class="train-group">
-            <button class="train-name collapsed" type="button"
-                    onclick="toggleTrainGroup('argo-bromo-ids', this)">
-                <i class="bi bi-chevron-down train-arrow"></i>
-                <i class="bi bi-train-front text-info"></i>
-                <span>Argo Bromo Anggrek</span>
-                <span class="sidebar-status"></span>
-            </button>
-            <div class="train-ids" id="argo-bromo-ids" style="display:none;">
-                <a href="#" class="train-id">AB001</a>
-                <a href="#" class="train-id">AB002</a>
+            <!-- Tombol Kembali ke Dashboard Utama (index.php) -->
+            <div class="mb-3 text-center">
+                <a href="index.php" class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center gap-2 py-1 px-3" style="font-size: 0.7rem; font-weight: 600; border-radius: 6px;">
+                    <i class="bi bi-arrow-left-circle" style="font-size: 0.8rem;"></i>
+                    <span>Kembali ke Dashboard</span>
+                </a>
             </div>
-        </div>
 
-        <div class="train-group">
-            <button class="train-name collapsed" type="button"
-                    onclick="toggleTrainGroup('argo-semeru-ids', this)">
-                <i class="bi bi-chevron-down train-arrow"></i>
-                <i class="bi bi-train-front text-info"></i>
-                <span>Argo Semeru</span>
-                <span class="sidebar-status"></span>
-            </button>
-            <div class="train-ids" id="argo-semeru-ids" style="display:none;">
-                <a href="#" class="train-id">AS001</a>
-                <a href="#" class="train-id">AS002</a>
+            <!-- Header Manajemen Data dengan Ikon Create di Sebelahnya -->
+            <div class="sidebar-section-title d-flex justify-content-between align-items-center" style="padding-right: 15px;">
+                <span>MANAJEMEN DATA</span>
+                <!-- Tombol ikon plus di samping tulisan manajemen data -->
+                <button type="button" class="btn btn-sm p-0 text-info" data-bs-toggle="modal" data-bs-target="#modalCreateMenu" title="Tambah Data" style="background: none; border: none;">
+                    <i class="bi bi-plus-circle-fill fs-6"></i>
+                </button>
             </div>
-        </div>
 
-        <div class="train-group">
-            <button class="train-name collapsed" type="button"
-                    onclick="toggleTrainGroup('gajayana-ids', this)">
-                <i class="bi bi-chevron-down train-arrow"></i>
-                <i class="bi bi-train-front text-info"></i>
-                <span>Gajayana</span>
-                <span class="sidebar-status"></span>
-            </button>
-            <div class="train-ids" id="gajayana-ids" style="display:none;">
-                <a href="#" class="train-id">GJ001</a>
-                <a href="#" class="train-id">GJ002</a>
+            <!-- Menu Dropdown Depo & Kereta -->
+            <div class="train-group">
+                <button class="train-name" type="button" data-bs-toggle="collapse" data-bs-target="#createDepoCollapse" aria-expanded="false" aria-controls="createDepoCollapse">
+                    <i class="bi bi-chevron-down train-arrow"></i>
+                    <i class="bi bi-folder text-info"></i>
+                    <span>Daftar Depo</span>
+                </button>
+                <div class="collapse" id="createDepoCollapse">
+                    <div class="train-ids" style="padding-left: 20px;">
+                        <!-- List nama depo bisa ditaruh di sini nantinya -->
+                        <span class="train-id text-muted" style="font-size: 0.75rem; cursor: default;">Belum ada depo</span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="train-group">
-            <button class="train-name collapsed" type="button"
-                    onclick="toggleTrainGroup('bima-ids', this)">
-                <i class="bi bi-chevron-down train-arrow"></i>
-                <i class="bi bi-train-front text-info"></i>
-                <span>Bima</span>
-                <span class="sidebar-status"></span>
-            </button>
-            <div class="train-ids" id="bima-ids" style="display:none;">
-                <a href="#" class="train-id">BM001</a>
-                <a href="#" class="train-id">BM002</a>
+            <div class="sidebar-note">
+                Klik ikon plus (+) di sebelah tulisan Manajemen Data untuk membuat Depo atau Nama Kereta baru.
             </div>
-        </div>
 
-        <div class="sidebar-note">
-            Pilih nama kereta, kemudian pilih ID kereta/rangkaian.
-            Daftar gerbong tetap ditampilkan pada halaman monitoring utama.
-        </div>
-    </aside>
+            <div class="sidebar-note">
+                Gunakan menu di atas untuk menambahkan depo baru atau mendaftarkan nama rangkaian kereta.
+            </div>
+        </aside>
 
+        <!-- KONTEN UTAMA KANAN -->
+        <div class="main-content">
+            <div class="dashboard-header mb-3">
+                <h1 class="dashboard-title">RAILMAP</h1>
+                
+                <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
+                    <i class="bi bi-train-front text-info fs-5"></i>
+                    <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
+                </div>
 
-    <!-- Header Dashboard -->
-    <div class="dashboard-header mb-3">
-        <h1 class="dashboard-title">RAILMAP</h1>
-        <p class="text-light opacity-75 small mb-2">Real-Time Train Monitoring System</p>
-        
-        <!-- Nama Kereta Diperbesar & Last update utama dihapus -->
-        <div class="d-inline-flex align-items-center gap-2 bg-dark bg-opacity-50 px-4 py-2 rounded-pill shadow-sm" style="font-size: 0.95rem;">
-            <i class="bi bi-train-front text-info fs-5"></i>
-            <span class="fw-bold tracking-wide">KERETA ARGO WILIS</span>
-        </div>
+                <div style="width: 100%; text-align: center;">
+                    <div style="display: inline-block; width: 520px; max-width: 95%;">
+                        <div class="search-container position-relative d-flex align-items-center mb-0 px-3" style="width: 100%; background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50px; padding: 6px 12px; backdrop-filter: blur(5px);">
+                            
+                            <select id="statusFilterDropdown" class="form-select form-select-sm bg-transparent text-light border-0 shadow-none" style="width: 140px; cursor: pointer; font-size: 0.85rem;" onchange="filterCars()">
+                                <option value="all" style="background-color: #1a233a; color: #fff;">Semua Status</option>
+                                <option value="online" style="background-color: #1a233a; color: #fff;">Online</option>
+                                <option value="warning" style="background-color: #1a233a; color: #fff;">Warning</option>
+                                <option value="offline" style="background-color: #1a233a; color: #fff;">Offline</option>
+                                <option value="internet" style="background-color: #1a233a; color: #fff;">Internet</option>
+                                <option value="no internet" style="background-color: #1a233a; color: #fff;">No Internet</option>
+                                <option value="no data" style="background-color: #1a233a; color: #fff;">No Data</option>
+                            </select>
 
-        <!-- SEARCH BAR FILTER GERBONG -->
-        <div class="search-container position-relative">
-            <i class="bi bi-search search-icon"></i>
-            <input type="text" id="searchCarInput" class="form-control form-control-sm search-input" placeholder="Cari nomor gerbong (misal: 102436)..." oninput="filterCars()">
-        </div>
-    </div>
+                            <div style="width: 1px; height: 20px; background-color: rgba(255, 255, 255, 0.2); margin: 0 8px; flex-shrink: 0;"></div>
 
-    <!-- Layout Grid Kartu Gerbong -->
-    <div class="container" style="max-width: 600px;">
-        <div class="row g-3 justify-content-center" id="cars-grid">
-            <!-- 6 Kartu Gerbong -->
+                            <input type="text" id="searchCarInput" class="form-control form-control-sm border-0 bg-transparent text-light shadow-none ps-2" placeholder="Cari nomor kereta..." oninput="filterCars()" style="font-size: 0.85rem; box-shadow: none !important;">
+                            <i class="bi bi-search text-light opacity-75 ps-2 pe-1" style="font-size: 0.85rem;"></i>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid px-2 px-md-3" style="max-width: 1600px;">
+                <div class="row g-2 g-md-3 justify-content-center" id="cars-grid">
+                    <!-- Grid Kartu Kereta -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -496,7 +513,7 @@
                                     <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-light opacity-75">Lokasi Gerbong</td>
+                                    <td class="text-light opacity-75">Lokasi Kereta</td>
                                     <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
                                 </tr>
                                 <tr>
@@ -514,20 +531,17 @@
                             </tbody>
                         </table>
 
-                        <!-- TAMPILAN CATATAN TERAPLIKASI -->
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-light opacity-75 mb-1">
                                 <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
                             </label>
                             
-                            <!-- Box Read-Only Samakan dengan Warna Tabel Detail -->
                             <div class="mb-2">
                                 <div class="saved-notes-display" id="modalDisplayNotes">
                                     <em class="opacity-50">Belum ada catatan tersimpan.</em>
                                 </div>
                             </div>
 
-                            <!-- Header Input Baru + Tombol Clear -->
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-light opacity-75" style="font-size: 0.72rem;">
                                     <i class="bi bi-pencil-square me-1 text-info"></i>Isi Catatan Baru:
@@ -537,7 +551,6 @@
                                 </button>
                             </div>
 
-                            <!-- Textarea Input Catatan Baru dengan Border Highlight -->
                             <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm input-notes-area" rows="2" placeholder="Masukkan catatan penanganan baru..."></textarea>
                         </div>
 
@@ -569,14 +582,46 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const uniqueCars = ['K102436', 'K102438', 'K102437', 'K102439', 'M102411', 'K302452'];
+        let uniqueCars = [];
         let globalDeviceData = [];
+        let globalCarriagesData = [];
         
+        function sortCarsByStatus() {
+            uniqueCars.sort((a, b) => {
+                let devA = globalDeviceData.filter(d => d.location === a);
+                let devB = globalDeviceData.filter(d => d.location === b);
+
+                let priorityA = 3, priorityB = 3;
+
+                if (devA.length > 0) {
+                    let hasOffA = devA.some(d => {
+                        let st = (d.status || '').toUpperCase();
+                        return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                    });
+                    let hasWarnA = devA.some(d => (d.status || '').toUpperCase() === 'WARNING');
+                    if (hasOffA) priorityA = 1;
+                    else if (hasWarnA) priorityA = 2;
+                } else { priorityA = 4; }
+
+                if (devB.length > 0) {
+                    let hasOffB = devB.some(d => {
+                        let st = (d.status || '').toUpperCase();
+                        return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                    });
+                    let hasWarnB = devB.some(d => (d.status || '').toUpperCase() === 'WARNING');
+                    if (hasOffB) priorityB = 1;
+                    else if (hasWarnB) priorityB = 2;
+                } else { priorityB = 4; }
+
+                return priorityA - priorityB;
+            });
+        }
+
         const deviceModalElem = document.getElementById('deviceModal');
         const deviceModal = new bootstrap.Modal(deviceModalElem);
 
         function getShortName(fullName) {
-            const name = (fullName || '').trim().toUpperCase();
+            const name = (fullName || '').trim().toUpperCase().replace(/_/g, ' ');
 
             if (name.includes('NVR')) return 'NVR';
             if (name.includes('CAM 3') || name.includes('CCTV 3')) return 'CAM3';
@@ -586,47 +631,39 @@
             if (name.includes('INDOOR 2') || name.includes('RTI 2')) return 'IND2';
             if (name.includes('OUTDOOR 1') || name.includes('RTO R')) return 'OUT1';
             if (name.includes('OUTDOOR 2') || name.includes('RTO L')) return 'OUT2';
-            if (name.includes('TV 1') || name.includes('CSOT U1')) return 'TV1';
-            if (name.includes('TV 2') || name.includes('CSOT U2')) return 'TV2';
+            if (name.includes('SOT TV 1') || name.includes('CSOT U1')) return 'TV1';
+            if (name.includes('SOT TV 2') || name.includes('CSOT U2')) return 'TV2';
             if (name.includes('MINI PC') || name.includes('CPU')) return 'MPC';
             if (name.includes('SWITCH')) return 'SW';
             if (name.includes('ROUTER')) return 'RTR';
             if (name.includes('MODEM')) return 'MDM';
             if (name.includes('WIFI') || name.includes('ACCESS POINT')) return 'AP';
-            if (name.includes('PLSVCU') || name.includes('VCU')) return 'VCU';
+            if (name.includes('PLCVCU') || name.includes('VCU')) return 'VCU';
 
             return name.substring(0, 4);
         }
 
-        const grid = document.getElementById('cars-grid');
-        uniqueCars.forEach(car => {
-            grid.innerHTML += `
-                <div class="col-12 col-sm-6 d-flex justify-content-center car-wrapper" data-car-id="${car}">
-                    <div class="car-card">
-                        <div class="car-header">
-                            <span><i class="bi bi-distribute-vertical me-1 text-info"></i>Gerbong ${car}</span>
-                            <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
-                        </div>
-                        <div class="device-grid-container" id="body-${car}">
-                            <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
-                        </div>
-                        <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
-                            <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-
         function filterCars() {
             const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
+            const selectedStatus = document.getElementById('statusFilterDropdown').value.toLowerCase();
             const carElements = document.querySelectorAll('.car-wrapper');
 
             carElements.forEach(el => {
                 const carID = el.getAttribute('data-car-id').toLowerCase();
                 const numericOnly = carID.replace(/^[a-z]+/, '');
+                const cardText = el.textContent.toLowerCase();
 
-                if (carID.includes(inputVal) || numericOnly.includes(inputVal)) {
+                const matchesSearch = carID.includes(inputVal) || numericOnly.includes(inputVal);
+
+                let matchesStatus = true;
+                if (selectedStatus === 'online') matchesStatus = cardText.includes('online');
+                else if (selectedStatus === 'warning') matchesStatus = cardText.includes('warning');
+                else if (selectedStatus === 'offline') matchesStatus = cardText.includes('offline');
+                else if (selectedStatus === 'internet') matchesStatus = cardText.includes('internet') && !cardText.includes('no internet');
+                else if (selectedStatus === 'no internet') matchesStatus = cardText.includes('no internet');
+                else if (selectedStatus === 'no data') matchesStatus = cardText.includes('no data');
+
+                if (matchesSearch && matchesStatus) {
                     el.style.setProperty('display', 'flex', 'important');
                 } else {
                     el.style.setProperty('display', 'none', 'important');
@@ -659,71 +696,73 @@
             } else {
                 displayNotesElem.innerHTML = '<em class="opacity-50">Belum ada catatan tersimpan.</em>';
             }
-            
             notesInputElem.value = '';
 
-            const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
-            document.getElementById('modalDeviceTime').innerText = lastPhotoTime;
+            document.getElementById('modalDeviceTime').innerText = dev.image_updated_at || dev.timestamp;
 
             const imgElem = document.getElementById('modalDeviceImage');
-            if (dev.image && dev.image.trim() !== '') {
-                imgElem.src = `uploads/${dev.image}`;
-            } else {
-                imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
-            }
-
-            const uploadBtn = document.getElementById('btnSubmitForm');
-            const uploadInput = document.getElementById('inputDeviceImage');
-            const uploadCount = parseInt(dev.upload_count || 0);
-
-            if (uploadCount >= 4) {
-                if (uploadInput) uploadInput.disabled = true;
-                if (uploadBtn) {
-                    uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan Catatan (Upload 4/4 Habis)`;
-                }
-            } else {
-                if (uploadInput) uploadInput.disabled = false;
-                if (uploadBtn) {
-                    uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan (${uploadCount}/4 Upload)`;
-                }
-            }
-
-            const st = (dev.status || '').toUpperCase();
-            const statusElem = document.getElementById('modalDeviceStatus');
-            const stateElem = document.getElementById('modalDeviceState');
-
-            if (st === 'ONLINE' || st === 'UP') {
-                statusElem.innerHTML = `<span class="badge bg-success">ONLINE</span>`;
-                stateElem.innerHTML = `<span class="fw-bold text-success">UP (Normal)</span>`;
-            } else if (st === 'WARNING') {
-                statusElem.innerHTML = `<span class="badge bg-warning text-dark">WARNING</span>`;
-                stateElem.innerHTML = `<span class="fw-bold text-warning">WARNING (Siaga)</span>`;
-            } else {
-                statusElem.innerHTML = `<span class="badge bg-danger">OFFLINE</span>`;
-                stateElem.innerHTML = `<span class="fw-bold text-danger">DOWN (Rusak)</span>`;
-            }
+            imgElem.src = (dev.image && dev.image.trim() !== '') ? `uploads/${dev.image}` : 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
 
             deviceModal.show();
         }
 
+        function ipToInt(ip) {
+            if (!ip) return 0;
+            return ip.split('.').reduce((acc, octet) => ((acc << 8) + parseInt(octet, 10)), 0) >>> 0;
+        }
+
         function renderAllCars() {
+            const gridContainer = document.getElementById('cars-grid');
+            gridContainer.innerHTML = '';
+            
+            uniqueCars.forEach(car => {
+                gridContainer.innerHTML += `
+                    <div class="car-col-item d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                        <div class="car-card">
+                            <div class="car-header">
+                                <span class="car-title-text" title="${car}">
+                                    <i class="bi bi-distribute-vertical me-1 text-info"></i>
+                                    <span>${car}</span>
+                                </span>
+                                
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
+                                    <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
+                                    <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1"
+                                            style="font-size:0.65rem; line-height:1;"
+                                            onclick="deleteCar('${car}')" title="Hapus kereta ini dari dashboard">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="device-grid-container" id="body-${car}">
+                                <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
+                            </div>
+                            <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
+                                <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
             uniqueCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
+                const netBadgeElem = document.getElementById(`internet-badge-${car}`);
                 const timeElem = document.getElementById(`time-${car}`);
-                const devices = globalDeviceData.filter(d => d.location === car);
+                
+                let devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
                     bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
-                    if (badgeElem) {
-                        badgeElem.className = 'badge-status bg-secondary';
-                        badgeElem.innerText = 'NO DATA';
-                    }
+                    if (badgeElem) { badgeElem.className = 'badge-status bg-secondary'; badgeElem.innerText = 'NO DATA'; }
+                    if (netBadgeElem) { netBadgeElem.className = 'badge-status bg-secondary'; netBadgeElem.innerText = 'NO INTERNET'; }
                     if (timeElem) timeElem.innerText = '-';
                     return;
                 }
+
+                devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
 
                 let hasOffline = false, hasWarning = false;
                 let carHTML = '';
@@ -733,21 +772,13 @@
                     const st = (dev.status || '').toUpperCase();
                     let stClass = 'st-offline';
 
-                    if (st === 'ONLINE' || st === 'UP') {
-                        stClass = 'st-online';
-                    } else if (st === 'WARNING') {
-                        stClass = 'st-warning';
-                        hasWarning = true;
-                    } else {
-                        hasOffline = true;
-                    }
+                    if (st === 'ONLINE' || st === 'UP') stClass = 'st-online';
+                    else if (st === 'WARNING') { stClass = 'st-warning'; hasWarning = true; }
+                    else { hasOffline = true; }
 
-                    const effectiveTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
-                    
-                    if (effectiveTime) {
-                        if (!latestTimestamp || new Date(effectiveTime) > new Date(latestTimestamp)) {
-                            latestTimestamp = effectiveTime;
-                        }
+                    const devTime = dev.image_updated_at || dev.timestamp;
+                    if (devTime && (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp))) {
+                        latestTimestamp = devTime;
                     }
 
                     const shortLabel = getShortName(dev.device_name);
@@ -760,57 +791,78 @@
                 });
 
                 bodyElem.innerHTML = carHTML;
+                if (timeElem) timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
 
-                if (timeElem) {
-                    timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
+                let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+                const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
+                
+                let isInternetConnected = false;
+                if (carriageInternet === 'INTERNET' && carData.last_timestamp) {
+                    let diffSeconds = (new Date().getTime() - new Date(carData.last_timestamp).getTime()) / 1000;
+                    if (diffSeconds < 120) isInternetConnected = true;
+                }
+
+                if (netBadgeElem) {
+                    netBadgeElem.className = 'badge-status ' + (isInternetConnected ? 'bg-info text-dark' : 'bg-danger');
+                    netBadgeElem.innerText = isInternetConnected ? 'INTERNET' : 'NO INTERNET';
                 }
 
                 if (badgeElem) {
-                    badgeElem.classList.remove('bg-secondary', 'bg-success', 'bg-warning', 'bg-danger');
-                    if (hasOffline) {
-                        badgeElem.classList.add('bg-danger');
-                        badgeElem.innerText = 'OFFLINE';
-                    } else if (hasWarning) {
-                        badgeElem.classList.add('bg-warning', 'text-dark');
-                        badgeElem.innerText = 'WARNING';
-                    } else {
-                        badgeElem.classList.add('bg-success');
-                        badgeElem.innerText = 'ONLINE';
-                    }
+                    badgeElem.className = 'badge-status ' + (hasOffline ? 'bg-danger' : (hasWarning ? 'bg-warning text-dark' : 'bg-success'));
+                    badgeElem.innerText = hasOffline ? 'OFFLINE' : (hasWarning ? 'WARNING' : 'ONLINE');
                 }
             });
 
             filterCars();
         }
-
+        
         function scanData() {
-            fetch('api_detail_status.php?trainset=Argo%20Wilis')
+            fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;
+                    sortCarsByStatus();
                     renderAllCars();
                 })
                 .catch(err => console.error("Error scan:", err));
         }
 
-        scanData();
-        setInterval(scanData, 1000);
+        function loadCarList() {
+            return fetch('get_cars.php')
+                .then(res => res.json())
+                .then(cars => {
+                    globalCarriagesData = cars; 
+                    uniqueCars = cars.map(item => item.location_code);
+                });
+        }
 
-        // ===== SIDEBAR RAILMAP: TAMBAHAN SAJA =====
+        function deleteCar(car) {
+            if (!confirm(`Yakin ingin menghapus kereta ${car} dari dashboard?`)) return;
+
+            fetch('delete_car.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `location_code=${encodeURIComponent(car)}`
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 'ok') {
+                    uniqueCars = uniqueCars.filter(c => c !== car);
+                    globalDeviceData = globalDeviceData.filter(d => d.location !== car);
+                    renderAllCars();
+                } else {
+                    alert('Gagal menghapus: ' + (result.message || 'unknown error'));
+                }
+            });
+        }
+
         function toggleTrainGroup(id, button) {
             const group = document.getElementById(id);
             if (!group) return;
-
             const isHidden = group.style.display === 'none';
 
-            // Tutup ID pada kereta lain agar sidebar tetap ringkas.
-            document.querySelectorAll('.train-ids').forEach(el => {
-                if (el !== group) el.style.display = 'none';
-            });
-
-            document.querySelectorAll('.train-name').forEach(el => {
-                if (el !== button) el.classList.add('collapsed');
-            });
+            document.querySelectorAll('.train-ids').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.train-name').forEach(el => el.classList.add('collapsed'));
 
             group.style.display = isHidden ? 'block' : 'none';
             button.classList.toggle('collapsed', !isHidden);
@@ -821,16 +873,119 @@
                 e.preventDefault();
                 document.querySelectorAll('.train-id').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
-
-                // Saat ini hanya memilih ID pada sidebar.
-                // Logic monitoring/API asli sengaja tidak diubah.
             });
         });
 
         function toggleRailmapSidebar() {
-            document.getElementById('railmapSidebar').classList.toggle('show');
+            const sidebar = document.getElementById('railmapSidebar');
+            
+            // Cek apakah sedang di mode tampilan mobile/responsive
+            if (window.innerWidth <= 992) {
+                sidebar.classList.toggle('active');
+            } else {
+                // Untuk versi desktop, tetap pakai fungsi ubah kolom (sidebar-closed)
+                document.body.classList.toggle('sidebar-closed');
+            }
         }
 
+        // Menutup sidebar otomatis jika area luar diklik di mode mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('railmapSidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            if (window.innerWidth <= 992) {
+                if (sidebar && toggleBtn) {
+                    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        document.body.classList.add('sidebar-closed');
+                    }
+                }
+            }
+        });
+
+        loadCarList().then(() => {
+            scanData();
+            setInterval(scanData, 1000);
+        });
+
+        setInterval(() => loadCarList(), 5000);
+
+        // Opsional: Menutup sidebar jika pengguna mengklik area luar (konten utama) di layar HP
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('railmapSidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
     </script>
+    <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
+    <div class="modal fade" id="modalCreateMenu" tabindex="-1" aria-labelledby="modalCreateMenuLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: #1a233a; color: #fff; border: 1px solid rgba(255,255,255,0.15);">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title" id="modalCreateMenuLabel" style="font-size: 0.95rem; font-weight: 700;">
+                    <i class="bi bi-folder-plus text-info me-1"></i> Form Pembuatan Data
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Nav Tabs untuk beralih antara Create Depo dan Create Nama Kereta -->
+                <ul class="nav nav-pills nav-fill mb-3" id="createTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active btn-sm" id="depo-tab" data-bs-toggle="tab" data-bs-target="#depoTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Depo</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link btn-sm" id="kereta-tab" data-bs-toggle="tab" data-bs-target="#keretaTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Nama Kereta</button>
+                    </li>
+                </ul>
+
+                <!-- Tab Contents -->
+                <div class="tab-content" id="createTabContent">
+                    
+                    <!-- 1. Form Create Depo -->
+                    <div class="tab-pane fade show active" id="depoTabContent" role="tabpanel">
+                        <form action="proses_tambah_depo.php" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 0.8rem;">Nama Depo</label>
+                                <input type="text" name="nama_depo" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: Depo Induk Gambir" required>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary btn-sm text-white fw-bold px-3">Simpan Depo</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 2. Form Create Nama Kereta -->
+                    <div class="tab-pane fade" id="keretaTabContent" role="tabpanel">
+                        <form action="proses_tambah_kereta.php" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
+                                <select name="depo_id" class="form-select form-select-sm text-light bg-dark border-secondary" required>
+                                    <option value="">-- Pilih Depo --</option>
+                                    <!-- Nanti bisa di-loop dari database -->
+                                    <option value="1">Depo Induk Gambir</option>
+                                    <option value="2">Depo Induk Bandung</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 0.8rem;">Nama / Nomor Kereta</label>
+                                <input type="text" name="nama_kereta" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: Argo Wilis / K102440" required>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-info btn-sm text-white fw-bold px-3">Simpan Kereta</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
