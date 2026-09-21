@@ -431,8 +431,25 @@
                 </button>
                 <div class="collapse" id="createDepoCollapse">
                     <div class="train-ids" style="padding-left: 20px;">
-                        <!-- List nama depo bisa ditaruh di sini nantinya -->
-                        <span class="train-id text-muted" style="font-size: 0.75rem; cursor: default;">Belum ada depo</span>
+                        <?php
+                        // Menghubungkan database untuk menampilkan daftar depo secara dinamis
+                        include 'db.php';
+                        
+                        try {
+                            $stmtDepo = $pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
+                            $deposList = $stmtDepo->fetchAll();
+
+                            if (count($deposList) > 0) {
+                                foreach ($deposList as $depo) {
+                                    echo '<span class="train-id" style="font-size: 0.75rem; cursor: pointer;">' . htmlspecialchars($depo['nama_depo']) . '</span>';
+                                }
+                            } else {
+                                echo '<span class="train-id text-muted" style="font-size: 0.75rem; cursor: default;">Belum ada depo</span>';
+                            }
+                        } catch (PDOException $e) {
+                            echo '<span class="train-id text-danger" style="font-size: 0.75rem;">Gagal memuat data</span>';
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -949,7 +966,7 @@
                     
                     <!-- 1. Form Create Depo -->
                     <div class="tab-pane fade show active" id="depoTabContent" role="tabpanel">
-                        <form action="proses_tambah_depo.php" method="POST">
+                        <form action="create_depo.php" method="POST">
                             <div class="mb-3">
                                 <label class="form-label" style="font-size: 0.8rem;">Nama Depo</label>
                                 <input type="text" name="nama_depo" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: Depo Induk Gambir" required>
@@ -962,7 +979,7 @@
 
                     <!-- 2. Form Create Nama Kereta -->
                     <div class="tab-pane fade" id="keretaTabContent" role="tabpanel">
-                        <form action="proses_tambah_kereta.php" method="POST">
+                        <form action="create_kereta.php" method="POST">
                             <div class="mb-3">
                                 <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
                                 <select name="depo_id" class="form-select form-select-sm text-light bg-dark border-secondary" required>
