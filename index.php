@@ -273,6 +273,16 @@
 <body class="p-2 p-md-3">
 
    <div class="dashboard-header mb-3">
+    <!-- Tombol Navigasi Notifikasi dan Dashboard -->
+    <div class="d-flex justify-content-between align-items-center px-3 px-md-5 mb-2">
+        <a href="dashboard_main.php" class="btn btn-sm btn-outline-info text-light d-flex align-items-center gap-1" style="border-radius: 20px; font-size: 0.75rem;">
+            <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+        </a>
+        <a href="notifications.php" class="btn btn-sm btn-outline-warning text-light position-relative d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 50%;">
+            <i class="bi bi-bell-fill"></i>
+        </a>
+    </div>
+
     <h1 class="dashboard-title">RAILMAP</h1>
     
     <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
@@ -765,6 +775,7 @@
                     globalDeviceData = data;
                     sortCarsByStatus(); 
                     renderAllCars();
+                    checkAndTriggerNotifications(); // <-- Tambahkan pemanggil ini di sini
                 })
                 .catch(err => console.error("Error scan:", err));
         }
@@ -826,6 +837,58 @@
         setInterval(() => {
             loadCarList();
         }, 5000);
+
+        // Fungsi untuk mencatat dan memicu notifikasi otomatis saat ada perangkat gangguan
+        let previousAlertState = {};
+
+        function checkAndTriggerNotifications() {
+            // Ambil jumlah notifikasi saat ini di localStorage
+            let currentNotifications = JSON.parse(localStorage.getItem('railmap_notifications') || '[]');
+
+            uniqueCars.forEach(car => {
+                let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+                let devices = globalDeviceData.filter(d => d.location === car);
+                
+                let hasOffline = devices.some(d => {
+                    let st = (d.status || '').toUpperCase();
+                    return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                });
+                
+                let carriageInternet = (carData.internet_status || 'INTERNET').toUpperCase();
+                let isNoInternet = (carriageInternet === 'NO_INTERNET');
+
+                let isCurrentlyTroubled = hasOffline || isNoInternet;
+                let lastState = previousAlertState[car];
+
+                // Catat notifikasi jika:
+                // 1. Perangkat sedang bermasalah, DAN
+                // 2. Sebelumnya statusnya masih aman (normal) ATAU log di storage benar-benar kosong bersih
+                if (isCurrentlyTroubled && (lastState === 'NORMAL' || lastState === undefined)) {
+                    saveNotificationToStorage(car, hasOffline, isNoInternet);
+                }
+
+                // Perbarui status memori lokal per kereta
+                previousAlertState[car] = isCurrentlyTroubled ? 'TROUBLE' : 'NORMAL';
+            });
+        }
+
+        function saveNotificationToStorage(car, isOffline, isNoInternet) {
+            let notifications = JSON.parse(localStorage.getItem('railmap_notifications') || '[]');
+            
+            // Mengambil jam dan tanggal lokal saat ini secara pasti
+            let now = new Date();
+            let timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            let dateString = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            let msg = `Kereta ${car} mengalami gangguan: `;
+            if (isNoInternet) msg += "Koneksi Internet Terputus (NO INTERNET). ";
+            if (isOffline) msg += "Terdapat perangkat status OFFLINE.";
+
+            // Masukkan data lengkap beserta waktu ke array
+            notifications.unshift({ time: timeString, date: dateString, message: msg });
+            if (notifications.length > 50) notifications.pop();
+            localStorage.setItem('railmap_notifications', JSON.stringify(notifications));
+        }
     </script>
 </body>
 </html>
