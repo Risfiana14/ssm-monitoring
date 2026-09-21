@@ -424,12 +424,12 @@
 
             <!-- Menu Daftar Depo Dinamis -->
             <div class="train-group">
-    <div class="train-ids" style="padding-left: 0px;">
-        <?php
-        // Menghubungkan ke database
-        include 'db.php'; 
-        
-        try {
+            <div class="train-ids" style="padding-left: 0px;">
+            <?php
+            // Menghubungkan ke database
+            include 'db.php'; 
+            
+            try {
             // Mengambil semua data depo dari tabel depos
             $stmtDepo = $pdo->query("SELECT * FROM depos ORDER BY id ASC");
             $deposList = $stmtDepo->fetchAll(PDO::FETCH_ASSOC);
@@ -485,13 +485,7 @@
     </div>
 </div>
 
-            <div class="sidebar-note">
-                Klik ikon plus (+) di sebelah tulisan Manajemen Data untuk membuat Depo atau Nama Kereta baru.
-            </div>
-
-            <div class="sidebar-note">
-                Gunakan menu di atas untuk menambahkan depo baru atau mendaftarkan nama rangkaian kereta.
-            </div>
+            
         </aside>
 
         <!-- KONTEN UTAMA KANAN -->
