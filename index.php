@@ -875,17 +875,22 @@
         function saveNotificationToStorage(car, isOffline, isNoInternet) {
             let notifications = JSON.parse(localStorage.getItem('railmap_notifications') || '[]');
             
-            // Mengambil jam dan tanggal lokal saat ini secara pasti
             let now = new Date();
-            let timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            let dateString = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            // Format jam dan tanggal secara eksplisit agar pasti berupa teks string
+            let timeString = now.toLocaleTimeString('id-ID');
+            let dateString = now.toLocaleDateString('id-ID');
 
             let msg = `Kereta ${car} mengalami gangguan: `;
             if (isNoInternet) msg += "Koneksi Internet Terputus (NO INTERNET). ";
             if (isOffline) msg += "Terdapat perangkat status OFFLINE.";
 
-            // Masukkan data lengkap beserta waktu ke array
-            notifications.unshift({ time: timeString, date: dateString, message: msg });
+            // Simpan dengan properti 'time' dan 'date' yang jelas
+            notifications.unshift({ 
+                time: timeString, 
+                date: dateString, 
+                message: msg 
+            });
+
             if (notifications.length > 50) notifications.pop();
             localStorage.setItem('railmap_notifications', JSON.stringify(notifications));
         }

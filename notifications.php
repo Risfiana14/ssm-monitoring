@@ -45,9 +45,9 @@ session_start();
 
             let html = '';
             notifications.forEach(n => {
-                // Pastikan mengambil dari n.time, jika kosong cetak string kosong atau "-"
-                let displayTime = (n && n.time) ? n.time : '-';
-                let displayDate = (n && n.date) ? n.date : '';
+                // Ambil nilai waktu, jika tidak ada gunakan waktu saat ini
+                let displayTime = (n.time && n.time !== "undefined") ? n.time : new Date().toLocaleTimeString('id-ID');
+                let displayDate = (n.date && n.date !== "undefined") ? n.date : new Date().toLocaleDateString('id-ID');
 
                 html += `
                     <div class="card bg-dark text-light border-danger border-opacity-50 shadow-sm mb-2">
@@ -56,9 +56,11 @@ session_start();
                                 <span class="badge bg-danger mb-1">PERINGATAN</span>
                                 <p class="mb-0 small fw-bold">${n.message || 'Pemberitahuan gangguan sistem'}</p>
                             </div>
-                            <div class="text-end text-muted ps-3" style="font-size: 0.75rem; white-space: nowrap; border-left: 1px solid rgba(255,255,255,0.1);">
-                                <i class="bi bi-clock me-1 text-warning"></i>${displayTime}
-                                <div style="font-size: 0.65rem;" class="opacity-75">${displayDate}</div>
+                            <div class="text-end ps-3" style="font-size: 0.75rem; white-space: nowrap; border-left: 1px solid rgba(255,255,255,0.2);">
+                                <div class="fw-bold text-warning">
+                                    <i class="bi bi-clock me-1"></i>${displayTime}
+                                </div>
+                                <div style="font-size: 0.65rem;" class="text-light opacity-75">${displayDate}</div>
                             </div>
                         </div>
                     </div>`;
@@ -67,7 +69,6 @@ session_start();
         }
 
         function clearNotifications() {
-            // Menghapus data memori browser sekaligus
             localStorage.removeItem('railmap_notifications');
             loadNotifications();
         }
