@@ -462,9 +462,12 @@
                                 foreach ($trainsList as $train) {
                                     $trainId = intval($train['id']); // Ambil ID kereta
                                     $namaKereta = htmlspecialchars($train['nama_kereta']);
-                                    
-                                    // Ubah dari <span> menjadi <a> agar bisa diklik dan membawa parameter train_id
-                                    echo '<a href="dashboard_main.php?train_id=' . $trainId . '" class="train-id d-block text-light text-decoration-none py-1 ps-2 rounded" style="font-size: 0.8rem;">' . $namaKereta . '</a>';
+                            ?>
+                                    <!-- Ubah dari <span> menjadi <a> agar bisa diklik dan membawa parameter train_id -->
+                                    <a href="dashboard_main.php?train_id=<?php echo $trainId; ?>" class="train-id d-block text-light text-decoration-none py-1 ps-2 rounded" style="font-size: 0.8rem;">
+                                        <?php echo $namaKereta; ?>
+                                    </a>
+                            <?php
                                 }
                             } else {
                                 echo '<span class="train-id text-muted d-block" style="font-size: 0.7rem; font-style: italic;">Belum ada kereta</span>';
@@ -497,35 +500,82 @@
                     <i class="bi bi-train-front text-info fs-5"></i>
                     <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
                 </div>
-
-                <div style="width: 100%; text-align: center;">
-                    <div style="display: inline-block; width: 520px; max-width: 95%;">
-                        <div class="search-container position-relative d-flex align-items-center mb-0 px-3" style="width: 100%; background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50px; padding: 6px 12px; backdrop-filter: blur(5px);">
-                            
-                            <select id="statusFilterDropdown" class="form-select form-select-sm bg-transparent text-light border-0 shadow-none" style="width: 140px; cursor: pointer; font-size: 0.85rem;" onchange="filterCars()">
-                                <option value="all" style="background-color: #1a233a; color: #fff;">Semua Status</option>
-                                <option value="online" style="background-color: #1a233a; color: #fff;">Online</option>
-                                <option value="warning" style="background-color: #1a233a; color: #fff;">Warning</option>
-                                <option value="offline" style="background-color: #1a233a; color: #fff;">Offline</option>
-                                <option value="internet" style="background-color: #1a233a; color: #fff;">Internet</option>
-                                <option value="no internet" style="background-color: #1a233a; color: #fff;">No Internet</option>
-                                <option value="no data" style="background-color: #1a233a; color: #fff;">No Data</option>
-                            </select>
-
-                            <div style="width: 1px; height: 20px; background-color: rgba(255, 255, 255, 0.2); margin: 0 8px; flex-shrink: 0;"></div>
-
-                            <input type="text" id="searchCarInput" class="form-control form-control-sm border-0 bg-transparent text-light shadow-none ps-2" placeholder="Cari nomor kereta..." oninput="filterCars()" style="font-size: 0.85rem; box-shadow: none !important;">
-                            <i class="bi bi-search text-light opacity-75 ps-2 pe-1" style="font-size: 0.85rem;"></i>
-
-                        </div>
-                    </div>
-                </div>
             </div>
 
+            <!-- AREA KONTEN UTAMA (MENDUKUNG HALAMAN DETAIL KETIKA KERETA DIKLIK & TOMBOL CREATE Kereta) -->
             <div class="container-fluid px-2 px-md-3" style="max-width: 1600px;">
-                <div class="row g-2 g-md-3 justify-content-center" id="cars-grid">
-                    <!-- Grid Kartu Kereta -->
-                </div>
+                <?php
+                $selected_train_id = $_GET['train_id'] ?? null;
+
+                if ($selected_train_id) {
+                    try {
+                        $stmtTrain = $pdo->prepare("SELECT * FROM trains WHERE id = ?");
+                        $stmtTrain->execute([$selected_train_id]);
+                        $currentTrain = $stmtTrain->fetch(PDO::FETCH_ASSOC);
+
+                        if ($currentTrain) {
+                            echo '<div class="p-3 mb-4 bg-dark border border-secondary rounded text-light d-flex justify-content-between align-items-center">';
+                            echo '<div>';
+                            echo '<h4 class="text-info mb-1">Rangkaian Kereta: ' . htmlspecialchars($currentTrain['nama_kereta']) . '</h4>';
+                            echo '<small class="text-muted">Kelola unit kereta untuk rangkaian ini</small>';
+                            echo '</div>';
+                            echo '<button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#modalCreateKereta">';
+                            echo '<i class="bi bi-plus-circle me-1"></i> Tambah Kereta Baru';
+                            echo '</button>';
+                            echo '</div>';
+
+                            // Cek apakah kereta sudah ada atau belum
+                            $stmtCarriages = $pdo->prepare("SELECT * FROM carriages WHERE train_id = ?");
+                            $stmtCarriages->execute([$selected_train_id]);
+                            $carriagesList = $stmtCarriages->fetchAll(PDO::FETCH_ASSOC);
+
+                            if (count($carriagesList) > 0) {
+                                echo '<div class="row g-2 g-md-3 justify-content-center" id="cars-grid">';
+                                // Render card kereta jika sudah ada
+                                echo '</div>';
+                            } else {
+                                // TAMPILAN HALAMAN KOSONG DENGAN TOMBOL CREATE KERETA
+                                echo '<div class="text-center py-5 bg-dark border border-secondary border-dashed rounded text-light opacity-75">';
+                                echo '<i class="bi bi-folder2-open display-4 text-warning mb-3"></i>';
+                                echo '<h5>Belum ada kerta yang terdaftar di kereta ini.</h5>';
+                                echo '<p class="small text-muted">Silakan klik tombol di bawah untuk mulai membuat data Kereta.</p>';
+                                echo '<button type="button" class="btn btn-primary btn-sm mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalCreateKereta">';
+                                echo '<i class="bi bi-plus-circle me-1"></i> Create Kereta Sekarang';
+                                echo '</button>';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo '<div class="alert alert-danger">Data kereta tidak ditemukan.</div>';
+                        }
+                    } catch (PDOException $e) {
+                        echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
+                    }
+                } else {
+                    // Tampilan default awal
+                    echo '
+                    <div style="width: 100%; text-align: center;">
+                        <div style="display: inline-block; width: 520px; max-width: 95%;">
+                            <div class="search-container position-relative d-flex align-items-center mb-0 px-3" style="width: 100%; background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50px; padding: 6px 12px; backdrop-filter: blur(5px);">
+                                <select id="statusFilterDropdown" class="form-select form-select-sm bg-transparent text-light border-0 shadow-none" style="width: 140px; cursor: pointer; font-size: 0.85rem;" onchange="filterCars()">
+                                    <option value="all" style="background-color: #1a233a; color: #fff;">Semua Status</option>
+                                    <option value="online" style="background-color: #1a233a; color: #fff;">Online</option>
+                                    <option value="warning" style="background-color: #1a233a; color: #fff;">Warning</option>
+                                    <option value="offline" style="background-color: #1a233a; color: #fff;">Offline</option>
+                                    <option value="internet" style="background-color: #1a233a; color: #fff;">Internet</option>
+                                    <option value="no internet" style="background-color: #1a233a; color: #fff;">No Internet</option>
+                                    <option value="no data" style="background-color: #1a233a; color: #fff;">No Data</option>
+                                </select>
+                                <div style="width: 1px; height: 20px; background-color: rgba(255, 255, 255, 0.2); margin: 0 8px; flex-shrink: 0;"></div>
+                                <input type="text" id="searchCarInput" class="form-control form-control-sm border-0 bg-transparent text-light shadow-none ps-2" placeholder="Cari nomor kereta..." oninput="filterCars()" style="font-size: 0.85rem; box-shadow: none !important;">
+                                <i class="bi bi-search text-light opacity-75 ps-2 pe-1" style="font-size: 0.85rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-2 g-md-3 justify-content-center mt-3" id="cars-grid">
+                        <!-- Grid Kartu Kereta -->
+                    </div>';
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -686,8 +736,12 @@
         }
 
         function filterCars() {
-            const inputVal = document.getElementById('searchCarInput').value.trim().toLowerCase();
-            const selectedStatus = document.getElementById('statusFilterDropdown').value.toLowerCase();
+            const searchInput = document.getElementById('searchCarInput');
+            const statusDropdown = document.getElementById('statusFilterDropdown');
+            if (!searchInput || !statusDropdown) return;
+
+            const inputVal = searchInput.value.trim().toLowerCase();
+            const selectedStatus = statusDropdown.value.toLowerCase();
             const carElements = document.querySelectorAll('.car-wrapper');
 
             carElements.forEach(el => {
@@ -755,6 +809,7 @@
 
         function renderAllCars() {
             const gridContainer = document.getElementById('cars-grid');
+            if (!gridContainer) return;
             gridContainer.innerHTML = '';
             
             uniqueCars.forEach(car => {
@@ -797,7 +852,7 @@
                 let devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
-                    bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
+                    if (bodyElem) bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
                     if (badgeElem) { badgeElem.className = 'badge-status bg-secondary'; badgeElem.innerText = 'NO DATA'; }
                     if (netBadgeElem) { netBadgeElem.className = 'badge-status bg-secondary'; netBadgeElem.innerText = 'NO INTERNET'; }
                     if (timeElem) timeElem.innerText = '-';
@@ -832,7 +887,7 @@
                     `;
                 });
 
-                bodyElem.innerHTML = carHTML;
+                if (bodyElem) bodyElem.innerHTML = carHTML;
                 if (timeElem) timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
 
                 let carData = globalCarriagesData.find(c => c.location === car) || {};
@@ -912,7 +967,6 @@
 
         document.querySelectorAll('.train-id').forEach(item => {
             item.addEventListener('click', function (e) {
-                e.preventDefault();
                 document.querySelectorAll('.train-id').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
             });
@@ -920,17 +974,13 @@
 
         function toggleRailmapSidebar() {
             const sidebar = document.getElementById('railmapSidebar');
-            
-            // Cek apakah sedang di mode tampilan mobile/responsive
             if (window.innerWidth <= 992) {
                 sidebar.classList.toggle('active');
             } else {
-                // Untuk versi desktop, tetap pakai fungsi ubah kolom (sidebar-closed)
                 document.body.classList.toggle('sidebar-closed');
             }
         }
 
-        // Menutup sidebar otomatis jika area luar diklik di mode mobile
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('railmapSidebar');
             const toggleBtn = document.querySelector('.sidebar-toggle-btn');
@@ -951,90 +1001,99 @@
         });
 
         setInterval(() => loadCarList(), 5000);
-
-        // Opsional: Menutup sidebar jika pengguna mengklik area luar (konten utama) di layar HP
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('railmapSidebar');
-            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
-            
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                }
-            }
-        });
     </script>
+
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
     <div class="modal fade" id="modalCreateMenu" tabindex="-1" aria-labelledby="modalCreateMenuLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background-color: #1a233a; color: #fff; border: 1px solid rgba(255,255,255,0.15);">
-            <div class="modal-header border-bottom border-secondary">
-                <h5 class="modal-title" id="modalCreateMenuLabel" style="font-size: 0.95rem; font-weight: 700;">
-                    <i class="bi bi-folder-plus text-info me-1"></i> Form Pembuatan Data
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            
-            <div class="modal-body">
-                <!-- Nav Tabs untuk beralih antara Create Depo dan Create Nama Kereta -->
-                <ul class="nav nav-pills nav-fill mb-3" id="createTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active btn-sm" id="depo-tab" data-bs-toggle="tab" data-bs-target="#depoTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Depo</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link btn-sm" id="kereta-tab" data-bs-toggle="tab" data-bs-target="#keretaTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Nama Kereta</button>
-                    </li>
-                </ul>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: #1a233a; color: #fff; border: 1px solid rgba(255,255,255,0.15);">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="modalCreateMenuLabel" style="font-size: 0.95rem; font-weight: 700;">
+                        <i class="bi bi-folder-plus text-info me-1"></i> Form Pembuatan Data
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <ul class="nav nav-pills nav-fill mb-3" id="createTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active btn-sm" id="depo-tab" data-bs-toggle="tab" data-bs-target="#depoTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Depo</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link btn-sm" id="kereta-tab" data-bs-toggle="tab" data-bs-target="#keretaTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Nama Kereta</button>
+                        </li>
+                    </ul>
 
-                <!-- Tab Contents -->
-                <div class="tab-content" id="createTabContent">
-                    
-                    <!-- 1. Form Create Depo -->
-                    <div class="tab-pane fade show active" id="depoTabContent" role="tabpanel">
-                        <form action="create_depo.php" method="POST">
-                            <div class="mb-3">
-                                <label class="form-label" style="font-size: 0.8rem;">Nama Depo</label>
-                                <input type="text" name="nama_depo" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: Depo Induk Gambir" required>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary btn-sm text-white fw-bold px-3">Simpan Depo</button>
-                            </div>
-                        </form>
-                    </div>
+                    <div class="tab-content" id="createTabContent">
+                        <div class="tab-pane fade show active" id="depoTabContent" role="tabpanel">
+                            <form action="create_depo.php" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.8rem;">Nama Depo</label>
+                                    <input type="text" name="nama_depo" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: Depo Induk Gambir" required>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-sm text-white fw-bold px-3">Simpan Depo</button>
+                                </div>
+                            </form>
+                        </div>
 
-                    <!-- 2. Form Create Nama Kereta dengan Dropdown Depo Dinamis -->
-                    <div class="tab-pane fade" id="keretaTabContent" role="tabpanel">
-                        <form action="create_kereta.php" method="POST">
-                            <div class="mb-3">
-                                <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
-                                <select name="depo_id" class="form-select form-select-sm text-light bg-dark border-secondary" required>
-                                    <option value="">-- Pilih Depo --</option>
-                                    <?php
-                                    include 'db.php';
-                                    try {
-                                        $stmt = $pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
-                                        while ($row = $stmt->fetch()) {
-                                            echo '<option value="' . $row['id'] . '">' . htmlspecialchars($row['nama_depo']) . '</option>';
+                        <div class="tab-pane fade" id="keretaTabContent" role="tabpanel">
+                            <form action="create_kereta.php" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
+                                    <select name="depo_id" class="form-select form-select-sm text-light bg-dark border-secondary" required>
+                                        <option value="">-- Pilih Depo --</option>
+                                        <?php
+                                        try {
+                                            $stmt =$pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
+                                            while ($row =$stmt->fetch()) {
+                                                echo '<option value="' . $row['id'] . '">' . htmlspecialchars($row['nama_depo']) . '</option>';
+                                            }
+                                        } catch (PDOException $e) {
+                                            echo '<option value="">Gagal memuat depo</option>';
                                         }
-                                    } catch (PDOException $e) {
-                                        echo '<option value="">Gagal memuat depo</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" style="font-size: 0.8rem;">Nama / Nomor Kereta (Location Code)</label>
-                                <input type="text" name="nama_kereta" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: K102440" required>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-info btn-sm text-white fw-bold px-3">Simpan Kereta</button>
-                            </div>
-                        </form>
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.8rem;">Nama / Nomor Kereta (Location Code)</label>
+                                    <input type="text" name="nama_kereta" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: K102440" required>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-info btn-sm text-white fw-bold px-3">Simpan Kereta</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Modal Contoh untuk Tombol Create Kereta (Opsional / Siap Pakai) -->
+    <div class="modal fade" id="modalCreateKereta" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: #1a233a; color: #fff; border: 1px solid rgba(255,255,255,0.15);">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" style="font-size: 0.95rem; font-weight: 700;">
+                        <i class="bi bi-plus-circle text-success me-1"></i> Tambah Kereta / Unit Baru
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="create_Kereta.php" method="POST">
+                        <input type="hidden" name="train_id" value="<?php echo htmlspecialchars($_GET['train_id'] ?? ''); ?>">
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.8rem;">Nomor / Kode Kereta</label>
+                            <input type="text" name="location" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: K302452" required>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success btn-sm text-white fw-bold px-3">Simpan Kereta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
