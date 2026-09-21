@@ -741,7 +741,7 @@
                     timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
                 }
 
-                let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+                let carData = globalCarriagesData.find(c => c.location === car) || {};
                 const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
                 const isInternetConnected = (carriageInternet === 'INTERNET');
 
@@ -793,7 +793,7 @@
                 .then(res => res.json())
                 .then(cars => {
                     globalCarriagesData = cars; 
-                    uniqueCars = cars.map(item => item.location_code);
+                    uniqueCars = cars.map(item => item.location);
                 });
         }
 
@@ -817,7 +817,7 @@
             fetch('delete_car.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `location_code=${encodeURIComponent(car)}`
+                body: `location=${encodeURIComponent(car)}`
             })
             .then(res => res.json())
             .then(result => {
@@ -852,7 +852,7 @@
             let currentNotifications = JSON.parse(localStorage.getItem('railmap_notifications') || '[]');
 
             uniqueCars.forEach(car => {
-                let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+                let carData = globalCarriagesData.find(c => c.location === car) || {};
                 let devices = globalDeviceData.filter(d => d.location === car);
                 
                 let hasOffline = devices.some(d => {

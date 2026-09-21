@@ -810,7 +810,7 @@
                 bodyElem.innerHTML = carHTML;
                 if (timeElem) timeElem.innerText = latestTimestamp ? latestTimestamp : '-';
 
-                let carData = globalCarriagesData.find(c => c.location_code === car) || {};
+                let carData = globalCarriagesData.find(c => c.location === car) || {};
                 const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
                 
                 let isInternetConnected = false;
@@ -849,7 +849,7 @@
                 .then(res => res.json())
                 .then(cars => {
                     globalCarriagesData = cars; 
-                    uniqueCars = cars.map(item => item.location_code);
+                    uniqueCars = cars.map(item => item.location);
                 });
         }
 
@@ -859,7 +859,7 @@
             fetch('delete_car.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `location_code=${encodeURIComponent(car)}`
+                body: `location=${encodeURIComponent(car)}`
             })
             .then(res => res.json())
             .then(result => {
@@ -977,28 +977,35 @@
                         </form>
                     </div>
 
-                    <!-- 2. Form Create Nama Kereta -->
+                    <!-- 2. Form Create Nama Kereta dengan Dropdown Depo Dinamis -->
                     <div class="tab-pane fade" id="keretaTabContent" role="tabpanel">
                         <form action="create_kereta.php" method="POST">
                             <div class="mb-3">
                                 <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
                                 <select name="depo_id" class="form-select form-select-sm text-light bg-dark border-secondary" required>
                                     <option value="">-- Pilih Depo --</option>
-                                    <!-- Nanti bisa di-loop dari database -->
-                                    <option value="1">Depo Induk Gambir</option>
-                                    <option value="2">Depo Induk Bandung</option>
+                                    <?php
+                                    include 'db.php';
+                                    try {
+                                        $stmt = $pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
+                                        while ($row = $stmt->fetch()) {
+                                            echo '<option value="' . $row['id'] . '">' . htmlspecialchars($row['nama_depo']) . '</option>';
+                                        }
+                                    } catch (PDOException $e) {
+                                        echo '<option value="">Gagal memuat depo</option>';
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" style="font-size: 0.8rem;">Nama / Nomor Kereta</label>
-                                <input type="text" name="nama_kereta" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: Argo Wilis / K102440" required>
+                                <label class="form-label" style="font-size: 0.8rem;">Nama / Nomor Kereta (Location Code)</label>
+                                <input type="text" name="nama_kereta" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: K102440" required>
                             </div>
                             <div class="text-end">
                                 <button type="submit" class="btn btn-info btn-sm text-white fw-bold px-3">Simpan Kereta</button>
                             </div>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
