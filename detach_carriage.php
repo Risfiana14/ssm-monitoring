@@ -1,5 +1,4 @@
 <?php
-
 require_once 'db.php';
 
 header('Content-Type: application/json');
@@ -8,16 +7,17 @@ $location = trim($_POST['location'] ?? '');
 
 if ($location === '') {
     http_response_code(400);
+
     echo json_encode([
         'status' => 'error',
-        'message' => 'location wajib diisi'
+        'message' => 'Nomor sarana tidak boleh kosong.'
     ]);
+
     exit;
 }
 
 try {
-    // Hanya melepas nomor sarana dari rangkaian bukan menghapus.
-    // Data location tetap disimpan di carriages.
+
     $stmt = $pdo->prepare("
         UPDATE carriages
         SET train_id = NULL
@@ -26,10 +26,20 @@ try {
 
     $stmt->execute([$location]);
 
-    echo json_encode([
-        'status' => 'ok',
-        'message' => "$location berhasil dilepas dari rangkaian"
-    ]);
+    if ($stmt->rowCount() > 0) {
+
+        echo json_encode([
+            'status' => 'ok',
+            'message' => $location . ' berhasil dilepas dari rangkaian.'
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Nomor sarana tidak ditemukan atau sudah tidak memiliki rangkaian.'
+        ]);
+    }
 
 } catch (PDOException $e) {
 
@@ -37,7 +47,7 @@ try {
 
     echo json_encode([
         'status' => 'error',
-        'message' => 'Gagal melepas nomor sarana'
+        'message' => 'Gagal melepas nomor sarana.'
     ]);
 }
 ?>

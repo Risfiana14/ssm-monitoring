@@ -442,12 +442,39 @@
                     
                     echo '
                     <div class="mb-2 w-100">
-                        <!-- Tombol Nama Depo -->
-                        <button class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#' . $collapseId . '" aria-expanded="false" aria-controls="' . $collapseId . '">
-                            <i class="bi bi-chevron-down train-arrow me-2"></i>
-                            <i class="bi bi-folder text-info me-2"></i>
-                            <span class="text-light">' . $namaDepo . '</span>
-                        </button>
+                        <!-- Header Depo -->
+    <div class="d-flex align-items-center w-100">
+
+        <!-- Tombol Nama Depo -->
+        <button
+            class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#' . $collapseId . '"
+            aria-expanded="false"
+            aria-controls="' . $collapseId . '">
+
+            <i class="bi bi-chevron-down train-arrow me-2"></i>
+            <i class="bi bi-folder text-info me-2"></i>
+            <span class="text-light">' . $namaDepo . '</span>
+
+        </button>
+
+        <!-- Tombol Edit Depo -->
+        <button
+            type="button"
+            class="btn btn-sm text-warning p-1 ms-1"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEditDepo"
+            data-depo-id="' . $depoId . '"
+            data-depo-name="' . htmlspecialchars($depo['nama_depo'], ENT_QUOTES, 'UTF-8') . '"
+            title="Edit nama depo">
+
+            <i class="bi bi-pencil-square"></i>
+
+        </button>
+
+    </div>
                         
                         <!-- Area Dropdown untuk Nama Kereta (Level 2) dari tabel trains -->
                         <div class="collapse" id="' . $collapseId . '">
@@ -505,51 +532,220 @@
             <!-- AREA KONTEN UTAMA (MENDUKUNG HALAMAN DETAIL KETIKA KERETA DIKLIK & TOMBOL CREATE Kereta) -->
             <div class="container-fluid px-2 px-md-3" style="max-width: 1600px;">
                 <?php
-                $selected_train_id = $_GET['train_id'] ?? null;
 
-                if ($selected_train_id) {
+                $selected_train_id = (int)($_GET['train_id'] ?? 0);
+
+                if ($selected_train_id > 0) {
+
                     try {
-                        $stmtTrain = $pdo->prepare("SELECT * FROM trains WHERE id = ?");
+
+                        /*
+                        * Ambil data rangkaian berdasarkan train_id
+                        */
+                        $stmtTrain = $pdo->prepare("
+                            SELECT 
+                                t.*,
+                                d.nama_depo
+                            FROM trains t
+                            LEFT JOIN depos d ON d.id = t.depo_id
+                            WHERE t.id = ?
+                            LIMIT 1
+                        ");
+
                         $stmtTrain->execute([$selected_train_id]);
+
                         $currentTrain = $stmtTrain->fetch(PDO::FETCH_ASSOC);
 
+
                         if ($currentTrain) {
-                            echo '<div class="p-3 mb-4 bg-dark border border-secondary rounded text-light d-flex justify-content-between align-items-center">';
+
+                            /*
+                            * HEADER RANGKAIAN
+                            */
+                            echo '<div class="p-3 mb-4 bg-dark border border-secondary rounded text-light d-flex justify-content-between align-items-center gap-3">';
+
                             echo '<div>';
-                            echo '<h4 class="text-info mb-1">Rangkaian Kereta: ' . htmlspecialchars($currentTrain['nama_kereta']) . '</h4>';
-                            echo '<small class="text-muted">Kelola unit kereta untuk rangkaian ini</small>';
-                            echo '</div>';
-                            echo '<button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#modalCreateKereta">';
-                            echo '<i class="bi bi-plus-circle me-1"></i> Tambah Kereta Baru';
-                            echo '</button>';
+
+                            echo '<h4 class="text-info mb-1">';
+                            echo 'Rangkaian Kereta: ' . htmlspecialchars($currentTrain['nama_kereta']);
+                            echo '</h4>';
+
+                            echo '<small class="text-muted">';
+                            echo 'Depo: ' . htmlspecialchars($currentTrain['nama_depo'] ?? '-');
+                            echo '</small>';
+
                             echo '</div>';
 
-                            // Cek apakah kereta sudah ada atau belum
-                            $stmtCarriages = $pdo->prepare("SELECT * FROM carriages WHERE train_id = ?");
+
+                            /*
+                            * TOMBOL TAMBAH NOMOR SARANA
+                            */
+                            echo '<button 
+                                    type="button"
+                                    class="btn btn-success btn-sm px-3 py-2 fw-bold"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalAddLocation">
+                                    <i class="bi bi-plus-circle me-1"></i>
+                                    Tambah Nomor Sarana
+                                </button>';
+
+                            echo '</div>';
+
+
+                            /*
+                            * AMBIL NOMOR SARANA YANG SUDAH
+                            * MASUK KE RANGKAIAN INI
+                            */
+                            $stmtCarriages = $pdo->prepare("
+                                SELECT 
+                                    id,
+                                    location,
+                                    internet_status
+                                FROM carriages
+                                WHERE train_id = ?
+                                ORDER BY location ASC
+                            ");
+
                             $stmtCarriages->execute([$selected_train_id]);
+
                             $carriagesList = $stmtCarriages->fetchAll(PDO::FETCH_ASSOC);
 
+
+                            /*
+                            * JIKA SUDAH ADA NOMOR SARANA
+                            */
                             if (count($carriagesList) > 0) {
-                                echo '<div class="row g-2 g-md-3 justify-content-center" id="cars-grid">';
-                                // Render card kereta jika sudah ada
+
+                                /*
+                                * PENTING:
+                                * ID-NYA BUKAN cars-grid
+                                *
+                                * Karena cars-grid digunakan oleh
+                                * monitoring dashboard utama.
+                                */
+                                echo '<div class="row g-2 g-md-3 justify-content-center" id="train-carriages-grid">';
+
+
+                                foreach ($carriagesList as $car) {
+
+                                    $location = htmlspecialchars(
+                                        $car['location'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    );
+
+                                    $internet = htmlspecialchars(
+                                        $car['internet_status'] ?? 'NO INTERNET',
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    );
+
+                                    $locationJs = json_encode(
+                                        $car['location'],
+                                        JSON_HEX_TAG |
+                                        JSON_HEX_APOS |
+                                        JSON_HEX_AMP |
+                                        JSON_HEX_QUOT
+                                    );
+
+
+                                    echo '<div class="col-md-4 col-lg-3">';
+
+                                    echo '<div class="card bg-dark text-light border-secondary h-100">';
+
+                                    echo '<div class="card-body p-3">';
+
+
+                                    /*
+                                    * HEADER KARTU
+                                    */
+                                    echo '<div class="d-flex justify-content-between align-items-center gap-2">';
+
+                                    echo '<h6 class="text-warning mb-0">';
+                                    echo '<i class="bi bi-train-front me-1"></i>';
+                                    echo $location;
+                                    echo '</h6>';
+
+                                    echo '<span class="badge bg-secondary">';
+                                    echo $internet;
+                                    echo '</span>';
+
+                                    echo '</div>';
+
+
+                                    echo '<hr class="border-secondary my-2">';
+
+
+                                    /*
+                                    * TOMBOL LEPAS
+                                    */
+                                    echo '<div class="d-flex justify-content-end">';
+
+                                    echo '<button 
+                                            type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            onclick="detachCarriage(' . $locationJs . ')">
+                                            <i class="bi bi-link-45deg me-1"></i>
+                                            Lepas dari Rangkaian
+                                        </button>';
+
+                                    echo '</div>';
+
+
+                                    echo '</div>';
+                                    echo '</div>';
+
+                                    echo '</div>';
+                                }
+
+
                                 echo '</div>';
+
+
                             } else {
-                                // TAMPILAN HALAMAN KOSONG DENGAN TOMBOL CREATE KERETA
+
+                                /*
+                                * JIKA BELUM ADA NOMOR SARANA
+                                */
                                 echo '<div class="text-center py-5 bg-dark border border-secondary border-dashed rounded text-light opacity-75">';
-                                echo '<i class="bi bi-folder2-open display-4 text-warning mb-3"></i>';
-                                echo '<h5>Belum ada kerta yang terdaftar di kereta ini.</h5>';
-                                echo '<p class="small text-muted">Silakan klik tombol di bawah untuk mulai membuat data Kereta.</p>';
-                                echo '<button type="button" class="btn btn-primary btn-sm mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalCreateKereta">';
-                                echo '<i class="bi bi-plus-circle me-1"></i> Create Kereta Sekarang';
-                                echo '</button>';
+
+                                echo '<i class="bi bi-train-front display-4 text-warning mb-3"></i>';
+
+                                echo '<h5>Belum ada nomor sarana pada rangkaian ini.</h5>';
+
+                                echo '<p class="small text-muted">';
+                                echo 'Klik "Tambah Nomor Sarana" untuk memilih nomor sarana yang sudah terdeteksi monitoring.';
+                                echo '</p>';
+
+                                echo '<button 
+                                        type="button"
+                                        class="btn btn-primary btn-sm mt-2 px-4"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalAddLocation">
+                                        <i class="bi bi-plus-circle me-1"></i>
+                                        Tambah Nomor Sarana
+                                    </button>';
+
                                 echo '</div>';
                             }
+
+
                         } else {
-                            echo '<div class="alert alert-danger">Data kereta tidak ditemukan.</div>';
+
+                            echo '<div class="alert alert-danger">';
+                            echo 'Rangkaian kereta tidak ditemukan.';
+                            echo '</div>';
                         }
+
+
                     } catch (PDOException $e) {
-                        echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
+
+                        echo '<div class="alert alert-danger">';
+                        echo 'Error: ' . htmlspecialchars($e->getMessage());
+                        echo '</div>';
                     }
+
+
                 } else {
                     // Tampilan default awal
                     echo '
@@ -953,6 +1149,53 @@
             });
         }
 
+        // FUNGSI MELEPAS NOMOR SARANA DARI RANGKAIAN
+        function detachCarriage(location) {
+
+            if (!confirm(`Lepas ${location} dari rangkaian ini?`)) {
+                return;
+            }
+
+            fetch('detach_carriage.php', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+
+                body: 'location=' + encodeURIComponent(location)
+
+            })
+
+            .then(res => res.json())
+
+            .then(result => {
+
+                if (result.status === 'ok') {
+
+                    window.location.reload();
+
+                } else {
+
+                    alert(
+                        result.message ||
+                        'Gagal melepas nomor sarana.'
+                    );
+
+                }
+
+            })
+
+            .catch(() => {
+
+                alert(
+                    'Terjadi kesalahan saat melepas nomor sarana.'
+                );
+
+            });
+        }
+
         function toggleTrainGroup(id, button) {
             const group = document.getElementById(id);
             if (!group) return;
@@ -970,6 +1213,25 @@
                 document.querySelectorAll('.train-id').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
             });
+        });
+
+        // JAVASCRIPT EDIT DEPO
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('[data-bs-target="#modalEditDepo"]').forEach(btn => {
+
+                btn.addEventListener('click', function () {
+
+                    document.getElementById('editDepoId').value =
+                        this.dataset.depoId;
+
+                    document.getElementById('editDepoName').value =
+                        this.dataset.depoName;
+
+                });
+
+            });
+
         });
 
         function toggleRailmapSidebar() {
@@ -1056,7 +1318,7 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" style="font-size: 0.8rem;">Nama / Nomor Kereta (Location Code)</label>
+                                    <label class="form-label" style="font-size: 0.8rem;">Nama Rangkaian Kereta</label>
                                     <input type="text" name="nama_kereta" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: K102440" required>
                                 </div>
                                 <div class="text-end">
@@ -1071,29 +1333,226 @@
     </div>
 
     <!-- Modal Contoh untuk Tombol Create Kereta (Opsional / Siap Pakai) -->
-    <div class="modal fade" id="modalCreateKereta" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #1a233a; color: #fff; border: 1px solid rgba(255,255,255,0.15);">
-                <div class="modal-header border-bottom border-secondary">
-                    <h5 class="modal-title" style="font-size: 0.95rem; font-weight: 700;">
-                        <i class="bi bi-plus-circle text-success me-1"></i> Tambah Kereta / Unit Baru
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="create_Kereta.php" method="POST">
-                        <input type="hidden" name="train_id" value="<?php echo htmlspecialchars($_GET['train_id'] ?? ''); ?>">
-                        <div class="mb-3">
-                            <label class="form-label" style="font-size: 0.8rem;">Nomor / Kode Kereta</label>
-                            <input type="text" name="location" class="form-control form-control-sm text-light bg-dark border-secondary" placeholder="Contoh: K302452" required>
-                        </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-success btn-sm text-white fw-bold px-3">Simpan Kereta</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="modal fade" id="modalAddLocation" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content"
+             style="background-color:#1a233a;color:#fff;">
+
+            <div class="modal-header border-bottom border-secondary">
+
+                <h5 class="modal-title">
+                    Tambah Nomor Sarana ke Rangkaian
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
             </div>
+
+
+            <form action="assign_carriage.php" method="POST">
+
+                <div class="modal-body">
+
+                    <!-- ID RANGKAIAN YANG SEDANG DIPILIH -->
+                    <input
+                        type="hidden"
+                        name="train_id"
+                        value="<?php echo (int)($selected_train_id ?? 0); ?>">
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label small">
+                            Nomor Sarana yang tersedia
+                        </label>
+
+
+                        <select
+                            name="location"
+                            class="form-select form-select-sm"
+                            required>
+
+                            <option value="">
+                                -- Pilih Nomor Sarana --
+                            </option>
+
+
+                            <?php
+
+                            if (!empty($selected_train_id)) {
+
+                                /*
+                                 * Hanya mengambil nomor sarana
+                                 * yang sudah ada di monitoring_logs
+                                 * dan belum memiliki train_id.
+                                 */
+                                $stmtAvailable = $pdo->prepare("
+                                    SELECT DISTINCT
+                                        ml.location
+
+                                    FROM monitoring_logs AS ml
+
+                                    LEFT JOIN carriages AS c
+                                        ON c.location = ml.location
+
+                                    WHERE ml.location IS NOT NULL
+                                      AND TRIM(ml.location) <> ''
+                                      AND c.train_id IS NULL
+
+                                    ORDER BY ml.location ASC
+                                ");
+
+                                $stmtAvailable->execute();
+
+
+                                while (
+                                    $loc = $stmtAvailable->fetch(
+                                        PDO::FETCH_ASSOC
+                                    )
+                                ) {
+
+                                    echo '<option value="' .
+                                        htmlspecialchars(
+                                            $loc['location'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) .
+                                        '">' .
+                                        htmlspecialchars(
+                                            $loc['location']
+                                        ) .
+                                        '</option>';
+                                }
+                            }
+
+                            ?>
+
+                        </select>
+
+
+                        <div class="form-text text-secondary">
+
+                            Hanya nomor sarana yang sudah terdeteksi
+                            oleh monitoring dan belum masuk rangkaian lain.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-bs-dismiss="modal">
+
+                        Batal
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-success btn-sm">
+
+                        <i class="bi bi-link-45deg me-1"></i>
+
+                        Masukkan ke Rangkaian
+
+                    </button>
+                </div>
+
+            </form>
+
         </div>
+
     </div>
+
+</div>
+<!-- Modal Edit Depo -->
+<div class="modal fade" id="modalEditDepo" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content"
+             style="background-color:#1a233a;color:#fff;">
+
+            <div class="modal-header border-bottom border-secondary">
+
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square text-warning me-1"></i>
+                    Edit Nama Depo
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <form action="edit_depo.php" method="POST">
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        name="depo_id"
+                        id="editDepoId">
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label small">
+                            Nama Depo
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nama_depo"
+                            id="editDepoName"
+                            class="form-control form-control-sm text-light bg-dark border-secondary"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-warning btn-sm fw-bold">
+                        Simpan Perubahan
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 </body>
 </html>
