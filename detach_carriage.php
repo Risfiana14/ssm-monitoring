@@ -1,4 +1,5 @@
 <?php
+
 require_once 'db.php';
 
 header('Content-Type: application/json');
@@ -6,11 +7,12 @@ header('Content-Type: application/json');
 $location = trim($_POST['location'] ?? '');
 
 if ($location === '') {
+
     http_response_code(400);
 
     echo json_encode([
         'status' => 'error',
-        'message' => 'Nomor sarana tidak boleh kosong.'
+        'message' => 'Nomor sarana tidak ditemukan.'
     ]);
 
     exit;
@@ -37,7 +39,7 @@ try {
 
         echo json_encode([
             'status' => 'error',
-            'message' => 'Nomor sarana tidak ditemukan atau sudah tidak memiliki rangkaian.'
+            'message' => $location . ' tidak ditemukan atau sudah tidak berada dalam rangkaian.'
         ]);
     }
 
@@ -47,7 +49,6 @@ try {
 
     echo json_encode([
         'status' => 'error',
-        'message' => 'Gagal melepas nomor sarana.'
+        'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>

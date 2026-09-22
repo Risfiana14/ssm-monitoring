@@ -409,7 +409,7 @@
             <div class="mb-3 text-center">
                 <a href="index.php" class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center gap-2 py-1 px-3" style="font-size: 0.7rem; font-weight: 600; border-radius: 6px;">
                     <i class="bi bi-arrow-left-circle" style="font-size: 0.8rem;"></i>
-                    <span>Kembali ke Dashboard</span>
+                    <span>Dashboard Utama</span>
                 </a>
             </div>
 
@@ -1149,52 +1149,66 @@
             });
         }
 
-        // FUNGSI MELEPAS NOMOR SARANA DARI RANGKAIAN
-        function detachCarriage(location) {
+        // =====================================================
+// MELEPAS NOMOR SARANA DARI RANGKAIAN
+// =====================================================
+function detachCarriage(location) {
 
-            if (!confirm(`Lepas ${location} dari rangkaian ini?`)) {
-                return;
-            }
+    console.log('detachCarriage dipanggil:', location);
 
-            fetch('detach_carriage.php', {
+    if (!confirm('Lepas ' + location + ' dari rangkaian ini?')) {
+        return;
+    }
 
-                method: 'POST',
+    fetch('detach_carriage.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'location=' + encodeURIComponent(location)
+    })
+    .then(function(response) {
 
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
+        console.log('HTTP Status:', response.status);
 
-                body: 'location=' + encodeURIComponent(location)
+        return response.text();
+    })
+    .then(function(text) {
 
-            })
+        console.log('Response dari detach_carriage.php:', text);
 
-            .then(res => res.json())
+        let result;
 
-            .then(result => {
-
-                if (result.status === 'ok') {
-
-                    window.location.reload();
-
-                } else {
-
-                    alert(
-                        result.message ||
-                        'Gagal melepas nomor sarana.'
-                    );
-
-                }
-
-            })
-
-            .catch(() => {
-
-                alert(
-                    'Terjadi kesalahan saat melepas nomor sarana.'
-                );
-
-            });
+        try {
+            result = JSON.parse(text);
+        } catch (error) {
+            console.error('Response bukan JSON:', text);
+            alert('Server mengembalikan response yang tidak valid.');
+            return;
         }
+
+        if (result.status === 'ok') {
+
+            alert(result.message);
+
+            // refresh halaman supaya nomor sarana langsung hilang
+            window.location.reload();
+
+        } else {
+
+            alert(result.message || 'Gagal melepas nomor sarana.');
+        }
+    })
+    .catch(function(error) {
+
+        console.error('FETCH ERROR:', error);
+
+        alert(
+            'Tidak dapat terhubung ke detach_carriage.php.\n' +
+            'Periksa file detach_carriage.php.'
+        );
+    });
+}
 
         function toggleTrainGroup(id, button) {
             const group = document.getElementById(id);
