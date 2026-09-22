@@ -1234,6 +1234,68 @@
 
         });
 
+        // JAVASCRIPT TAMBAH NOMOR SARANA KE RANGKAIAN
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const formAddLocation = document.getElementById('formAddLocation');
+
+            if (!formAddLocation) {
+                return;
+            }
+
+            formAddLocation.addEventListener('submit', function (e) {
+
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                fetch('assign_carriage.php', {
+                    method: 'POST',
+                    body: formData
+                })
+
+                .then(res => res.json())
+
+                .then(result => {
+
+                    if (result.status === 'ok') {
+
+                        // Tutup modal
+                        const modalElement = document.getElementById('modalAddLocation');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+
+                        // Muat ulang halaman agar nomor sarana langsung tampil
+                        window.location.reload();
+
+                    } else {
+
+                        alert(
+                            result.message ||
+                            'Gagal menambahkan nomor sarana.'
+                        );
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    console.error('Error:', error);
+
+                    alert(
+                        'Terjadi kesalahan saat menambahkan nomor sarana.'
+                    );
+
+                });
+
+            });
+
+        });
+
         function toggleRailmapSidebar() {
             const sidebar = document.getElementById('railmapSidebar');
             if (window.innerWidth <= 992) {
@@ -1354,24 +1416,18 @@
 
             </div>
 
-
-            <form action="assign_carriage.php" method="POST">
-
+            <form id="formAddLocation">
                 <div class="modal-body">
-
                     <!-- ID RANGKAIAN YANG SEDANG DIPILIH -->
                     <input
                         type="hidden"
                         name="train_id"
                         value="<?php echo (int)($selected_train_id ?? 0); ?>">
 
-
                     <div class="mb-3">
-
                         <label class="form-label small">
                             Nomor Sarana yang tersedia
                         </label>
-
 
                         <select
                             name="location"
@@ -1382,15 +1438,12 @@
                                 -- Pilih Nomor Sarana --
                             </option>
 
-
                             <?php
 
                             if (!empty($selected_train_id)) {
 
                                 /*
-                                 * Hanya mengambil nomor sarana
-                                 * yang sudah ada di monitoring_logs
-                                 * dan belum memiliki train_id.
+                                 * Hanya mengambil nomor sarana yang sudah ada di monitoring_logs dan belum memiliki train_id.
                                  */
                                 $stmtAvailable = $pdo->prepare("
                                     SELECT DISTINCT
