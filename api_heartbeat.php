@@ -3,7 +3,7 @@
 require_once 'db.php';
 date_default_timezone_set('Asia/Jakarta');
 
-$location = trim($_GET['location'] ?? $_GET['location_code'] ?? '');
+$location = trim($_GET['location'] ?? $_GET['location'] ?? '');
 
 if (!empty($location)) {
     $stmt = $pdo->prepare("

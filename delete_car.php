@@ -9,15 +9,15 @@ require_once 'db.php';
 
 header('Content-Type: application/json');
 
-$locationCode = $_POST['location_code'] ?? null;
+$locationCode = $_POST['location'] ?? null;
 
 if (!$locationCode) {
     http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => 'location_code wajib diisi']);
+    echo json_encode(['status' => 'error', 'message' => 'location wajib diisi']);
     exit;
 }
 
-$stmt = $pdo->prepare("DELETE FROM carriages WHERE location_code = ?");
+$stmt = $pdo->prepare("DELETE FROM carriages WHERE location = ?");
 $stmt->execute([$locationCode]);
 
 echo json_encode([

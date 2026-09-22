@@ -7,7 +7,7 @@ $deviceName   = $_GET['device_name'] ?? null;
 $deviceIP     = $_GET['device_ip'] ?? null;
 $deviceType   = $_GET['device_type'] ?? null;
 $trainset     = $_GET['trainset'] ?? null;
-$locationCode = $_GET['location_code'] ?? null; 
+$locationCode = $_GET['location'] ?? null; 
 $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
 $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 
@@ -17,9 +17,9 @@ $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 if ($locationCode) {
     // 1. Pastikan gerbong terdaftar di tabel carriages
     $regStmt = $pdo->prepare("
-        INSERT INTO carriages (location_code)
+        INSERT INTO carriages (location)
         VALUES (?)
-        ON DUPLICATE KEY UPDATE location_code = VALUES(location_code)
+        ON DUPLICATE KEY UPDATE location = VALUES(location)
     ");
     $regStmt->execute([$locationCode]);
 
@@ -28,7 +28,7 @@ if ($locationCode) {
         $internetStmt = $pdo->prepare("
             UPDATE carriages 
             SET internet_status = ? 
-            WHERE location_code = ?
+            WHERE location = ?
         ");
         $internetStmt->execute([$internetStatus, $locationCode]);
 
