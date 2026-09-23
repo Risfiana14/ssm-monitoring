@@ -681,38 +681,29 @@
                                     */
                                     echo '<div class="d-flex justify-content-end">';
 
-                                    echo '<button 
-                                            type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            onclick="detachCarriage(' . $locationJs . ')">
-                                            <i class="bi bi-link-45deg me-1"></i>
-                                            Lepas dari Rangkaian
-                                        </button>';
-
-                                    echo '</div>';
-
-
+                                    echo '<form action="detach_carriage.php" method="POST" class="d-inline" onsubmit="return confirm(\'Lepas ' . htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8') . ' dari rangkaian ini?\')">';
+                                    echo '<input type="hidden" name="location" value="' . htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8') . '">';
+                                    echo '<input type="hidden" name="train_id" value="' . (int)$selected_train_id . '">';
+                                    echo '<button type="submit" class="btn btn-outline-danger btn-sm">';
+                                    echo '<i class="bi bi-link-45deg me-1"></i>';
+                                    echo 'Lepas dari Rangkaian';
+                                    echo '</button>';
+                                    echo '</form>';
                                     echo '</div>';
                                     echo '</div>';
-
+                                    echo '</div>';
                                     echo '</div>';
                                 }
 
-
                                 echo '</div>';
-
-
                             } else {
 
                                 /*
                                 * JIKA BELUM ADA NOMOR SARANA
                                 */
                                 echo '<div class="text-center py-5 bg-dark border border-secondary border-dashed rounded text-light opacity-75">';
-
                                 echo '<i class="bi bi-train-front display-4 text-warning mb-3"></i>';
-
                                 echo '<h5>Belum ada nomor sarana pada rangkaian ini.</h5>';
-
                                 echo '<p class="small text-muted">';
                                 echo 'Klik "Tambah Nomor Sarana" untuk memilih nomor sarana yang sudah terdeteksi monitoring.';
                                 echo '</p>';
@@ -729,7 +720,6 @@
                                 echo '</div>';
                             }
 
-
                         } else {
 
                             echo '<div class="alert alert-danger">';
@@ -737,14 +727,12 @@
                             echo '</div>';
                         }
 
-
                     } catch (PDOException $e) {
 
                         echo '<div class="alert alert-danger">';
                         echo 'Error: ' . htmlspecialchars($e->getMessage());
                         echo '</div>';
                     }
-
 
                 } else {
                     // Tampilan default awal

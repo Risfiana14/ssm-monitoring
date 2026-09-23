@@ -2,19 +2,16 @@
 
 require_once 'db.php';
 
-header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: dashboard_main.php');
+    exit;
+}
 
 $location = trim($_POST['location'] ?? '');
+$train_id = (int)($_POST['train_id'] ?? 0);
 
 if ($location === '') {
-
-    http_response_code(400);
-
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Nomor sarana tidak ditemukan.'
-    ]);
-
+    header('Location: dashboard_main.php');
     exit;
 }
 
@@ -28,27 +25,18 @@ try {
 
     $stmt->execute([$location]);
 
-    if ($stmt->rowCount() > 0) {
-
-        echo json_encode([
-            'status' => 'ok',
-            'message' => $location . ' berhasil dilepas dari rangkaian.'
-        ]);
-
+    // Kembali ke rangkaian yang sedang dibuka
+    if ($train_id > 0) {
+        header('Location: dashboard_main.php?train_id=' . $train_id);
     } else {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => $location . ' tidak ditemukan atau sudah tidak berada dalam rangkaian.'
-        ]);
+        header('Location: dashboard_main.php');
     }
+
+    exit;
 
 } catch (PDOException $e) {
 
-    http_response_code(500);
+    echo 'Gagal melepas nomor sarana: ' . htmlspecialchars($e->getMessage());
 
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Database error: ' . $e->getMessage()
-    ]);
 }
+?>
