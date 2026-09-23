@@ -562,16 +562,16 @@
                             /*
                             * HEADER RANGKAIAN
                             */
-                            echo '<div class="p-3 mb-4 bg-dark border border-secondary rounded text-light d-flex justify-content-between align-items-center gap-3">';
+                            echo '<div class="px-4 py-3 mb-4 d-flex justify-content-between align-items-center gap-3" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);">';
 
                             echo '<div>';
 
-                            echo '<h4 class="text-info mb-1">';
-                            echo 'Rangkaian Kereta: ' . htmlspecialchars($currentTrain['nama_kereta']);
+                            echo '<h4 class="text-info mb-1 d-flex align-items-center gap-2" style="font-weight: 700; font-size: 1.25rem;">';
+                            echo '<i class="bi bi-train-front"></i> Rangkaian Kereta: ' . htmlspecialchars($currentTrain['nama_kereta']);
                             echo '</h4>';
 
-                            echo '<small class="text-muted">';
-                            echo 'Depo: ' . htmlspecialchars($currentTrain['nama_depo'] ?? '-');
+                            echo '<small class="text-light opacity-75" style="font-size: 0.8rem;">';
+                            echo '<i class="bi bi-folder2-open me-1 text-warning"></i> Depo: ' . htmlspecialchars($currentTrain['nama_depo'] ?? '-');
                             echo '</small>';
 
                             echo '</div>';
@@ -615,105 +615,73 @@
                             * JIKA SUDAH ADA NOMOR SARANA
                             */
                             if (count($carriagesList) > 0) {
+                            echo '<div class="row g-2 g-md-3 justify-content-center" id="train-carriages-grid">';
 
-                                /*
-                                * PENTING:
-                                * ID-NYA BUKAN cars-grid
-                                *
-                                * Karena cars-grid digunakan oleh
-                                * monitoring dashboard utama.
-                                */
-                                echo '<div class="row g-2 g-md-3 justify-content-center" id="train-carriages-grid">';
+                            foreach ($carriagesList as $car) {
+                                $location = htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8');
+                                $internet = htmlspecialchars($car['internet_status'] ?? 'NO INTERNET', ENT_QUOTES, 'UTF-8');
 
-
-                                foreach ($carriagesList as $car) {
-
-                                    $location = htmlspecialchars(
-                                        $car['location'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    );
-
-                                    $internet = htmlspecialchars(
-                                        $car['internet_status'] ?? 'NO INTERNET',
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    );
-
-                                    $locationJs = json_encode(
-                                        $car['location'],
-                                        JSON_HEX_TAG |
-                                        JSON_HEX_APOS |
-                                        JSON_HEX_AMP |
-                                        JSON_HEX_QUOT
-                                    );
-
-
-                                    echo '<div class="col-md-4 col-lg-3">';
-
-                                    echo '<div class="card bg-dark text-light border-secondary h-100">';
-
-                                    echo '<div class="card-body p-3">';
-
-
-                                    /*
-                                    * HEADER KARTU
-                                    */
-                                    echo '<div class="d-flex justify-content-between align-items-center gap-2">';
-
-                                    echo '<h6 class="text-warning mb-0">';
-                                    echo '<i class="bi bi-train-front me-1"></i>';
-                                    echo $location;
-                                    echo '</h6>';
-
-                                    echo '<span class="badge bg-secondary">';
-                                    echo $internet;
-                                    echo '</span>';
-
-                                    echo '</div>';
-
-
-                                    echo '<hr class="border-secondary my-2">';
-
-
-                                    /*
-                                    * TOMBOL LEPAS
-                                    */
-                                    echo '<div class="d-flex justify-content-end">';
-
-                                    echo '<form action="detach_carriage.php" method="POST" class="d-inline" onsubmit="return confirm(\'Lepas ' . htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8') . ' dari rangkaian ini?\')">';
-                                    echo '<input type="hidden" name="location" value="' . htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8') . '">';
-                                    echo '<input type="hidden" name="train_id" value="' . (int)$selected_train_id . '">';
-                                    echo '<button type="submit" class="btn btn-outline-danger btn-sm">';
-                                    echo '<i class="bi bi-link-45deg me-1"></i>';
-                                    echo 'Lepas dari Rangkaian';
-                                    echo '</button>';
-                                    echo '</form>';
-                                    echo '</div>';
-                                    echo '</div>';
-                                    echo '</div>';
-                                    echo '</div>';
-                                }
-
+                                echo '<div class="col-md-4 col-lg-3 car-wrapper" data-car-id="' . $location . '">';
+                                echo '<div class="car-card">';
+                                
+                                // Header Kartu
+                                echo '<div class="car-header">';
+                                echo '<span class="car-title-text" title="' . $location . '">';
+                                echo '<i class="bi bi-distribute-vertical me-1 text-info"></i>';
+                                echo '<span>' . $location . '</span>';
+                                echo '</span>';
+                                
+                                echo '<div class="d-flex align-items-center gap-1">';
+                                // Badge Status Internet & Status Utama Kereta
+                                echo '<span class="badge-status bg-secondary" id="internet-badge-' . $location . '">-</span>';
+                                echo '<span class="badge-status bg-secondary" id="badge-' . $location . '">NO DATA</span>';
+                                
+                                // TOMBOL LEPAS DARI RANGKAIAN (Diperbesar agar kotak sempurna & sejajar)
+                                echo '<form action="detach_carriage.php" method="POST" class="d-inline" onsubmit="return confirm(\'Lepas ' . $location . ' dari rangkaian ini?\')">';
+                                echo '<input type="hidden" name="location" value="' . $location . '">';
+                                echo '<input type="hidden" name="train_id" value="' . (int)$selected_train_id . '">';
+                                echo '<button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center ms-1 p-0" style="width: 24px; height: 24px; font-size: 0.75rem; border-radius: 6px; line-height: 1;" title="Lepas dari Rangkaian">';
+                                echo '<i class="bi bi-link-45deg"></i>';
+                                echo '</button>';
+                                echo '</form>';
+                                
                                 echo '</div>';
+                                echo '</div>'; // End car-header
+
+                                // Container Grid Perangkat (Diisi dinamis oleh JavaScript)
+                                echo '<div class="device-grid-container" id="body-' . $location . '">';
+                                echo '<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>';
+                                echo '</div>';
+
+                                // Footer Waktu Update
+                                echo '<div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">';
+                                echo '<i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-' . $location . '">-</span>';
+                                echo '</div>';
+
+                                echo '</div>'; // End car-card
+                                echo '</div>'; // End col
+                            }
+
+                            echo '</div>';
                             } else {
 
                                 /*
                                 * JIKA BELUM ADA NOMOR SARANA
                                 */
-                                echo '<div class="text-center py-5 bg-dark border border-secondary border-dashed rounded text-light opacity-75">';
-                                echo '<i class="bi bi-train-front display-4 text-warning mb-3"></i>';
-                                echo '<h5>Belum ada nomor sarana pada rangkaian ini.</h5>';
-                                echo '<p class="small text-muted">';
+                                echo '<div class="text-center py-5 text-light" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)); border: 1px dashed rgba(255, 255, 255, 0.25); border-radius: 12px; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);">';
+                                echo '<i class="bi bi-train-front display-4 text-warning mb-3 opacity-75"></i>';
+                                echo '<h5 class="fw-bold mb-2">Belum ada nomor sarana pada rangkaian ini.</h5>';
+                                echo '<p class="small text-light opacity-75 mb-3">';
                                 echo 'Klik "Tambah Nomor Sarana" untuk memilih nomor sarana yang sudah terdeteksi monitoring.';
                                 echo '</p>';
 
                                 echo '<button 
                                         type="button"
-                                        class="btn btn-primary btn-sm mt-2 px-4"
+                                        class="btn btn-success btn-sm mt-1 px-4 py-2 fw-bold shadow-sm"
+                                        style="border-radius: 8px;"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalAddLocation">
-                                        <i class="bi bi-plus-circle me-1"></i>
+                                        <i class="bi bi-plus-circle-fill me-1"></i>
                                         Tambah Nomor Sarana
                                     </button>';
 
@@ -993,41 +961,54 @@
 
         function renderAllCars() {
             const gridContainer = document.getElementById('cars-grid');
-            if (!gridContainer) return;
-            gridContainer.innerHTML = '';
             
-            uniqueCars.forEach(car => {
-                gridContainer.innerHTML += `
-                    <div class="car-col-item d-flex justify-content-center car-wrapper" data-car-id="${car}">
-                        <div class="car-card">
-                            <div class="car-header">
-                                <span class="car-title-text" title="${car}">
-                                    <i class="bi bi-distribute-vertical me-1 text-info"></i>
-                                    <span>${car}</span>
-                                </span>
-                                
-                                <div class="d-flex align-items-center gap-1">
-                                    <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
-                                    <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
-                                    <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1"
-                                            style="font-size:0.65rem; line-height:1;"
-                                            onclick="deleteCar('${car}')" title="Hapus kereta ini dari dashboard">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+            // Jika berada di dashboard utama, render ulang kerangka grid utama
+            if (gridContainer) {
+                gridContainer.innerHTML = '';
+                uniqueCars.forEach(car => {
+                    gridContainer.innerHTML += `
+                        <div class="car-col-item d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                            <div class="car-card">
+                                <div class="car-header">
+                                    <span class="car-title-text" title="${car}">
+                                        <i class="bi bi-distribute-vertical me-1 text-info"></i>
+                                        <span>${car}</span>
+                                    </span>
+                                    
+                                    <div class="d-flex align-items-center gap-1">
+                                        <span class="badge-status bg-secondary" id="internet-badge-${car}">-</span>
+                                        <span class="badge-status bg-secondary" id="badge-${car}">NO DATA</span>
+                                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1"
+                                                style="font-size:0.65rem; line-height:1;"
+                                                onclick="deleteCar('${car}')" title="Hapus kereta ini dari dashboard">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="device-grid-container" id="body-${car}">
+                                    <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
+                                </div>
+                                <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
+                                    <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
                                 </div>
                             </div>
-                            <div class="device-grid-container" id="body-${car}">
-                                <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
-                            </div>
-                            <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
-                                <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
-                            </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
-            uniqueCars.forEach(car => {
+            // Ambil daftar kereta baik dari uniqueCars (dashboard utama) maupun dari elemen HTML halaman detail
+            let targetCars = [];
+            if (gridContainer) {
+                targetCars = uniqueCars;
+            } else {
+                document.querySelectorAll('.car-wrapper').forEach(el => {
+                    let carId = el.getAttribute('data-car-id');
+                    if (carId) targetCars.push(carId);
+                });
+            }
+
+            targetCars.forEach(car => {
                 const bodyElem = document.getElementById(`body-${car}`);
                 const badgeElem = document.getElementById(`badge-${car}`);
                 const netBadgeElem = document.getElementById(`internet-badge-${car}`);
@@ -1094,7 +1075,9 @@
                 }
             });
 
-            filterCars();
+            if (typeof filterCars === 'function') {
+                filterCars();
+            }
         }
         
         function scanData() {
