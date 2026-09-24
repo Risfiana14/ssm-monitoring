@@ -25,17 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 2. Jika ada unggahan gambar baru
         if (isset($_FILES['device_image']) && $_FILES['device_image']['error'] === UPLOAD_ERR_OK) {
-            
-            // Cek jumlah upload spesifik per gerbong dan per IP
-            $stmtCheck = $pdo->prepare("SELECT upload_count FROM monitoring_logs WHERE location = ? AND device_ip = ? LIMIT 1");
-            $stmtCheck->execute([$location, $deviceIP]);
-            $deviceData = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-            $currentCount = (int)($deviceData['upload_count'] ?? 0);
-
-            if ($currentCount >= 4) {
-                echo "<script>alert('Batas maksimal upload foto (4 kali) untuk gerbong ini telah tercapai!'); window.history.back();</script>";
-                exit;
-            }
 
             $file = $_FILES['device_image'];
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -47,22 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mkdir($uploadDir, 0777, true);
                 }
 
-                // Nama file dibuat unik menyertakan gerbong dan IP
+                // Nama file dibuat unik menyertakan nomor sarana dan IP
                 $newFileName = 'dev_' . md5($location . '_' . $deviceIP . '_' . time()) . '.' . $ext;
                 $targetPath = $uploadDir . $newFileName;
 
                 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                    $newCount = $currentCount + 1;
-                    
-                    // Update gambar, hitungan upload, dan timestamp HANYA pada gerbong yang diklik
                     $stmtImg = $pdo->prepare("
                         UPDATE monitoring_logs 
                         SET image = ?, 
-                            upload_count = ?, 
                             image_updated_at = NOW() 
                         WHERE location = ? AND device_ip = ?
                     ");
-                    $stmtImg->execute([$newFileName, $newCount, $location, $deviceIP]);
+
+                    $stmtImg->execute([
+                        $newFileName,
+                        $location,
+                        $deviceIP
+                    ]);
                 }
             }
         }
