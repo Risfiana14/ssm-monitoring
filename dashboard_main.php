@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,712 +9,698 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-    body {
-        background-color: #163673;
-        color: #ffffff;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        overflow-x: hidden;
-    }
+        body {
+            background-color: #163673;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-    /* Layout Wrapper Utama */
-    .app-wrapper {
-        display: flex;
-        width: 100%;
-        min-height: 100vh;
-        position: relative;
-        overflow-x: hidden;
-    }
+        /* Layout Wrapper Utama */
+        .app-wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-    /* ---------------------------------------------------- */
-    /* CSS SIDEBAR KIRI & ANIMASI TUTUPNYA                  */
-    /* ---------------------------------------------------- */
-    .railmap-sidebar {
-        width: 260px;
-        min-width: 260px;
-        background-color: #122b59;
-        border-right: 1px solid rgba(255, 255, 255, 0.12);
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        padding: 15px;
-        overflow-y: auto;
-        z-index: 1050;
-        transition: transform 0.3s ease-in-out;
-        transform: translateX(0); /* Posisi awal terbuka */
-    }
-
-    /* Jika body ada class sidebar-closed, sidebar bergeser ke kiri (tertutup) di semua layar */
-    body.sidebar-closed .railmap-sidebar {
-        transform: translateX(-100%) !important;
-    }
-
-    /* Mengubah warna latar belakang tab saat aktif */
-    .nav-pills .nav-link.active {
-        background-color: #2890a7 !important; /* Ganti dengan kode warna yang diinginkan, misal hijau */
-        color: #fff !important;
-    }
-    /* Mengubah warna teks tab saat tidak aktif */
-    .nav-pills .nav-link {
-        color: #adb5bd; 
-    }
-
-    .sidebar-brand {
-        text-align: center;
-        padding-bottom: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 15px;
-    }
-
-    .sidebar-brand-title {
-        font-weight: 800;
-        font-size: 1.1rem;
-        letter-spacing: 1px;
-        margin: 0;
-        color: #fff;
-    }
-
-    .sidebar-brand-subtitle {
-        font-size: 0.65rem;
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    .sidebar-section-title {
-        font-size: 0.65rem;
-        font-weight: 800;
-        letter-spacing: 1px;
-        color: rgba(255,255,255,0.5);
-        margin: 0 9px 9px;
-    }
-
-    .train-group {
-        margin-bottom: 5px;
-    }
-
-    .train-name {
-        width: 100%;
-        border: 0;
-        background: transparent;
-        color: #fff;
-        text-align: left;
-        border-radius: 8px;
-        padding: 9px 10px;
-        font-size: 0.78rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        transition: background 0.15s ease;
-    }
-
-    .train-name:hover,
-    .train-name.active {
-        background: rgba(13,202,240,0.15);
-    }
-
-    .train-name .train-arrow {
-        color: #0dcaf0;
-        width: 13px;
-        transition: transform 0.15s ease;
-    }
-
-    .train-name.collapsed .train-arrow {
-        transform: rotate(-90deg);
-    }
-
-    .train-ids {
-        padding: 3px 0 7px 31px;
-    }
-
-    .train-id {
-        display: block;
-        color: rgba(255,255,255,0.75);
-        text-decoration: none;
-        font-size: 0.74rem;
-        padding: 6px 9px;
-        border-left: 2px solid rgba(13,202,240,0.35);
-        margin-bottom: 2px;
-        border-radius: 0 6px 6px 0;
-    }
-
-    .train-id:hover,
-    .train-id.active {
-        color: #fff;
-        background: rgba(255,255,255,0.08);
-        border-left-color: #0dcaf0;
-    }
-
-    .sidebar-status {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #28a745;
-        margin-left: auto;
-        box-shadow: 0 0 5px rgba(40,167,69,0.65);
-    }
-
-    .sidebar-note {
-        margin: 16px 6px 0;
-        padding: 9px 10px;
-        border-radius: 8px;
-        background: rgba(0,0,0,0.15);
-        color: rgba(255,255,255,0.5);
-        font-size: 0.62rem;
-        line-height: 1.45;
-    }
-
-    /* Tombol Toggle Sidebar */
-    .sidebar-toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1100;
-        border: 1px solid rgba(255,255,255,0.2);
-        background: #122b59;
-        color: #fff;
-        border-radius: 8px;
-        width: 42px;
-        height: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        cursor: pointer;
-    }
-
-    /* ---------------------------------------------------- */
-    /* CSS KONTEN UTAMA KANAN & ATUR KOLOM (3 vs 4)         */
-    /* ---------------------------------------------------- */
-    .main-content {
-        margin-left: 260px;
-        flex: 1;
-        width: calc(100% - 260px);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
-    }
-
-    /* Default saat Sidebar Terbuka: 3 Kolom */
-    .car-col-item {
-        flex: 0 0 auto;
-        width: 33.3333%; 
-    }
-
-    /* Jika Sidebar Ditutup: Margin kiri jadi 0, Kolom berubah jadi 4 (25%) */
-    body.sidebar-closed .main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-    }
-    body.sidebar-closed .car-col-item {
-        width: 25% !important; 
-    }
-
-    .dashboard-header {
-        padding: 5px 0 10px 0;
-        text-align: center;
-    }
-
-    .dashboard-title {
-        font-weight: 800;
-        letter-spacing: 2px;
-        font-size: 2.1rem;
-        margin-bottom: 2px;
-    }
-
-    /* ---------------------------------------------------- */
-    /* KARTU KERETA & TOMBOL DEVICE KECIL & RAPI            */
-    /* ---------------------------------------------------- */
-    .car-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        padding: 10px 12px;
-        backdrop-filter: blur(5px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-        width: 100%;
-        margin-bottom: 15px;
-    }
-
-    .car-header {
-        font-weight: 700;
-        font-size: 0.82rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-        padding-bottom: 4px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        gap: 6px;
-    }
-
-    .car-title-text {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: flex;
-        align-items: center;
-        font-size: 0.8rem;
-    }
-
-    .device-grid-container {
-        display: grid;
-        grid-template-columns: repeat(5, 38px);
-        grid-template-rows: repeat(3, 38px);
-        gap: 8px;
-        justify-content: center;
-        align-items: center;
-        padding: 4px 0;
-    }
-
-    .device-box {
-        background-color: #4a5568;
-        color: #ffffff;
-        border-radius: 8px;
-        padding: 0;
-        text-align: center;
-        font-size: 0.6rem;
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        user-select: none;
-        border: none;
-        width: 38px !important;
-        height: 38px !important;
-        aspect-ratio: 1 / 1 !important;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        white-space: nowrap;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-    }
-
-    .device-box:hover {
-        transform: scale(1.12);
-        filter: brightness(1.25);
-    }
-
-    .device-box.st-online { background-color: #28a745 !important; }
-    .device-box.st-warning { background-color: #fd7e14 !important; }
-    .device-box.st-offline { background-color: #dc3545 !important; }
-
-    .badge-status {
-        font-size: 0.55rem;
-        padding: 2px 5px;
-        border-radius: 8px;
-        font-weight: 700;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    .modal-content {
-        background-color: #1e293b;
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-    }
-    
-    .modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-    .modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); }
-
-    .device-img-preview {
-        max-height: 180px;
-        width: 100%;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .saved-notes-display {
-        background-color: #212529;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 0.8rem;
-        color: #ffffff;
-        max-height: 80px;
-        overflow-y: auto;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-
-    .input-notes-area {
-        background-color: #0f172a !important;
-        color: #ffffff !important;
-        border: 1px solid #0dcaf0 !important;
-    }
-
-    /* ---------------------------------------------------- */
-    /* MEDIA QUERIES RESPONSIF (BERSIH & TANPA KONFLIK)    */
-    /* ---------------------------------------------------- */
-    @media (max-width: 1200px) {
-        .car-col-item { width: 50% !important; } 
-    }
-
-    @media (max-width: 992px) {
-        /* Sidebar defaultnya tersembunyi di luar layar kiri */
+        /* ---------------------------------------------------- */
+        /* CSS SIDEBAR KIRI & ANIMASI TUTUPNYA                  */
+        /* ---------------------------------------------------- */
         .railmap-sidebar {
-            transform: translateX(-100%) !important;
-            position: fixed !important;
+            width: 260px;
+            min-width: 260px;
+            background-color: #122b59;
+            border-right: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
             top: 0;
             left: 0;
-            height: 100vh;
+            padding: 15px;
+            overflow-y: auto;
             z-index: 1050;
-            transition: transform 0.3s ease-in-out !important;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
+            /* Posisi awal terbuka */
         }
 
-        /* Saat class active ditambahkan, sidebar bergeser masuk ke dalam layar */
-        .railmap-sidebar.active {
-            transform: translateX(0) !important;
+        /* Jika body ada class sidebar-closed, sidebar bergeser ke kiri (tertutup) di semua layar */
+        body.sidebar-closed .railmap-sidebar {
+            transform: translateX(-100%) !important;
         }
 
-        /* Konten utama di mobile menempati 100% lebar layar */
+        /* Mengubah warna latar belakang tab saat aktif */
+        .nav-pills .nav-link.active {
+            background-color: #2890a7 !important;
+            /* Ganti dengan kode warna yang diinginkan, misal hijau */
+            color: #fff !important;
+        }
+
+        /* Mengubah warna teks tab saat tidak aktif */
+        .nav-pills .nav-link {
+            color: #adb5bd;
+        }
+
+        .sidebar-brand {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .sidebar-brand-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            margin: 0;
+            color: #fff;
+        }
+
+        .sidebar-brand-subtitle {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar-section-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0 9px 9px;
+        }
+
+        .train-group {
+            margin-bottom: 5px;
+        }
+
+        .train-name {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .train-name:hover,
+        .train-name.active {
+            background: rgba(13, 202, 240, 0.15);
+        }
+
+        .train-name .train-arrow {
+            color: #0dcaf0;
+            width: 13px;
+            transition: transform 0.15s ease;
+        }
+
+        .train-name.collapsed .train-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .train-ids {
+            padding: 3px 0 7px 31px;
+        }
+
+        .train-id {
+            display: block;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.74rem;
+            padding: 6px 9px;
+            border-left: 2px solid rgba(13, 202, 240, 0.35);
+            margin-bottom: 2px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .train-id:hover,
+        .train-id.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-left-color: #0dcaf0;
+        }
+
+        .sidebar-status {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-left: auto;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.65);
+        }
+
+        .sidebar-note {
+            margin: 16px 6px 0;
+            padding: 9px 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.15);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.62rem;
+            line-height: 1.45;
+        }
+
+        /* Tombol Toggle Sidebar */
+        .sidebar-toggle-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #122b59;
+            color: #fff;
+            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        /* ---------------------------------------------------- */
+        /* CSS KONTEN UTAMA KANAN & ATUR KOLOM (3 vs 4)         */
+        /* ---------------------------------------------------- */
         .main-content {
+            margin-left: 260px;
+            flex: 1;
+            width: calc(100% - 260px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Default saat Sidebar Terbuka: 3 Kolom */
+        .car-col-item {
+            flex: 0 0 auto;
+            width: 33.3333%;
+        }
+
+        /* Jika Sidebar Ditutup: Margin kiri jadi 0, Kolom berubah jadi 4 (25%) */
+        body.sidebar-closed .main-content {
             margin-left: 0 !important;
             width: 100% !important;
-            padding-top: 60px;
         }
-    }
 
-    @media (max-width: 575.98px) {
-        .car-col-item { width: 100% !important; } 
-        .car-card { padding: 8px !important; }
-        .device-box { height: 26px !important; font-size: 0.5rem !important; }
-    }
-</style>
+        body.sidebar-closed .car-col-item {
+            width: 25% !important;
+        }
+
+        .dashboard-header {
+            padding: 5px 0 10px 0;
+            text-align: center;
+        }
+
+        .dashboard-title {
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 2.1rem;
+            margin-bottom: 2px;
+        }
+
+        /* KARTU KERETA & TOMBOL DEVICE KECIL & RAPI            */
+        .car-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 10px 12px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .car-header {
+            font-weight: 700;
+            font-size: 0.82rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 6px;
+        }
+
+        .car-title-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .device-grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 38px);
+            grid-template-rows: repeat(3, 38px);
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .device-box {
+            background-color: #4a5568;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            font-size: 0.6rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: none;
+            width: 38px !important;
+            height: 38px !important;
+            aspect-ratio: 1 / 1 !important;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        .device-box:hover {
+            transform: scale(1.12);
+            filter: brightness(1.25);
+        }
+
+        .device-box.st-online {
+            background-color: #28a745 !important;
+        }
+
+        .device-box.st-warning {
+            background-color: #fd7e14 !important;
+        }
+
+        .device-box.st-offline {
+            background-color: #dc3545 !important;
+        }
+
+        .badge-status {
+            font-size: 0.55rem;
+            padding: 2px 5px;
+            border-radius: 8px;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .device-img-preview {
+            max-height: 180px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .saved-notes-display {
+            background-color: #212529;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #ffffff;
+            max-height: 80px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .input-notes-area {
+            background-color: #0f172a !important;
+            color: #ffffff !important;
+            border: 1px solid #0dcaf0 !important;
+        }
+
+        /* MEDIA QUERIES RESPONSIF (BERSIH & TANPA KONFLIK)    */
+        @media (max-width: 1200px) {
+            .car-col-item {
+                width: 50% !important;
+            }
+        }
+
+        @media (max-width: 992px) {
+
+            /* Sidebar defaultnya tersembunyi di luar layar kiri */
+            .railmap-sidebar {
+                transform: translateX(-100%) !important;
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 1050;
+                transition: transform 0.3s ease-in-out !important;
+            }
+
+            /* Saat class active ditambahkan, sidebar bergeser masuk ke dalam layar */
+            .railmap-sidebar.active {
+                transform: translateX(0) !important;
+            }
+
+            /* Konten utama di mobile menempati 100% lebar layar */
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding-top: 60px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .car-col-item {
+                width: 100% !important;
+            }
+
+            .car-card {
+                padding: 8px !important;
+            }
+
+            .device-box {
+                height: 26px !important;
+                font-size: 0.5rem !important;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     <!-- Tombol Toggle Sidebar -->
-<button
-    class="sidebar-toggle-btn"
-    type="button"
-    onclick="toggleRailmapSidebar()"
-    aria-label="Buka menu">
+    <button
+        class="sidebar-toggle-btn"
+        type="button"
+        onclick="toggleRailmapSidebar()"
+        aria-label="Buka menu">
 
-    <i class="bi bi-list fs-5"></i>
+        <i class="bi bi-list fs-5"></i>
 
-</button>
+    </button>
 
+    <div class="app-wrapper">
 
-<div class="app-wrapper">
-
-    <!-- SIDEBAR KIRI -->
-    <aside class="railmap-sidebar" id="railmapSidebar">
-
-        <div class="sidebar-brand">
-
-            <h2 class="sidebar-brand-title">
-                RAILMAP
-            </h2>
-
-            <div class="sidebar-brand-subtitle">
-                Real-Time Train Monitoring
+        <!-- SIDEBAR KIRI -->
+        <aside class="railmap-sidebar" id="railmapSidebar">
+            <div class="sidebar-brand">
+                <h2 class="sidebar-brand-title">
+                    RAILMAP
+                </h2>
+                <div class="sidebar-brand-subtitle">
+                    Real-Time Train Monitoring
+                </div>
             </div>
 
-        </div>
+            <!-- Tombol Kembali ke Dashboard Utama -->
+            <div class="mb-3 text-center">
+                <a
+                    href="index.php"
+                    class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center gap-2 py-1 px-3"
+                    style="font-size: 0.7rem; font-weight: 600; border-radius: 6px;">
+                    <i
+                        class="bi bi-arrow-left-circle"
+                        style="font-size: 0.8rem;">
+                    </i>
+                    <span>
+                        Dashboard Utama
+                    </span>
+                </a>
+            </div>
 
-
-        <!-- Tombol Kembali ke Dashboard Utama -->
-        <div class="mb-3 text-center">
-
-            <a
-                href="index.php"
-                class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center gap-2 py-1 px-3"
-                style="font-size: 0.7rem; font-weight: 600; border-radius: 6px;">
-
-                <i
-                    class="bi bi-arrow-left-circle"
-                    style="font-size: 0.8rem;">
-                </i>
-
+            <!-- Header Manajemen Data -->
+            <div
+                class="sidebar-section-title d-flex justify-content-between align-items-center"
+                style="padding-right: 15px;">
                 <span>
-                    Dashboard Utama
+                    MANAJEMEN DATA
                 </span>
 
-            </a>
+                <!-- Tombol Tambah Data -->
+                <button
+                    type="button"
+                    class="btn btn-sm p-0 text-info"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCreateMenu"
+                    title="Tambah Data"
+                    style="background: none; border: none;">
+                    <i class="bi bi-plus-circle-fill fs-6"></i>
+                </button>
+            </div>
 
-        </div>
+            <!-- Menu Daftar Depo Dinamis -->
+            <div class="train-group">
+                <div
+                    class="train-ids"
+                    style="padding-left: 0px;">
 
-        <!-- Header Manajemen Data -->
-        <div
-            class="sidebar-section-title d-flex justify-content-between align-items-center"
-            style="padding-right: 15px;">
+                    <?php
 
-            <span>
-                MANAJEMEN DATA
-            </span>
+                    // Koneksi database
+                    include 'db.php';
 
+                    try {
 
-            <!-- Tombol Tambah Data -->
-            <button
-                type="button"
-                class="btn btn-sm p-0 text-info"
-                data-bs-toggle="modal"
-                data-bs-target="#modalCreateMenu"
-                title="Tambah Data"
-                style="background: none; border: none;">
-
-                <i class="bi bi-plus-circle-fill fs-6"></i>
-
-            </button>
-
-        </div>
-
-
-        <!-- Menu Daftar Depo Dinamis -->
-        <div class="train-group">
-
-            <div
-                class="train-ids"
-                style="padding-left: 0px;">
-
-                <?php
-
-                // Koneksi database
-                include 'db.php';
-
-                try {
-
-                    // Ambil semua depo
-                    $stmtDepo = $pdo->query("
+                        // Ambil semua depo
+                        $stmtDepo = $pdo->query("
                         SELECT *
                         FROM depos
                         ORDER BY id ASC
                     ");
 
-                    $deposList = $stmtDepo->fetchAll(PDO::FETCH_ASSOC);
+                        $deposList = $stmtDepo->fetchAll(PDO::FETCH_ASSOC);
 
 
-                    if (count($deposList) > 0) {
+                        if (count($deposList) > 0) {
 
-                        foreach ($deposList as $depo) {
+                            foreach ($deposList as $depo) {
 
-                            $depoId = (int)$depo['id'];
-
-                            $collapseId = 'depoCollapse_' . $depoId;
-
-                            $namaDepoRaw = $depo['nama_depo'];
-
-                            $namaDepo = htmlspecialchars(
-                                $namaDepoRaw,
-                                ENT_QUOTES,
-                                'UTF-8'
-                            );
-
-                            ?>
-
-                            <!-- SATU DEPO -->
-                            <div class="mb-2 w-100">
-                                <div class="d-flex align-items-center w-100">
-                                    <!-- Tombol Nama Depo -->
-                                    <button
-                                        class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#<?php echo $collapseId; ?>"
-                                        aria-expanded="false"
-                                        aria-controls="<?php echo $collapseId; ?>">
-
-                                        <i
-                                            class="bi bi-chevron-down train-arrow me-2">
-                                        </i>
-
-                                        <i
-                                            class="bi bi-folder text-info me-2">
-                                        </i>
-
-                                        <span class="text-light">
-                                            <?php echo $namaDepo; ?>
-                                        </span>
-
-                                    </button>
-
-                                    <!-- TOMBOL EDIT DEPO -->
-                                    <button
-                                        type="button"
-                                        class="btn btn-sm text-warning p-1 ms-1"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalEditDepo"
-                                        data-depo-id="<?php echo $depoId; ?>"
-                                        data-depo-name="<?php echo $namaDepo; ?>"
-                                        title="Edit nama depo">
-
-                                        <i class="bi bi-pencil-square"></i>
-
-                                    </button>
-
-                                    <!-- TOMBOL HAPUS DEPO -->
-                                    <form
-                                        action="delete_depo.php"
-                                        method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Yakin ingin menghapus depo <?php echo addslashes($namaDepoRaw); ?> beserta seluruh nama kereta di dalamnya?');">
-
-                                        <input
-                                            type="hidden"
-                                            name="depo_id"
-                                            value="<?php echo $depoId; ?>">
-
+                                $depoId = (int)$depo['id'];
+                                $collapseId = 'depoCollapse_' . $depoId;
+                                $namaDepoRaw = $depo['nama_depo'];
+                                $namaDepo = htmlspecialchars(
+                                    $namaDepoRaw,
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                );
+                    ?>
+                                <!-- SATU DEPO -->
+                                <div class="mb-2 w-100">
+                                    <div class="d-flex align-items-center w-100">
+                                        <!-- Tombol Nama Depo -->
                                         <button
-                                            type="submit"
-                                            class="btn btn-sm text-danger p-1 ms-1"
-                                            title="Hapus depo">
+                                            class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#<?php echo $collapseId; ?>"
+                                            aria-expanded="false"
+                                            aria-controls="<?php echo $collapseId; ?>">
 
-                                            <i class="bi bi-trash"></i>
+                                            <i
+                                                class="bi bi-chevron-down train-arrow me-2">
+                                            </i>
+
+                                            <i
+                                                class="bi bi-folder text-info me-2">
+                                            </i>
+
+                                            <span class="text-light">
+                                                <?php echo $namaDepo; ?>
+                                            </span>
 
                                         </button>
 
-                                    </form>
+                                        <!-- TOMBOL EDIT DEPO -->
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm text-warning p-1 ms-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditDepo"
+                                            data-depo-id="<?php echo $depoId; ?>"
+                                            data-depo-name="<?php echo $namaDepo; ?>"
+                                            title="Edit nama depo">
 
+                                            <i class="bi bi-pencil-square"></i>
 
-                                </div>
+                                        </button>
 
-                                <!-- DROPDOWN NAMA KERETA -->
-                                <div
-                                    class="collapse"
-                                    id="<?php echo $collapseId; ?>">
+                                        <!-- TOMBOL HAPUS DEPO -->
+                                        <form
+                                            action="delete_depo.php"
+                                            method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Yakin ingin menghapus depo <?php echo addslashes($namaDepoRaw); ?> beserta seluruh nama kereta di dalamnya?');">
 
+                                            <input
+                                                type="hidden"
+                                                name="depo_id"
+                                                value="<?php echo $depoId; ?>">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm text-danger p-1 ms-1"
+                                                title="Hapus depo">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- DROPDOWN NAMA KERETA -->
                                     <div
-                                        class="train-ids"
-                                        style="padding-left: 25px;">
+                                        class="collapse"
+                                        id="<?php echo $collapseId; ?>">
 
+                                        <div
+                                            class="train-ids"
+                                            style="padding-left: 25px;">
 
-                                        <?php
+                                            <?php
 
-                                        // Ambil kereta berdasarkan depo
-                                        $stmtTrain = $pdo->prepare("
+                                            // Ambil kereta berdasarkan depo
+                                            $stmtTrain = $pdo->prepare("
                                             SELECT *
                                             FROM trains
                                             WHERE depo_id = ?
                                             ORDER BY id ASC
                                         ");
 
-                                        $stmtTrain->execute([
-                                            $depoId
-                                        ]);
+                                            $stmtTrain->execute([
+                                                $depoId
+                                            ]);
 
-                                        $trainsList = $stmtTrain->fetchAll(
-                                            PDO::FETCH_ASSOC
-                                        );
+                                            $trainsList = $stmtTrain->fetchAll(
+                                                PDO::FETCH_ASSOC
+                                            );
 
+                                            if (count($trainsList) > 0) {
+                                                foreach ($trainsList as $train) {
+                                                    $trainId = (int)$train['id'];
+                                                    $namaKeretaRaw =
+                                                        $train['nama_kereta'];
+                                                    $namaKereta =
+                                                        htmlspecialchars(
+                                                            $namaKeretaRaw,
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        );
+                                            ?>
 
-                                        if (count($trainsList) > 0) {
+                                                    <!-- SATU NAMA KERETA -->
+                                                    <div
+                                                        class="d-flex align-items-center w-100 mb-1">
 
+                                                        <!-- Nama kereta yang bisa diklik -->
+                                                        <a
+                                                            href="dashboard_main.php?train_id=<?php echo $trainId; ?>"
+                                                            class="train-id flex-grow-1 text-light text-decoration-none py-1 ps-2 rounded"
+                                                            style="font-size: 0.8rem;">
 
-                                            foreach ($trainsList as $train) {
+                                                            <?php echo $namaKereta; ?>
+                                                        </a>
 
-                                                $trainId = (int)$train['id'];
+                                                        <!-- TOMBOL HAPUS NAMA KERETA -->
+                                                        <form
+                                                            action="delete_kereta.php"
+                                                            method="POST"
+                                                            class="d-inline ms-1"
+                                                            onsubmit="return confirm('Yakin ingin menghapus nama kereta <?php echo addslashes($namaKeretaRaw); ?>?');">
 
-                                                $namaKeretaRaw =
-                                                    $train['nama_kereta'];
+                                                            <input
+                                                                type="hidden"
+                                                                name="train_id"
+                                                                value="<?php echo $trainId; ?>">
 
-                                                $namaKereta =
-                                                    htmlspecialchars(
-                                                        $namaKeretaRaw,
-                                                        ENT_QUOTES,
-                                                        'UTF-8'
-                                                    );
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-sm text-danger p-1"
+                                                                style="font-size: 0.7rem;"
+                                                                title="Hapus nama kereta">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                <?php
+                                                }
+                                            } else {
 
                                                 ?>
+                                                <span
+                                                    class="train-id text-muted d-block"
+                                                    style="font-size: 0.7rem; font-style: italic;">
 
-                                                <!-- SATU NAMA KERETA -->
-                                                <div
-                                                    class="d-flex align-items-center w-100 mb-1">
-
-
-                                                    <!-- Nama kereta yang bisa diklik -->
-                                                    <a
-                                                        href="dashboard_main.php?train_id=<?php echo $trainId; ?>"
-                                                        class="train-id flex-grow-1 text-light text-decoration-none py-1 ps-2 rounded"
-                                                        style="font-size: 0.8rem;">
-
-                                                        <?php echo $namaKereta; ?>
-
-                                                    </a>
-
-                                                    <!-- TOMBOL HAPUS NAMA KERETA -->
-                                                    <form
-                                                        action="delete_kereta.php"
-                                                        method="POST"
-                                                        class="d-inline ms-1"
-                                                        onsubmit="return confirm('Yakin ingin menghapus nama kereta <?php echo addslashes($namaKeretaRaw); ?>?');">
-
-
-                                                        <input
-                                                            type="hidden"
-                                                            name="train_id"
-                                                            value="<?php echo $trainId; ?>">
-
-                                                        <button
-                                                            type="submit"
-                                                            class="btn btn-sm text-danger p-1"
-                                                            style="font-size: 0.7rem;"
-                                                            title="Hapus nama kereta">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                <?php
-                                            }
-                                        } else {
-
-                                            ?>
-                                            <span
-                                                class="train-id text-muted d-block"
-                                                style="font-size: 0.7rem; font-style: italic;">
-
-                                                Belum ada kereta
-                                            </span>
-
+                                                    Belum ada kereta
+                                                </span>
                                             <?php
-                                        }
-                                        ?>
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <?php
-                        }
-                    } else {
-                        ?>
-                        <div
-                            class="text-muted px-2"
-                            style="font-size: 0.75rem;">
-                            Belum ada depo
-                        </div>
+                            }
+                        } else {
+                            ?>
+                            <div
+                                class="text-muted px-2"
+                                style="font-size: 0.75rem;">
+                                Belum ada depo
+                            </div>
 
                         <?php
+                        }
+                    } catch (PDOException $e) {
+
+                        ?>
+
+                        <div
+                            class="text-danger px-2"
+                            style="font-size: 0.75rem;">
+
+                            Error:
+                            <?php echo htmlspecialchars($e->getMessage()); ?>
+                        </div>
+                    <?php
                     }
-                } catch (PDOException $e) {
-
                     ?>
-
-                    <div
-                        class="text-danger px-2"
-                        style="font-size: 0.75rem;">
-
-                        Error:
-                        <?php echo htmlspecialchars($e->getMessage()); ?>
-                    </div>
-                <?php
-                }
-                ?>
+                </div>
             </div>
-        </div>
-    </aside>
+        </aside>
 
         <!-- KONTEN UTAMA KANAN -->
         <div class="main-content">
             <div class="dashboard-header mb-3">
                 <h1 class="dashboard-title">RAILMAP</h1>
-                
+
                 <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
                     <i class="bi bi-train-front text-info fs-5"></i>
                     <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>
@@ -730,9 +717,7 @@
 
                     try {
 
-                        /*
-                        * Ambil data rangkaian berdasarkan train_id
-                        */
+                        // ambil data rangkaian kereta berdasarkan train_id yang dipilih
                         $stmtTrain = $pdo->prepare("
                             SELECT 
                                 t.*,
@@ -744,15 +729,10 @@
                         ");
 
                         $stmtTrain->execute([$selected_train_id]);
-
                         $currentTrain = $stmtTrain->fetch(PDO::FETCH_ASSOC);
-
-
                         if ($currentTrain) {
 
-                            /*
-                            * HEADER RANGKAIAN
-                            */
+                            // header rangkaian kereta
                             echo '<div class="px-4 py-3 mb-4 d-flex justify-content-between align-items-center gap-3" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);">';
 
                             echo '<div>';
@@ -767,10 +747,7 @@
 
                             echo '</div>';
 
-
-                            /*
-                            * TOMBOL TAMBAH NOMOR SARANA
-                            */
+                            // tombol tambah nomor sarana
                             echo '<button 
                                     type="button"
                                     class="btn btn-success btn-sm px-3 py-2 fw-bold"
@@ -782,11 +759,7 @@
 
                             echo '</div>';
 
-
-                            /*
-                            * AMBIL NOMOR SARANA YANG SUDAH
-                            * MASUK KE RANGKAIAN INI
-                            */
+                            // ambil nomor sarana yang sudah masuk ke rangkaian ini
                             $stmtCarriages = $pdo->prepare("
                                 SELECT 
                                     id,
@@ -798,67 +771,61 @@
                             ");
 
                             $stmtCarriages->execute([$selected_train_id]);
-
                             $carriagesList = $stmtCarriages->fetchAll(PDO::FETCH_ASSOC);
 
-
-                            /*
-                            * JIKA SUDAH ADA NOMOR SARANA
-                            */
+                            // jika sudah ada nomor sarana
                             if (count($carriagesList) > 0) {
-                            echo '<div class="row g-2 g-md-3 justify-content-center" id="train-carriages-grid">';
+                                echo '<div class="row g-2 g-md-3 justify-content-center" id="train-carriages-grid">';
 
-                            foreach ($carriagesList as $car) {
-                                $location = htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8');
-                                $internet = htmlspecialchars($car['internet_status'] ?? 'NO INTERNET', ENT_QUOTES, 'UTF-8');
+                                foreach ($carriagesList as $car) {
+                                    $location = htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8');
+                                    $internet = htmlspecialchars($car['internet_status'] ?? 'NO INTERNET', ENT_QUOTES, 'UTF-8');
 
-                                echo '<div class="col-md-4 col-lg-3 car-wrapper" data-car-id="' . $location . '">';
-                                echo '<div class="car-card">';
-                                
-                                // Header Kartu
-                                echo '<div class="car-header">';
-                                echo '<span class="car-title-text" title="' . $location . '">';
-                                echo '<i class="bi bi-distribute-vertical me-1 text-info"></i>';
-                                echo '<span>' . $location . '</span>';
-                                echo '</span>';
-                                
-                                echo '<div class="d-flex align-items-center gap-1">';
-                                // Badge Status Internet & Status Utama Kereta
-                                echo '<span class="badge-status bg-secondary" id="internet-badge-' . $location . '">-</span>';
-                                echo '<span class="badge-status bg-secondary" id="badge-' . $location . '">NO DATA</span>';
-                                
-                                // TOMBOL LEPAS DARI RANGKAIAN (Diperbesar agar kotak sempurna & sejajar)
-                                echo '<form action="detach_carriage.php" method="POST" class="d-inline" onsubmit="return confirm(\'Lepas ' . $location . ' dari rangkaian ini?\')">';
-                                echo '<input type="hidden" name="location" value="' . $location . '">';
-                                echo '<input type="hidden" name="train_id" value="' . (int)$selected_train_id . '">';
-                                echo '<button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center ms-1 p-0" style="width: 24px; height: 24px; font-size: 0.75rem; border-radius: 6px; line-height: 1;" title="Lepas dari Rangkaian">';
-                                echo '<i class="bi bi-link-45deg"></i>';
-                                echo '</button>';
-                                echo '</form>';
-                                
+                                    echo '<div class="col-md-4 col-lg-3 car-wrapper" data-car-id="' . $location . '">';
+                                    echo '<div class="car-card">';
+
+                                    // Header Kartu
+                                    echo '<div class="car-header">';
+                                    echo '<span class="car-title-text" title="' . $location . '">';
+                                    echo '<i class="bi bi-distribute-vertical me-1 text-info"></i>';
+                                    echo '<span>' . $location . '</span>';
+                                    echo '</span>';
+
+                                    echo '<div class="d-flex align-items-center gap-1">';
+                                    // Badge Status Internet & Status Utama Kereta
+                                    echo '<span class="badge-status bg-secondary" id="internet-badge-' . $location . '">-</span>';
+                                    echo '<span class="badge-status bg-secondary" id="badge-' . $location . '">NO DATA</span>';
+
+                                    // TOMBOL LEPAS DARI RANGKAIAN (Diperbesar agar kotak sempurna & sejajar)
+                                    echo '<form action="detach_carriage.php" method="POST" class="d-inline" onsubmit="return confirm(\'Lepas ' . $location . ' dari rangkaian ini?\')">';
+                                    echo '<input type="hidden" name="location" value="' . $location . '">';
+                                    echo '<input type="hidden" name="train_id" value="' . (int)$selected_train_id . '">';
+                                    echo '<button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center ms-1 p-0" style="width: 24px; height: 24px; font-size: 0.75rem; border-radius: 6px; line-height: 1;" title="Lepas dari Rangkaian">';
+                                    echo '<i class="bi bi-link-45deg"></i>';
+                                    echo '</button>';
+                                    echo '</form>';
+
+                                    echo '</div>';
+                                    echo '</div>'; // End car-header
+
+                                    // Container Grid Perangkat (Diisi dinamis oleh JavaScript)
+                                    echo '<div class="device-grid-container" id="body-' . $location . '">';
+                                    echo '<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>';
+                                    echo '</div>';
+
+                                    // Footer Waktu Update
+                                    echo '<div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">';
+                                    echo '<i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-' . $location . '">-</span>';
+                                    echo '</div>';
+
+                                    echo '</div>'; // End car-card
+                                    echo '</div>'; // End col
+                                }
+
                                 echo '</div>';
-                                echo '</div>'; // End car-header
-
-                                // Container Grid Perangkat (Diisi dinamis oleh JavaScript)
-                                echo '<div class="device-grid-container" id="body-' . $location . '">';
-                                echo '<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>';
-                                echo '</div>';
-
-                                // Footer Waktu Update
-                                echo '<div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">';
-                                echo '<i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-' . $location . '">-</span>';
-                                echo '</div>';
-
-                                echo '</div>'; // End car-card
-                                echo '</div>'; // End col
-                            }
-
-                            echo '</div>';
                             } else {
 
-                                /*
-                                * JIKA BELUM ADA NOMOR SARANA
-                                */
+                                // JIKA BELUM ADA NOMOR SARANA
                                 echo '<div class="text-center py-5 text-light" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)); border: 1px dashed rgba(255, 255, 255, 0.25); border-radius: 12px; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);">';
                                 echo '<i class="bi bi-train-front display-4 text-warning mb-3 opacity-75"></i>';
                                 echo '<h5 class="fw-bold mb-2">Belum ada nomor sarana pada rangkaian ini.</h5>';
@@ -878,21 +845,18 @@
 
                                 echo '</div>';
                             }
-
                         } else {
 
                             echo '<div class="alert alert-danger">';
                             echo 'Rangkaian kereta tidak ditemukan.';
                             echo '</div>';
                         }
-
                     } catch (PDOException $e) {
 
                         echo '<div class="alert alert-danger">';
                         echo 'Error: ' . htmlspecialchars($e->getMessage());
                         echo '</div>';
                     }
-
                 } else {
                     // Tampilan default awal
                     echo '
@@ -935,7 +899,7 @@
                         <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    
+
                     <div class="modal-body p-3">
                         <table class="table table-dark table-borderless table-sm mb-3">
                             <tbody style="font-size: 0.8rem;">
@@ -970,7 +934,7 @@
                             <label class="form-label fw-bold small text-light opacity-75 mb-1">
                                 <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
                             </label>
-                            
+
                             <div class="mb-2">
                                 <div class="saved-notes-display" id="modalDisplayNotes">
                                     <em class="opacity-50">Belum ada catatan tersimpan.</em>
@@ -1020,13 +984,14 @@
         let uniqueCars = [];
         let globalDeviceData = [];
         let globalCarriagesData = [];
-        
+
         function sortCarsByStatus() {
             uniqueCars.sort((a, b) => {
                 let devA = globalDeviceData.filter(d => d.location === a);
                 let devB = globalDeviceData.filter(d => d.location === b);
 
-                let priorityA = 3, priorityB = 3;
+                let priorityA = 3,
+                    priorityB = 3;
 
                 if (devA.length > 0) {
                     let hasOffA = devA.some(d => {
@@ -1036,7 +1001,9 @@
                     let hasWarnA = devA.some(d => (d.status || '').toUpperCase() === 'WARNING');
                     if (hasOffA) priorityA = 1;
                     else if (hasWarnA) priorityA = 2;
-                } else { priorityA = 4; }
+                } else {
+                    priorityA = 4;
+                }
 
                 if (devB.length > 0) {
                     let hasOffB = devB.some(d => {
@@ -1046,7 +1013,9 @@
                     let hasWarnB = devB.some(d => (d.status || '').toUpperCase() === 'WARNING');
                     if (hasOffB) priorityB = 1;
                     else if (hasWarnB) priorityB = 2;
-                } else { priorityB = 4; }
+                } else {
+                    priorityB = 4;
+                }
 
                 return priorityA - priorityB;
             });
@@ -1123,7 +1092,7 @@
             document.getElementById('modalDeviceIP').innerText = dev.device_ip;
             document.getElementById('modalDeviceType').innerText = dev.device_type;
             document.getElementById('modalDeviceLocation').innerText = dev.location;
-            
+
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
             document.getElementById('uploadDeviceLocation').value = dev.location;
 
@@ -1135,7 +1104,7 @@
             } else {
                 displayNotesElem.innerHTML = '<em class="opacity-50">Belum ada catatan tersimpan.</em>';
             }
-            
+
             notesInputElem.value = '';
 
             const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
@@ -1186,7 +1155,7 @@
 
         function renderAllCars() {
             const gridContainer = document.getElementById('cars-grid');
-            
+
             // Jika berada di dashboard utama, render ulang kerangka grid utama
             if (gridContainer) {
                 gridContainer.innerHTML = '';
@@ -1238,20 +1207,27 @@
                 const badgeElem = document.getElementById(`badge-${car}`);
                 const netBadgeElem = document.getElementById(`internet-badge-${car}`);
                 const timeElem = document.getElementById(`time-${car}`);
-                
+
                 let devices = globalDeviceData.filter(d => d.location === car);
 
                 if (devices.length === 0) {
                     if (bodyElem) bodyElem.innerHTML = `<div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Tidak ada data</div>`;
-                    if (badgeElem) { badgeElem.className = 'badge-status bg-secondary'; badgeElem.innerText = 'NO DATA'; }
-                    if (netBadgeElem) { netBadgeElem.className = 'badge-status bg-secondary'; netBadgeElem.innerText = 'NO INTERNET'; }
+                    if (badgeElem) {
+                        badgeElem.className = 'badge-status bg-secondary';
+                        badgeElem.innerText = 'NO DATA';
+                    }
+                    if (netBadgeElem) {
+                        netBadgeElem.className = 'badge-status bg-secondary';
+                        netBadgeElem.innerText = 'NO INTERNET';
+                    }
                     if (timeElem) timeElem.innerText = '-';
                     return;
                 }
 
                 devices.sort((a, b) => ipToInt(a.device_ip) - ipToInt(b.device_ip));
 
-                let hasOffline = false, hasWarning = false;
+                let hasOffline = false,
+                    hasWarning = false;
                 let carHTML = '';
                 let latestTimestamp = '';
 
@@ -1260,8 +1236,12 @@
                     let stClass = 'st-offline';
 
                     if (st === 'ONLINE' || st === 'UP') stClass = 'st-online';
-                    else if (st === 'WARNING') { stClass = 'st-warning'; hasWarning = true; }
-                    else { hasOffline = true; }
+                    else if (st === 'WARNING') {
+                        stClass = 'st-warning';
+                        hasWarning = true;
+                    } else {
+                        hasOffline = true;
+                    }
 
                     const devTime = dev.image_updated_at || dev.timestamp;
                     if (devTime && (!latestTimestamp || new Date(devTime) > new Date(latestTimestamp))) {
@@ -1282,7 +1262,7 @@
 
                 let carData = globalCarriagesData.find(c => c.location === car) || {};
                 const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
-                
+
                 let isInternetConnected = false;
                 if (carriageInternet === 'INTERNET' && carData.last_timestamp) {
                     let diffSeconds = (new Date().getTime() - new Date(carData.last_timestamp).getTime()) / 1000;
@@ -1304,7 +1284,7 @@
                 filterCars();
             }
         }
-        
+
         function scanData() {
             fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
@@ -1320,7 +1300,7 @@
             return fetch('get_cars.php')
                 .then(res => res.json())
                 .then(cars => {
-                    globalCarriagesData = cars; 
+                    globalCarriagesData = cars;
                     uniqueCars = cars.map(item => item.location);
                 });
         }
@@ -1329,82 +1309,82 @@
             if (!confirm(`Yakin ingin menghapus kereta ${car} dari dashboard?`)) return;
 
             fetch('delete_car.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `location=${encodeURIComponent(car)}`
-            })
-            .then(res => res.json())
-            .then(result => {
-                if (result.status === 'ok') {
-                    uniqueCars = uniqueCars.filter(c => c !== car);
-                    globalDeviceData = globalDeviceData.filter(d => d.location !== car);
-                    renderAllCars();
-                } else {
-                    alert('Gagal menghapus: ' + (result.message || 'unknown error'));
-                }
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `location=${encodeURIComponent(car)}`
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.status === 'ok') {
+                        uniqueCars = uniqueCars.filter(c => c !== car);
+                        globalDeviceData = globalDeviceData.filter(d => d.location !== car);
+                        renderAllCars();
+                    } else {
+                        alert('Gagal menghapus: ' + (result.message || 'unknown error'));
+                    }
+                });
         }
 
-        // =====================================================
-// MELEPAS NOMOR SARANA DARI RANGKAIAN
-// =====================================================
-function detachCarriage(location) {
+        // MELEPAS NOMOR SARANA DARI RANGKAIAN
+        function detachCarriage(location) {
 
-    console.log('detachCarriage dipanggil:', location);
+            console.log('detachCarriage dipanggil:', location);
 
-    if (!confirm('Lepas ' + location + ' dari rangkaian ini?')) {
-        return;
-    }
+            if (!confirm('Lepas ' + location + ' dari rangkaian ini?')) {
+                return;
+            }
 
-    fetch('detach_carriage.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'location=' + encodeURIComponent(location)
-    })
-    .then(function(response) {
+            fetch('detach_carriage.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'location=' + encodeURIComponent(location)
+                })
+                .then(function(response) {
 
-        console.log('HTTP Status:', response.status);
+                    console.log('HTTP Status:', response.status);
 
-        return response.text();
-    })
-    .then(function(text) {
+                    return response.text();
+                })
+                .then(function(text) {
 
-        console.log('Response dari detach_carriage.php:', text);
+                    console.log('Response dari detach_carriage.php:', text);
 
-        let result;
+                    let result;
 
-        try {
-            result = JSON.parse(text);
-        } catch (error) {
-            console.error('Response bukan JSON:', text);
-            alert('Server mengembalikan response yang tidak valid.');
-            return;
+                    try {
+                        result = JSON.parse(text);
+                    } catch (error) {
+                        console.error('Response bukan JSON:', text);
+                        alert('Server mengembalikan response yang tidak valid.');
+                        return;
+                    }
+
+                    if (result.status === 'ok') {
+
+                        alert(result.message);
+
+                        // refresh halaman supaya nomor sarana langsung hilang
+                        window.location.reload();
+
+                    } else {
+
+                        alert(result.message || 'Gagal melepas nomor sarana.');
+                    }
+                })
+                .catch(function(error) {
+
+                    console.error('FETCH ERROR:', error);
+
+                    alert(
+                        'Tidak dapat terhubung ke detach_carriage.php.\n' +
+                        'Periksa file detach_carriage.php.'
+                    );
+                });
         }
-
-        if (result.status === 'ok') {
-
-            alert(result.message);
-
-            // refresh halaman supaya nomor sarana langsung hilang
-            window.location.reload();
-
-        } else {
-
-            alert(result.message || 'Gagal melepas nomor sarana.');
-        }
-    })
-    .catch(function(error) {
-
-        console.error('FETCH ERROR:', error);
-
-        alert(
-            'Tidak dapat terhubung ke detach_carriage.php.\n' +
-            'Periksa file detach_carriage.php.'
-        );
-    });
-}
 
         function toggleTrainGroup(id, button) {
             const group = document.getElementById(id);
@@ -1419,33 +1399,30 @@ function detachCarriage(location) {
         }
 
         document.querySelectorAll('.train-id').forEach(item => {
-            item.addEventListener('click', function (e) {
+            item.addEventListener('click', function(e) {
                 document.querySelectorAll('.train-id').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
             });
         });
 
         // JAVASCRIPT EDIT DEPO
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
 
             document.querySelectorAll('[data-bs-target="#modalEditDepo"]').forEach(btn => {
 
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function() {
 
                     document.getElementById('editDepoId').value =
                         this.dataset.depoId;
 
                     document.getElementById('editDepoName').value =
                         this.dataset.depoName;
-
                 });
-
             });
-
         });
 
         // JAVASCRIPT TAMBAH NOMOR SARANA KE RANGKAIAN
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
 
             const formAddLocation = document.getElementById('formAddLocation');
 
@@ -1453,57 +1430,52 @@ function detachCarriage(location) {
                 return;
             }
 
-            formAddLocation.addEventListener('submit', function (e) {
+            formAddLocation.addEventListener('submit', function(e) {
 
                 e.preventDefault();
 
                 const formData = new FormData(this);
 
                 fetch('assign_carriage.php', {
-                    method: 'POST',
-                    body: formData
-                })
+                        method: 'POST',
+                        body: formData
+                    })
 
-                .then(res => res.json())
+                    .then(res => res.json())
 
-                .then(result => {
+                    .then(result => {
 
-                    if (result.status === 'ok') {
+                        if (result.status === 'ok') {
 
-                        // Tutup modal
-                        const modalElement = document.getElementById('modalAddLocation');
-                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            // Tutup modal
+                            const modalElement = document.getElementById('modalAddLocation');
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement);
 
-                        if (modalInstance) {
-                            modalInstance.hide();
+                            if (modalInstance) {
+                                modalInstance.hide();
+                            }
+
+                            // Muat ulang halaman agar nomor sarana langsung tampil
+                            window.location.reload();
+
+                        } else {
+
+                            alert(
+                                result.message ||
+                                'Gagal menambahkan nomor sarana.'
+                            );
                         }
+                    })
 
-                        // Muat ulang halaman agar nomor sarana langsung tampil
-                        window.location.reload();
+                    .catch(error => {
 
-                    } else {
+                        console.error('Error:', error);
 
                         alert(
-                            result.message ||
-                            'Gagal menambahkan nomor sarana.'
+                            'Terjadi kesalahan saat menambahkan nomor sarana.'
                         );
-
-                    }
-
-                })
-
-                .catch(error => {
-
-                    console.error('Error:', error);
-
-                    alert(
-                        'Terjadi kesalahan saat menambahkan nomor sarana.'
-                    );
-
-                });
-
+                    });
             });
-
         });
 
         function toggleRailmapSidebar() {
@@ -1518,7 +1490,7 @@ function detachCarriage(location) {
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('railmapSidebar');
             const toggleBtn = document.querySelector('.sidebar-toggle-btn');
-            
+
             if (window.innerWidth <= 992) {
                 if (sidebar && toggleBtn) {
                     if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
@@ -1547,7 +1519,7 @@ function detachCarriage(location) {
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
+
                 <div class="modal-body">
                     <ul class="nav nav-pills nav-fill mb-3" id="createTab" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -1579,8 +1551,8 @@ function detachCarriage(location) {
                                         <option value="">-- Pilih Depo --</option>
                                         <?php
                                         try {
-                                            $stmt =$pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
-                                            while ($row =$stmt->fetch()) {
+                                            $stmt = $pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
+                                            while ($row = $stmt->fetch()) {
                                                 echo '<option value="' . $row['id'] . '">' . htmlspecialchars($row['nama_depo']) . '</option>';
                                             }
                                         } catch (PDOException $e) {
@@ -1607,55 +1579,53 @@ function detachCarriage(location) {
     <!-- Modal Contoh untuk Tombol Create Kereta (Opsional / Siap Pakai) -->
     <div class="modal fade" id="modalAddLocation" tabindex="-1" aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content"
-             style="background-color:#1a233a;color:#fff;">
+            <div class="modal-content"
+                style="background-color:#1a233a;color:#fff;">
 
-            <div class="modal-header border-bottom border-secondary">
+                <div class="modal-header border-bottom border-secondary">
 
-                <h5 class="modal-title">
-                    Tambah Nomor Sarana ke Rangkaian
-                </h5>
+                    <h5 class="modal-title">
+                        Tambah Nomor Sarana ke Rangkaian
+                    </h5>
 
-                <button
-                    type="button"
-                    class="btn-close btn-close-white"
-                    data-bs-dismiss="modal">
-                </button>
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                    </button>
 
-            </div>
+                </div>
 
-            <form id="formAddLocation">
-                <div class="modal-body">
-                    <!-- ID RANGKAIAN YANG SEDANG DIPILIH -->
-                    <input
-                        type="hidden"
-                        name="train_id"
-                        value="<?php echo (int)($selected_train_id ?? 0); ?>">
+                <form id="formAddLocation">
+                    <div class="modal-body">
+                        <!-- ID RANGKAIAN YANG SEDANG DIPILIH -->
+                        <input
+                            type="hidden"
+                            name="train_id"
+                            value="<?php echo (int)($selected_train_id ?? 0); ?>">
 
-                    <div class="mb-3">
-                        <label class="form-label small">
-                            Nomor Sarana yang tersedia
-                        </label>
+                        <div class="mb-3">
+                            <label class="form-label small">
+                                Nomor Sarana yang tersedia
+                            </label>
 
-                        <select
-                            name="location"
-                            class="form-select form-select-sm"
-                            required>
+                            <select
+                                name="location"
+                                class="form-select form-select-sm"
+                                required>
 
-                            <option value="">
-                                -- Pilih Nomor Sarana --
-                            </option>
+                                <option value="">
+                                    -- Pilih Nomor Sarana --
+                                </option>
 
-                            <?php
+                                <?php
 
-                            if (!empty($selected_train_id)) {
+                                if (!empty($selected_train_id)) {
 
-                                /*
-                                 * Hanya mengambil nomor sarana yang sudah ada di monitoring_logs dan belum memiliki train_id.
-                                 */
-                                $stmtAvailable = $pdo->prepare("
+                                   
+                                    $stmtAvailable = $pdo->prepare("
                                     SELECT DISTINCT
                                         ml.location
 
@@ -1671,151 +1641,127 @@ function detachCarriage(location) {
                                     ORDER BY ml.location ASC
                                 ");
 
-                                $stmtAvailable->execute();
+                                    $stmtAvailable->execute();
 
 
-                                while (
-                                    $loc = $stmtAvailable->fetch(
-                                        PDO::FETCH_ASSOC
-                                    )
-                                ) {
+                                    while (
+                                        $loc = $stmtAvailable->fetch(
+                                            PDO::FETCH_ASSOC
+                                        )
+                                    ) {
 
-                                    echo '<option value="' .
-                                        htmlspecialchars(
-                                            $loc['location'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) .
-                                        '">' .
-                                        htmlspecialchars(
-                                            $loc['location']
-                                        ) .
-                                        '</option>';
+                                        echo '<option value="' .
+                                            htmlspecialchars(
+                                                $loc['location'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) .
+                                            '">' .
+                                            htmlspecialchars(
+                                                $loc['location']
+                                            ) .
+                                            '</option>';
+                                    }
                                 }
-                            }
 
-                            ?>
+                                ?>
 
-                        </select>
+                            </select>
 
 
-                        <div class="form-text text-secondary">
+                            <div class="form-text text-secondary">
 
-                            Hanya nomor sarana yang sudah terdeteksi
-                            oleh monitoring dan belum masuk rangkaian lain.
+                                Hanya nomor sarana yang sudah terdeteksi
+                                oleh monitoring dan belum masuk rangkaian lain.
 
+                            </div>
                         </div>
-
                     </div>
 
-                </div>
+                    <div class="modal-footer">
 
+                        <button
+                            type="button"
+                            class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">
+                            Batal
+                        </button>
 
-                <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn btn-secondary btn-sm"
-                        data-bs-dismiss="modal">
-
-                        Batal
-
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        class="btn btn-success btn-sm">
-
-                        <i class="bi bi-link-45deg me-1"></i>
-
-                        Masukkan ke Rangkaian
-
-                    </button>
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-<!-- Modal Edit Depo -->
-<div class="modal fade" id="modalEditDepo" tabindex="-1" aria-hidden="true">
-
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content"
-             style="background-color:#1a233a;color:#fff;">
-
-            <div class="modal-header border-bottom border-secondary">
-
-                <h5 class="modal-title">
-                    <i class="bi bi-pencil-square text-warning me-1"></i>
-                    Edit Nama Depo
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close btn-close-white"
-                    data-bs-dismiss="modal">
-                </button>
-
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-sm">
+                            <i class="bi bi-link-45deg me-1"></i>
+                            Masukkan ke Rangkaian
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </div>
 
+    <!-- Modal Edit Depo -->
+    <div class="modal fade" id="modalEditDepo" tabindex="-1" aria-hidden="true">
 
-            <form action="edit_depo.php" method="POST">
+        <div class="modal-dialog modal-dialog-centered">
 
-                <div class="modal-body">
+            <div class="modal-content"
+                style="background-color:#1a233a;color:#fff;">
 
-                    <input
-                        type="hidden"
-                        name="depo_id"
-                        id="editDepoId">
+                <div class="modal-header border-bottom border-secondary">
 
-
-                    <div class="mb-3">
-
-                        <label class="form-label small">
-                            Nama Depo
-                        </label>
-
-                        <input
-                            type="text"
-                            name="nama_depo"
-                            id="editDepoName"
-                            class="form-control form-control-sm text-light bg-dark border-secondary"
-                            required>
-
-                    </div>
-
-                </div>
-
-
-                <div class="modal-footer">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square text-warning me-1"></i>
+                        Edit Nama Depo
+                    </h5>
 
                     <button
                         type="button"
-                        class="btn btn-secondary btn-sm"
+                        class="btn-close btn-close-white"
                         data-bs-dismiss="modal">
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn btn-warning btn-sm fw-bold">
-                        Simpan Perubahan
                     </button>
 
                 </div>
 
-            </form>
+                <form action="edit_depo.php" method="POST">
+                    <div class="modal-body">
+                        <input
+                            type="hidden"
+                            name="depo_id"
+                            id="editDepoId">
+                        <div class="mb-3">
 
+                            <label class="form-label small">
+                                Nama Depo
+                            </label>
+
+                            <input
+                                type="text"
+                                name="nama_depo"
+                                id="editDepoName"
+                                class="form-control form-control-sm text-light bg-dark border-secondary"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">
+                            Batal
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-warning btn-sm fw-bold">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
     </div>
-
-</div>
 </body>
+
 </html>

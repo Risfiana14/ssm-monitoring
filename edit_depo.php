@@ -29,12 +29,8 @@ try {
 
     header('Location: dashboard_main.php?status=sukses_edit_depo');
     exit;
-
 } catch (PDOException $e) {
 
-    exit(
-        'Gagal mengubah nama depo: ' .
-        htmlspecialchars($e->getMessage())
-    );
+    exit('Gagal mengubah nama depo: ' .
+        htmlspecialchars($e->getMessage()));
 }
-?>

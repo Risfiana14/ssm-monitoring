@@ -1,6 +1,6 @@
 <?php
 // File penampung untuk memproses form create kereta menggunakan PDO
-include 'db.php'; 
+include 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $depo_id = trim($_POST['depo_id'] ?? '');
@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Jika berhasil, arahkan kembali ke dashboard
             header("Location: dashboard_main.php?status=sukses_tambah_kereta");
             exit();
-
         } catch (PDOException $e) {
             echo "Gagal menyimpan data ke database: " . $e->getMessage();
         }
@@ -29,4 +28,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: dashboard_main.php");
     exit();
 }
-?>

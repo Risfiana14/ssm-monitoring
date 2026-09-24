@@ -3,6 +3,7 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +11,15 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        body { background-color: #163673; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
+        body {
+            background-color: #163673;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
     </style>
 </head>
+
 <body class="p-4">
     <div class="container" style="max-width: 800px;">
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
@@ -22,7 +29,7 @@ session_start();
                 <a href="index.php" class="btn btn-sm btn-outline-light">Kembali ke Dashboard</a>
             </div>
         </div>
-        
+
         <div id="notification-list" class="d-flex flex-column gap-2">
             <!-- Daftar notifikasi dimuat otomatis via JavaScript -->
         </div>
@@ -76,4 +83,5 @@ session_start();
         loadNotifications();
     </script>
 </body>
+
 </html>
