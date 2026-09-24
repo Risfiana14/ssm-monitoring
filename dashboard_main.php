@@ -944,12 +944,46 @@
             } else {
                 displayNotesElem.innerHTML = '<em class="opacity-50">Belum ada catatan tersimpan.</em>';
             }
+            
             notesInputElem.value = '';
 
-            document.getElementById('modalDeviceTime').innerText = dev.image_updated_at || dev.timestamp;
+            const lastPhotoTime = dev.image_updated_at ? dev.image_updated_at : dev.timestamp;
+            document.getElementById('modalDeviceTime').innerText = lastPhotoTime;
 
             const imgElem = document.getElementById('modalDeviceImage');
-            imgElem.src = (dev.image && dev.image.trim() !== '') ? `uploads/${dev.image}` : 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
+            if (dev.image && dev.image.trim() !== '') {
+                imgElem.src = `uploads/${dev.image}`;
+            } else {
+                imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
+            }
+
+            // UPLOAD FOTO TANPA BATAS 
+            const uploadBtn = document.getElementById('btnSubmitForm');
+            const uploadInput = document.getElementById('inputDeviceImage');
+
+            if (uploadInput) {
+                uploadInput.disabled = false;
+            }
+
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan Perubahan`;
+            }
+
+            const st = (dev.status || '').toUpperCase();
+            const statusElem = document.getElementById('modalDeviceStatus');
+            const stateElem = document.getElementById('modalDeviceState');
+
+            if (st === 'ONLINE' || st === 'UP') {
+                statusElem.innerHTML = `<span class="badge bg-success">ONLINE</span>`;
+                stateElem.innerHTML = `<span class="fw-bold text-success">UP (Normal)</span>`;
+            } else if (st === 'WARNING') {
+                statusElem.innerHTML = `<span class="badge bg-warning text-dark">WARNING</span>`;
+                stateElem.innerHTML = `<span class="fw-bold text-warning">WARNING (Siaga)</span>`;
+            } else {
+                statusElem.innerHTML = `<span class="badge bg-danger">OFFLINE</span>`;
+                stateElem.innerHTML = `<span class="fw-bold text-danger">DOWN (Rusak)</span>`;
+            }
 
             deviceModal.show();
         }

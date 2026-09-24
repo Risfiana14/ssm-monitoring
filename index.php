@@ -602,22 +602,17 @@
                 imgElem.src = 'https://via.placeholder.com/300x160?text=Belum+Ada+Foto';
             }
 
+            // UPLOAD FOTO TANPA BATAS 
             const uploadBtn = document.getElementById('btnSubmitForm');
             const uploadInput = document.getElementById('inputDeviceImage');
-            const uploadCount = parseInt(dev.upload_count || 0);
 
-            if (uploadCount >= 4) {
-                if (uploadInput) uploadInput.disabled = true;
-                if (uploadBtn) {
-                    uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan Catatan (Upload 4/4 Habis)`;
-                }
-            } else {
-                if (uploadInput) uploadInput.disabled = false;
-                if (uploadBtn) {
-                    uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan (${uploadCount}/4 Upload)`;
-                }
+            if (uploadInput) {
+                uploadInput.disabled = false;
+            }
+
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = `<i class="bi bi-save me-1"></i>Simpan Perubahan`;
             }
 
             const st = (dev.status || '').toUpperCase();
