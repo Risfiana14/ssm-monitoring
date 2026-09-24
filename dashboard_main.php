@@ -392,131 +392,322 @@
 <body>
 
     <!-- Tombol Toggle Sidebar -->
-    <button class="sidebar-toggle-btn" type="button" onclick="toggleRailmapSidebar()" aria-label="Buka menu">
-        <i class="bi bi-list fs-5"></i>
-    </button>
+<button
+    class="sidebar-toggle-btn"
+    type="button"
+    onclick="toggleRailmapSidebar()"
+    aria-label="Buka menu">
 
-    <div class="app-wrapper">
-        <!-- SIDEBAR KIRI -->
-        <aside class="railmap-sidebar" id="railmapSidebar">
-            
-            <div class="sidebar-brand">
-                <h2 class="sidebar-brand-title">RAILMAP</h2>
-                <div class="sidebar-brand-subtitle">Real-Time Train Monitoring</div>
+    <i class="bi bi-list fs-5"></i>
+
+</button>
+
+
+<div class="app-wrapper">
+
+    <!-- SIDEBAR KIRI -->
+    <aside class="railmap-sidebar" id="railmapSidebar">
+
+        <div class="sidebar-brand">
+
+            <h2 class="sidebar-brand-title">
+                RAILMAP
+            </h2>
+
+            <div class="sidebar-brand-subtitle">
+                Real-Time Train Monitoring
             </div>
 
-            <!-- Tombol Kembali ke Dashboard Utama (index.php) -->
-            <div class="mb-3 text-center">
-                <a href="index.php" class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center gap-2 py-1 px-3" style="font-size: 0.7rem; font-weight: 600; border-radius: 6px;">
-                    <i class="bi bi-arrow-left-circle" style="font-size: 0.8rem;"></i>
-                    <span>Dashboard Utama</span>
-                </a>
-            </div>
+        </div>
 
-            <!-- Header Manajemen Data dengan Ikon Create di Sebelahnya -->
-            <div class="sidebar-section-title d-flex justify-content-between align-items-center" style="padding-right: 15px;">
-                <span>MANAJEMEN DATA</span>
-                <!-- Tombol ikon plus di samping tulisan manajemen data -->
-                <button type="button" class="btn btn-sm p-0 text-info" data-bs-toggle="modal" data-bs-target="#modalCreateMenu" title="Tambah Data" style="background: none; border: none;">
-                    <i class="bi bi-plus-circle-fill fs-6"></i>
-                </button>
-            </div>
 
-            <!-- Menu Daftar Depo Dinamis -->
-            <div class="train-group">
-            <div class="train-ids" style="padding-left: 0px;">
-            <?php
-            // Menghubungkan ke database
-            include 'db.php'; 
-            
-            try {
-            // Mengambil semua data depo dari tabel depos
-            $stmtDepo = $pdo->query("SELECT * FROM depos ORDER BY id ASC");
-            $deposList = $stmtDepo->fetchAll(PDO::FETCH_ASSOC);
+        <!-- Tombol Kembali ke Dashboard Utama -->
+        <div class="mb-3 text-center">
 
-            if (count($deposList) > 0) {
-                foreach ($deposList as $depo) {
-                    $depoId = intval($depo['id']);
-                    $collapseId = 'depoCollapse_' . $depoId;
-                    $namaDepo = htmlspecialchars($depo['nama_depo']);
-                    
-                    echo '
-                    <div class="mb-2 w-100">
-                        <!-- Header Depo -->
-    <div class="d-flex align-items-center w-100">
+            <a
+                href="index.php"
+                class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center gap-2 py-1 px-3"
+                style="font-size: 0.7rem; font-weight: 600; border-radius: 6px;">
 
-        <!-- Tombol Nama Depo -->
-        <button
-            class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#' . $collapseId . '"
-            aria-expanded="false"
-            aria-controls="' . $collapseId . '">
+                <i
+                    class="bi bi-arrow-left-circle"
+                    style="font-size: 0.8rem;">
+                </i>
 
-            <i class="bi bi-chevron-down train-arrow me-2"></i>
-            <i class="bi bi-folder text-info me-2"></i>
-            <span class="text-light">' . $namaDepo . '</span>
+                <span>
+                    Dashboard Utama
+                </span>
 
-        </button>
+            </a>
 
-        <!-- Tombol Edit Depo -->
-        <button
-            type="button"
-            class="btn btn-sm text-warning p-1 ms-1"
-            data-bs-toggle="modal"
-            data-bs-target="#modalEditDepo"
-            data-depo-id="' . $depoId . '"
-            data-depo-name="' . htmlspecialchars($depo['nama_depo'], ENT_QUOTES, 'UTF-8') . '"
-            title="Edit nama depo">
+        </div>
 
-            <i class="bi bi-pencil-square"></i>
+        <!-- Header Manajemen Data -->
+        <div
+            class="sidebar-section-title d-flex justify-content-between align-items-center"
+            style="padding-right: 15px;">
 
-        </button>
+            <span>
+                MANAJEMEN DATA
+            </span>
 
-    </div>
-                        
-                        <!-- Area Dropdown untuk Nama Kereta (Level 2) dari tabel trains -->
-                        <div class="collapse" id="' . $collapseId . '">
-                            <div class="train-ids" style="padding-left: 25px;">';
-                            
-                            // Query untuk mengambil nama kereta berdasarkan depo_id
-                            $stmtTrain = $pdo->prepare("SELECT * FROM trains WHERE depo_id = ? ORDER BY id ASC");
-                            $stmtTrain->execute([$depoId]);
-                            $trainsList = $stmtTrain->fetchAll(PDO::FETCH_ASSOC);
 
-                            if (count($trainsList) > 0) {
-                                foreach ($trainsList as $train) {
-                                    $trainId = intval($train['id']); // Ambil ID kereta
-                                    $namaKereta = htmlspecialchars($train['nama_kereta']);
+            <!-- Tombol Tambah Data -->
+            <button
+                type="button"
+                class="btn btn-sm p-0 text-info"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCreateMenu"
+                title="Tambah Data"
+                style="background: none; border: none;">
+
+                <i class="bi bi-plus-circle-fill fs-6"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- Menu Daftar Depo Dinamis -->
+        <div class="train-group">
+
+            <div
+                class="train-ids"
+                style="padding-left: 0px;">
+
+                <?php
+
+                // Koneksi database
+                include 'db.php';
+
+                try {
+
+                    // Ambil semua depo
+                    $stmtDepo = $pdo->query("
+                        SELECT *
+                        FROM depos
+                        ORDER BY id ASC
+                    ");
+
+                    $deposList = $stmtDepo->fetchAll(PDO::FETCH_ASSOC);
+
+
+                    if (count($deposList) > 0) {
+
+                        foreach ($deposList as $depo) {
+
+                            $depoId = (int)$depo['id'];
+
+                            $collapseId = 'depoCollapse_' . $depoId;
+
+                            $namaDepoRaw = $depo['nama_depo'];
+
+                            $namaDepo = htmlspecialchars(
+                                $namaDepoRaw,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            );
+
                             ?>
-                                    <!-- Ubah dari <span> menjadi <a> agar bisa diklik dan membawa parameter train_id -->
-                                    <a href="dashboard_main.php?train_id=<?php echo $trainId; ?>" class="train-id d-block text-light text-decoration-none py-1 ps-2 rounded" style="font-size: 0.8rem;">
-                                        <?php echo $namaKereta; ?>
-                                    </a>
-                            <?php
-                                }
-                            } else {
-                                echo '<span class="train-id text-muted d-block" style="font-size: 0.7rem; font-style: italic;">Belum ada kereta</span>';
-                            }
 
-                    echo '
+                            <!-- SATU DEPO -->
+                            <div class="mb-2 w-100">
+                                <div class="d-flex align-items-center w-100">
+                                    <!-- Tombol Nama Depo -->
+                                    <button
+                                        class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#<?php echo $collapseId; ?>"
+                                        aria-expanded="false"
+                                        aria-controls="<?php echo $collapseId; ?>">
+
+                                        <i
+                                            class="bi bi-chevron-down train-arrow me-2">
+                                        </i>
+
+                                        <i
+                                            class="bi bi-folder text-info me-2">
+                                        </i>
+
+                                        <span class="text-light">
+                                            <?php echo $namaDepo; ?>
+                                        </span>
+
+                                    </button>
+
+                                    <!-- TOMBOL EDIT DEPO -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm text-warning p-1 ms-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEditDepo"
+                                        data-depo-id="<?php echo $depoId; ?>"
+                                        data-depo-name="<?php echo $namaDepo; ?>"
+                                        title="Edit nama depo">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </button>
+
+                                    <!-- TOMBOL HAPUS DEPO -->
+                                    <form
+                                        action="delete_depo.php"
+                                        method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Yakin ingin menghapus depo <?php echo addslashes($namaDepoRaw); ?> beserta seluruh nama kereta di dalamnya?');">
+
+                                        <input
+                                            type="hidden"
+                                            name="depo_id"
+                                            value="<?php echo $depoId; ?>">
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm text-danger p-1 ms-1"
+                                            title="Hapus depo">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                                <!-- DROPDOWN NAMA KERETA -->
+                                <div
+                                    class="collapse"
+                                    id="<?php echo $collapseId; ?>">
+
+                                    <div
+                                        class="train-ids"
+                                        style="padding-left: 25px;">
+
+
+                                        <?php
+
+                                        // Ambil kereta berdasarkan depo
+                                        $stmtTrain = $pdo->prepare("
+                                            SELECT *
+                                            FROM trains
+                                            WHERE depo_id = ?
+                                            ORDER BY id ASC
+                                        ");
+
+                                        $stmtTrain->execute([
+                                            $depoId
+                                        ]);
+
+                                        $trainsList = $stmtTrain->fetchAll(
+                                            PDO::FETCH_ASSOC
+                                        );
+
+
+                                        if (count($trainsList) > 0) {
+
+
+                                            foreach ($trainsList as $train) {
+
+                                                $trainId = (int)$train['id'];
+
+                                                $namaKeretaRaw =
+                                                    $train['nama_kereta'];
+
+                                                $namaKereta =
+                                                    htmlspecialchars(
+                                                        $namaKeretaRaw,
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    );
+
+                                                ?>
+
+                                                <!-- SATU NAMA KERETA -->
+                                                <div
+                                                    class="d-flex align-items-center w-100 mb-1">
+
+
+                                                    <!-- Nama kereta yang bisa diklik -->
+                                                    <a
+                                                        href="dashboard_main.php?train_id=<?php echo $trainId; ?>"
+                                                        class="train-id flex-grow-1 text-light text-decoration-none py-1 ps-2 rounded"
+                                                        style="font-size: 0.8rem;">
+
+                                                        <?php echo $namaKereta; ?>
+
+                                                    </a>
+
+                                                    <!-- TOMBOL HAPUS NAMA KERETA -->
+                                                    <form
+                                                        action="delete_kereta.php"
+                                                        method="POST"
+                                                        class="d-inline ms-1"
+                                                        onsubmit="return confirm('Yakin ingin menghapus nama kereta <?php echo addslashes($namaKeretaRaw); ?>?');">
+
+
+                                                        <input
+                                                            type="hidden"
+                                                            name="train_id"
+                                                            value="<?php echo $trainId; ?>">
+
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-sm text-danger p-1"
+                                                            style="font-size: 0.7rem;"
+                                                            title="Hapus nama kereta">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <?php
+                                            }
+                                        } else {
+
+                                            ?>
+                                            <span
+                                                class="train-id text-muted d-block"
+                                                style="font-size: 0.7rem; font-style: italic;">
+
+                                                Belum ada kereta
+                                            </span>
+
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
                             </div>
+                            <?php
+                        }
+                    } else {
+                        ?>
+                        <div
+                            class="text-muted px-2"
+                            style="font-size: 0.75rem;">
+                            Belum ada depo
                         </div>
-                    </div>';
-                }
-            } else {
-                echo '<div class="text-muted px-2" style="font-size: 0.75rem;">Belum ada depo</div>';
-            }
-        } catch (PDOException $e) {
-            echo '<div class="text-danger px-2" style="font-size: 0.75rem;">Error: ' . $e->getMessage() . '</div>';
-        }
-        ?>
-    </div>
-</div>
 
-            
-        </aside>
+                        <?php
+                    }
+                } catch (PDOException $e) {
+
+                    ?>
+
+                    <div
+                        class="text-danger px-2"
+                        style="font-size: 0.75rem;">
+
+                        Error:
+                        <?php echo htmlspecialchars($e->getMessage()); ?>
+                    </div>
+                <?php
+                }
+                ?>
+            </div>
+        </div>
+    </aside>
 
         <!-- KONTEN UTAMA KANAN -->
         <div class="main-content">
