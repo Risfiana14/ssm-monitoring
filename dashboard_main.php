@@ -252,12 +252,14 @@
             font-weight: 700;
             font-size: 0.82rem;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
             padding-bottom: 4px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             gap: 6px;
+            row-gap: 6px;
         }
 
         .car-title-text {
@@ -267,16 +269,21 @@
             display: flex;
             align-items: center;
             font-size: 0.8rem;
+            min-width: 0;
+            flex: 1 1 auto;
         }
 
         .device-grid-container {
             display: grid;
-            grid-template-columns: repeat(5, 38px);
-            grid-template-rows: repeat(3, 38px);
+            grid-template-columns: repeat(5, minmax(0, 38px));
+            grid-auto-rows: min-content;
             gap: 8px;
             justify-content: center;
             align-items: center;
             padding: 4px 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .device-box {
@@ -291,8 +298,7 @@
             transition: all 0.15s ease;
             user-select: none;
             border: none;
-            width: 38px !important;
-            height: 38px !important;
+            width: 100% !important;
             aspect-ratio: 1 / 1 !important;
             flex-shrink: 0;
             display: flex;
@@ -413,9 +419,13 @@
                 padding: 8px !important;
             }
 
+            .device-grid-container {
+                grid-template-columns: repeat(5, minmax(0, 28px));
+                gap: 5px;
+            }
+
             .device-box {
-                height: 26px !important;
-                font-size: 0.5rem !important;
+                font-size: 0.48rem !important;
             }
         }
 
@@ -1370,7 +1380,7 @@
                                     $location = htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8');
                                     $internet = htmlspecialchars($car['internet_status'] ?? 'NO INTERNET', ENT_QUOTES, 'UTF-8');
 
-                                    echo '<div class="col-md-4 col-lg-3 car-wrapper" data-car-id="' . $location . '">';
+                                    echo '<div class="col-12 col-sm-6 col-md-4 col-lg-3 car-wrapper" data-car-id="' . $location . '">';
                                     echo '<div class="car-card">';
 
                                     // Header Kartu
@@ -1472,9 +1482,6 @@
                     </div>';
                 }
                 ?>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Pop-Up Detail Status -->
     <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
@@ -1596,7 +1603,7 @@
                         <tr>
                             <th>No</th>
                             <th>
-                                Nomor Kereta / Lokasi
+                                Nomor Kereta
                             </th>
                             <th>
                                 Nama Perangkat
@@ -1626,6 +1633,9 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
             </div>
         </div>
     </div>
