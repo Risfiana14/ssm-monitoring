@@ -201,6 +201,7 @@
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
+            min-width: 0;
         }
 
         /* Default saat Sidebar Terbuka: 3 Kolom */
@@ -413,7 +414,73 @@
                 font-size: 0.5rem !important;
             }
         }
-    </style>
+        
+
+        #troubleReportSection {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Wadah tabel agar bisa digeser horizontal dengan mulus di mobile */
+        #troubleReportSection .table-responsive {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            display: block !important;
+            -webkit-overflow-scrolling: touch;
+            box-sizing: border-box !important;
+        }
+
+        /* Paksa tabel memiliki min-width agar kolom tidak hancur di HP */
+        #troubleReportSection .table-responsive table {
+            width: 100% !important;
+            min-width: 650px !important;
+            max-width: none !important;
+            box-sizing: border-box !important;
+        }
+
+        /* --- MEDIA QUERY PRINT YANG SUDAH DIPERBAIKI --- */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            #troubleReportSection, 
+            #troubleReportSection * {
+                visibility: visible;
+            }
+            
+            #troubleReportSection {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                background-color: white !important;
+                color: black !important;
+                box-shadow: none !important;
+                border: none !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                padding: 10px !important;
+            }
+
+            .table-responsive {
+                width: 100% !important;
+                overflow: visible !important; /* Agar saat dicetak seluruh isi tabel melebar sempurna */
+            }
+
+            .table-responsive table {
+                width: 100% !important;
+                min-width: auto !important; /* Hilangkan min-width saat cetak agar pas di kertas */
+            }
+
+            .btn, sidebar, header, .sidebar, .railmap-sidebar, .sidebar-toggle-btn {
+                display: none !important;
+            }
+        }
+        </style>
 </head>
 
 <body>
@@ -980,6 +1047,40 @@
         </div>
     </div>
 
+    <!-- Bagian Tabel Laporan Perangkat Trouble -->
+<div class="mt-4">
+    <div class="card bg-white text-dark shadow-sm border-0 p-3 p-md-4 rounded-4" id="troubleReportSection">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h5 class="m-0 fw-bold text-dark" style="font-size: 1.15rem;">
+                <i class="bi bi-file-earmark-text me-2 text-primary"></i> Laporan Perangkat Trouble / Kerusakan
+            </h5>
+            <button class="btn btn-primary btn-sm px-3 fw-bold" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Cetak Laporan
+            </button>
+        </div>
+        
+        <!-- Pembungkus Wajib Responsif -->
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-sm align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" style="width: 6%; text-align: center;">No</th>
+                        <th scope="col" style="width: 22%;">Nomor Kereta / Lokasi</th>
+                        <th scope="col" style="width: 22%;">Nama Perangkat</th>
+                        <th scope="col" style="width: 20%;">Status / Kondisi</th>
+                        <th scope="col" style="width: 30%;">Catatan / Kerusakan</th>
+                    </tr>
+                </thead>
+                <tbody id="troubleReportTableBody">
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">Memuat data perangkat trouble...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -1509,6 +1610,95 @@
         });
 
         setInterval(() => loadCarList(), 5000);
+
+        function renderTroubleReportTable() {
+    const tbody = document.getElementById('troubleReportTableBody');
+    if (!tbody) return;
+
+    if (typeof globalDeviceData === 'undefined' || !Array.isArray(globalDeviceData)) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Tidak ada data perangkat yang dimuat.</td></tr>`;
+        return;
+    }
+
+    // 1. Ambil semua nomor kereta (lokasi) yang benar-benar sedang tampil di halaman ini 
+    // dengan mencari teks pada header kartu kereta atau elemen judul bernomor sarana
+    const visibleCarNumbers = [];
+    document.querySelectorAll('.card-header, h5, .fw-bold, span').forEach(el => {
+        const text = el.innerText.trim();
+        // Format nomor kereta biasanya diawali huruf seperti M102411, K102436, dll.
+        if (/^[A-Z]\d{5,}$/.test(text)) {
+            if (!visibleCarNumbers.includes(text)) {
+                visibleCarNumbers.push(text);
+            }
+        }
+    });
+
+    // 2. Filter perangkat yang mengalami trouble
+    const troubleDevices = globalDeviceData.filter(dev => {
+        const status = (dev.status || '').toUpperCase();
+        const condition = (dev.condition || dev.kondisi_sistem || '').toUpperCase();
+        const hasNotes = dev.notes && dev.notes.trim() !== '' && dev.notes.toLowerCase() !== 'null';
+        
+        const isNotOnline = status.includes('OFFLINE') || status.includes('NO INTERNET') || status.includes('WARNING');
+        const isBadCondition = condition.includes('DOWN') || condition.includes('ERROR') || condition.includes('WARNING') || (condition !== '' && !condition.includes('NORMAL') && !condition.includes('UP'));
+        
+        const isTrouble = isNotOnline || isBadCondition || hasNotes;
+        if (!isTrouble) return false;
+
+        const deviceLocation = (dev.location || '').trim();
+
+        // 3. Jika berada di halaman detail (ada parameter train_id di URL),
+        // pastikan perangkat tersebut memang milik nomor kereta yang tampil di halaman ini.
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('train_id')) {
+            // Jika nomor kereta yang ada di halaman terdeteksi, sesuaikan dengan itu
+            if (visibleCarNumbers.length > 0) {
+                return visibleCarNumbers.includes(deviceLocation);
+            }
+        }
+
+        return true; // Tampilkan semua jika di dashboard utama
+    });
+
+    if (troubleDevices.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-success fw-bold">Aman! Tidak ada perangkat trouble pada rangkaian kereta ini.</td></tr>`;
+        return;
+    }
+
+    let html = '';
+    troubleDevices.forEach((dev, index) => {
+        const trainNumber = dev.location || '-';
+        const deviceName = (dev.device_name || dev.device_type || '-').toUpperCase();
+        const statusText = dev.status || 'UNKNOWN';
+        const conditionText = dev.condition || dev.kondisi_sistem || 'Normal';
+        const notesText = (dev.notes && dev.notes.trim() !== '') ? dev.notes : '<span class="text-muted fst-italic">Tidak ada catatan kerusakan spesifik.</span>';
+
+        let badgeClass = 'bg-danger';
+        if (statusText.includes('WARNING')) badgeClass = 'bg-warning text-dark';
+        else if (statusText.includes('ONLINE')) badgeClass = 'bg-success';
+
+        html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td class="fw-bold">${trainNumber}</td>
+                <td class="fw-bold">${deviceName}</td>
+                <td>
+                    <span class="badge ${badgeClass}">${statusText}</span><br>
+                    <small class="text-muted">${conditionText}</small>
+                </td>
+                <td>${notesText}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+    // Panggil fungsi render setelah data utama dimuat atau saat halaman selesai dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+        // Beri jeda sedikit agar globalDeviceData selesai di-fetch/diisi dari backend
+        setTimeout(renderTroubleReportTable, 1000);
+    });
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
@@ -1764,6 +1954,11 @@
             </div>
         </div>
     </div>
+    
+
+<!-- CSS Khusus untuk Print/Cetak -->
+
+
 </body>
 
 </html>
