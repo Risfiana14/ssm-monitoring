@@ -190,19 +190,19 @@
             cursor: pointer;
         }
 
-        /* ---------------------------------------------------- */
         /* CSS KONTEN UTAMA KANAN & ATUR KOLOM (3 vs 4)         */
-        /* ---------------------------------------------------- */
         .main-content {
-            margin-left: 260px;
-            flex: 1;
-            width: calc(100% - 260px);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            min-width: 0;
-        }
+        margin-left: 260px !important;
+        width: calc(100% - 260px) !important;
+        max-width: calc(100% - 260px) !important;
+        min-width: 0 !important;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        transition: all 0.3s ease;
+    }
 
         /* Default saat Sidebar Terbuka: 3 Kolom */
         .car-col-item {
@@ -214,6 +214,10 @@
         body.sidebar-closed .main-content {
             margin-left: 0 !important;
             width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
         }
 
         body.sidebar-closed .car-col-item {
@@ -414,73 +418,589 @@
                 font-size: 0.5rem !important;
             }
         }
-        
 
-        #troubleReportSection {
-            width: 100% !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-        }
+        /* =====================================================
+   LAPORAN PERANGKAT - RESPONSIVE TABLE
+   ===================================================== */
 
-        /* Wadah tabel agar bisa digeser horizontal dengan mulus di mobile */
-        #troubleReportSection .table-responsive {
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow-x: auto !important;
-            display: block !important;
-            -webkit-overflow-scrolling: touch;
-            box-sizing: border-box !important;
-        }
+#troubleReportSection {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
 
-        /* Paksa tabel memiliki min-width agar kolom tidak hancur di HP */
-        #troubleReportSection .table-responsive table {
-            width: 100% !important;
-            min-width: 650px !important;
-            max-width: none !important;
-            box-sizing: border-box !important;
-        }
+/* =========================================================
+   LAPORAN PERANGKAT - RESPONSIVE DESKTOP + MOBILE
+   ========================================================= */
 
-        /* --- MEDIA QUERY PRINT YANG SUDAH DIPERBAIKI --- */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            
-            #troubleReportSection, 
-            #troubleReportSection * {
-                visibility: visible;
-            }
-            
-            #troubleReportSection {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                background-color: white !important;
-                color: black !important;
-                box-shadow: none !important;
-                border: none !important;
-                box-sizing: border-box !important;
-                margin: 0 !important;
-                padding: 10px !important;
-            }
+/* ---------------------------------------------------------
+   DASAR SECTION
+   --------------------------------------------------------- */
 
-            .table-responsive {
-                width: 100% !important;
-                overflow: visible !important; /* Agar saat dicetak seluruh isi tabel melebar sempurna */
-            }
+#troubleReportSection {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
 
-            .table-responsive table {
-                width: 100% !important;
-                min-width: auto !important; /* Hilangkan min-width saat cetak agar pas di kertas */
-            }
+/* Header laporan */
+#troubleReportSection > .d-flex {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
 
-            .btn, sidebar, header, .sidebar, .railmap-sidebar, .sidebar-toggle-btn {
-                display: none !important;
-            }
-        }
-        </style>
+
+/* ---------------------------------------------------------
+   DESKTOP
+   --------------------------------------------------------- */
+
+@media (min-width: 769px) {
+
+    /*
+     * Main content tetap memberi ruang untuk sidebar 260px.
+     * Jangan membuat width menjadi 100% karena itu akan
+     * menabrak area sidebar.
+     */
+
+    .main-content {
+        margin-left: 260px !important;
+
+        width: calc(100% - 260px) !important;
+
+        max-width: calc(100% - 260px) !important;
+
+        box-sizing: border-box !important;
+
+        padding: 20px !important;
+    }
+
+
+    /*
+     * Card laporan mengikuti lebar main-content.
+     */
+
+    #troubleReportSection {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+    }
+
+
+    /*
+     * Tabel hanya scroll di dalam wrapper.
+     */
+
+    #troubleReportSection .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        display: block !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        box-sizing: border-box !important;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+
+    /*
+     * Desktop:
+     * tabel minimal 1050px.
+     *
+     * Kalau layar cukup lebar → tabel memenuhi area.
+     * Kalau layar lebih kecil → tabel bisa digeser horizontal.
+     */
+
+    #troubleReportSection .table-responsive table {
+        width: 100% !important;
+
+        min-width: 1050px !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        table-layout: fixed !important;
+
+        box-sizing: border-box !important;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   KOLOM TABEL
+   --------------------------------------------------------- */
+
+/* NO */
+
+#troubleReportSection .table-responsive th:nth-child(1),
+#troubleReportSection .table-responsive td:nth-child(1) {
+
+    width: 55px !important;
+    min-width: 55px !important;
+
+    text-align: center !important;
+}
+
+
+/* NOMOR KERETA / LOKASI */
+
+#troubleReportSection .table-responsive th:nth-child(2),
+#troubleReportSection .table-responsive td:nth-child(2) {
+
+    width: 150px !important;
+    min-width: 150px !important;
+}
+
+
+/* NAMA PERANGKAT */
+
+#troubleReportSection .table-responsive th:nth-child(3),
+#troubleReportSection .table-responsive td:nth-child(3) {
+
+    width: 180px !important;
+    min-width: 180px !important;
+}
+
+
+/* STATUS / KONDISI */
+
+#troubleReportSection .table-responsive th:nth-child(4),
+#troubleReportSection .table-responsive td:nth-child(4) {
+
+    width: 140px !important;
+    min-width: 140px !important;
+}
+
+
+/* TANGGAL & WAKTU */
+
+#troubleReportSection .table-responsive th:nth-child(5),
+#troubleReportSection .table-responsive td:nth-child(5) {
+
+    width: 175px !important;
+    min-width: 175px !important;
+
+    white-space: nowrap !important;
+}
+
+
+/* CATATAN */
+
+#troubleReportSection .table-responsive th:nth-child(6),
+#troubleReportSection .table-responsive td:nth-child(6) {
+
+    width: 250px !important;
+    min-width: 250px !important;
+
+    white-space: normal !important;
+
+    word-break: break-word !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* GAMBAR */
+
+#troubleReportSection .table-responsive th:nth-child(7),
+#troubleReportSection .table-responsive td:nth-child(7) {
+
+    width: 120px !important;
+    min-width: 120px !important;
+
+    text-align: center !important;
+}
+
+
+/* ---------------------------------------------------------
+   HEADER TABEL
+   --------------------------------------------------------- */
+
+#troubleReportSection .table-responsive th {
+
+    white-space: nowrap !important;
+
+    vertical-align: middle !important;
+}
+
+
+/* ---------------------------------------------------------
+   ISI TABEL
+   --------------------------------------------------------- */
+
+#troubleReportSection .table-responsive td {
+
+    vertical-align: middle !important;
+
+    word-break: break-word !important;
+}
+
+
+/* Catatan */
+
+#troubleReportSection .table-responsive td:nth-child(6) {
+
+    white-space: pre-wrap !important;
+
+    word-break: break-word !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* Tombol gambar */
+
+#troubleReportSection .table-responsive td:nth-child(7) .btn {
+
+    white-space: nowrap !important;
+}
+
+
+/* ---------------------------------------------------------
+   TABLET
+   --------------------------------------------------------- */
+
+@media (min-width: 577px) and (max-width: 992px) {
+
+    .main-content {
+
+        margin-left: 260px !important;
+
+        width: calc(100% - 260px) !important;
+
+        max-width: calc(100% - 260px) !important;
+
+        padding: 15px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    #troubleReportSection {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        padding: 15px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    #troubleReportSection .table-responsive {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        overflow-x: auto !important;
+
+        overflow-y: hidden !important;
+    }
+
+
+    #troubleReportSection .table-responsive table {
+
+        width: 1050px !important;
+
+        min-width: 1050px !important;
+
+        max-width: none !important;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   HP
+   --------------------------------------------------------- */
+
+@media (max-width: 576px) {
+
+    /*
+     * PENTING:
+     * Sidebar tidak lagi mengambil 260px dari konten.
+     */
+
+    .main-content {
+
+        margin-left: 0 !important;
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        padding: 10px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    /*
+     * Sidebar menjadi overlay.
+     */
+
+    .sidebar,
+    .railmap-sidebar {
+
+        position: fixed !important;
+
+        left: 0 !important;
+
+        top: 0 !important;
+
+        width: 260px !important;
+
+        max-width: 85vw !important;
+
+        height: 100vh !important;
+
+        z-index: 2000 !important;
+    }
+
+
+    /*
+     * Card laporan.
+     */
+
+    #troubleReportSection {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 12px !important;
+
+        box-sizing: border-box !important;
+
+        border-radius: 12px !important;
+
+        overflow: hidden !important;
+    }
+
+
+    /*
+     * Header laporan.
+     */
+
+    #troubleReportSection > .d-flex {
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        align-items: flex-start !important;
+
+        gap: 10px !important;
+    }
+
+
+    #troubleReportSection > .d-flex h5 {
+
+        width: 100% !important;
+
+        font-size: 1rem !important;
+
+        line-height: 1.4 !important;
+
+        margin: 0 !important;
+    }
+
+
+    /*
+     * Wrapper tabel.
+     */
+
+    #troubleReportSection .table-responsive {
+
+        display: block !important;
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        overflow-x: auto !important;
+
+        overflow-y: hidden !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+        box-sizing: border-box !important;
+
+        -webkit-overflow-scrolling: touch;
+
+        overscroll-behavior-x: contain;
+    }
+
+
+    /*
+     * Tabel tetap lebar agar terbaca.
+     * Geser tabel ke kanan/kiri.
+     */
+
+    #troubleReportSection .table-responsive table {
+
+        width: 1050px !important;
+
+        min-width: 1050px !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        table-layout: fixed !important;
+    }
+
+
+    #troubleReportSection .table-responsive th,
+    #troubleReportSection .table-responsive td {
+
+        font-size: 0.82rem !important;
+    }
+
+
+    #troubleReportSection .table-responsive td:nth-child(7) .btn {
+
+        font-size: 0.8rem !important;
+
+        padding: 6px 9px !important;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   HP SANGAT KECIL
+   --------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    .main-content {
+
+        padding: 8px !important;
+    }
+
+
+    #troubleReportSection {
+
+        padding: 10px !important;
+
+        border-radius: 10px !important;
+    }
+
+
+    #troubleReportSection > .d-flex h5 {
+
+        font-size: 0.95rem !important;
+    }
+
+
+    #troubleReportSection .table-responsive th,
+    #troubleReportSection .table-responsive td {
+
+        font-size: 0.78rem !important;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   PRINT
+   --------------------------------------------------------- */
+
+@media print {
+
+    body * {
+
+        visibility: hidden;
+    }
+
+
+    #troubleReportSection,
+    #troubleReportSection * {
+
+        visibility: visible;
+    }
+
+
+    #troubleReportSection {
+
+        position: absolute !important;
+
+        left: 0 !important;
+
+        top: 0 !important;
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 10px !important;
+
+        background: white !important;
+
+        color: black !important;
+
+        box-shadow: none !important;
+
+        border: none !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    #troubleReportSection .table-responsive {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        overflow: visible !important;
+    }
+
+
+    #troubleReportSection .table-responsive table {
+
+        width: 100% !important;
+
+        min-width: 0 !important;
+
+        max-width: 100% !important;
+
+        table-layout: auto !important;
+    }
+
+
+    #troubleReportSection .table-responsive th,
+    #troubleReportSection .table-responsive td {
+
+        font-size: 10px !important;
+    }
+
+
+    .btn,
+    .sidebar,
+    .railmap-sidebar,
+    .sidebar-toggle-btn,
+    header {
+
+        display: none !important;
+    }
+}
+    </style>
 </head>
 
 <body>
@@ -1048,38 +1568,67 @@
     </div>
 
     <!-- Bagian Tabel Laporan Perangkat Trouble -->
-<div class="mt-4">
-    <div class="card bg-white text-dark shadow-sm border-0 p-3 p-md-4 rounded-4" id="troubleReportSection">
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 class="m-0 fw-bold text-dark" style="font-size: 1.15rem;">
-                <i class="bi bi-file-earmark-text me-2 text-primary"></i> Laporan Perangkat Trouble / Kerusakan
-            </h5>
-            <button class="btn btn-primary btn-sm px-3 fw-bold" onclick="window.print()">
-                <i class="bi bi-printer me-1"></i> Cetak Laporan
-            </button>
-        </div>
-        
-        <!-- Pembungkus Wajib Responsif -->
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered table-sm align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" style="width: 6%; text-align: center;">No</th>
-                        <th scope="col" style="width: 22%;">Nomor Kereta / Lokasi</th>
-                        <th scope="col" style="width: 22%;">Nama Perangkat</th>
-                        <th scope="col" style="width: 20%;">Status / Kondisi</th>
-                        <th scope="col" style="width: 30%;">Catatan / Kerusakan</th>
-                    </tr>
-                </thead>
-                <tbody id="troubleReportTableBody">
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-3">Memuat data perangkat trouble...</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="mt-4">
+        <div
+            class="card bg-white text-dark shadow-sm border-0 p-3 p-md-4 rounded-4"
+            id="troubleReportSection">
+            <div
+                class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h5
+                    class="m-0 fw-bold text-dark"
+                    style="font-size: 1.15rem;">
+                    <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                    Laporan Perangkat Trouble / Kerusakan
+                </h5>
+
+                <button
+                    class="btn btn-primary btn-sm px-3 fw-bold"
+                    onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i>
+                    Cetak Laporan
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table
+                    class="table table-hover table-bordered table-sm align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>No</th>
+                            <th>
+                                Nomor Kereta / Lokasi
+                            </th>
+                            <th>
+                                Nama Perangkat
+                            </th>
+                            <th>
+                                Status / Kondisi
+                            </th>
+                            <th>
+                                Tanggal &amp; Waktu
+                            </th>
+                            <th>
+                                Catatan / Kerusakan
+                            </th>
+                            <th>
+                                Gambar
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="troubleReportTableBody">
+                        <tr>
+                            <td
+                                colspan="7"
+                                class="text-center text-muted py-3">
+                                Memuat data laporan perangkat...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1614,88 +2163,88 @@
         let deviceHistoryData = [];
 
 
-/* =========================================================
-   LOAD HISTORY LAPORAN PERANGKAT
-   ========================================================= */
+        /* =========================================================
+           LOAD HISTORY LAPORAN PERANGKAT
+           ========================================================= */
 
-function loadDeviceHistory() {
+        function loadDeviceHistory() {
 
-    const tbody = document.getElementById('troubleReportTableBody');
+            const tbody = document.getElementById('troubleReportTableBody');
 
-    if (!tbody) {
-        return;
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const trainId = urlParams.get('train_id');
-
-    let url = 'api_device_history.php';
-
-    if (trainId) {
-        url += '?train_id=' + encodeURIComponent(trainId);
-    }
-
-    fetch(url)
-        .then(response => {
-
-            if (!response.ok) {
-                throw new Error('HTTP Error ' + response.status);
+            if (!tbody) {
+                return;
             }
 
-            return response.json();
-        })
-        .then(result => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trainId = urlParams.get('train_id');
 
-            if (result.status !== 'ok') {
-                throw new Error(result.message || 'Gagal mengambil histori.');
+            let url = 'api_device_history.php';
+
+            if (trainId) {
+                url += '?train_id=' + encodeURIComponent(trainId);
             }
 
-            deviceHistoryData = Array.isArray(result.data)
-                ? result.data
-                : [];
+            fetch(url)
+                .then(response => {
 
-            renderTroubleReportTable();
+                    if (!response.ok) {
+                        throw new Error('HTTP Error ' + response.status);
+                    }
 
-        })
-        .catch(error => {
+                    return response.json();
+                })
+                .then(result => {
 
-            console.error('Gagal mengambil device history:', error);
+                    if (result.status !== 'ok') {
+                        throw new Error(result.message || 'Gagal mengambil histori.');
+                    }
 
-            tbody.innerHTML = `
+                    deviceHistoryData = Array.isArray(result.data) ?
+                        result.data :
+                        [];
+
+                    renderTroubleReportTable();
+
+                })
+                .catch(error => {
+
+                    console.error('Gagal mengambil device history:', error);
+
+                    tbody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-danger py-3">
                         Gagal memuat histori laporan perangkat.
                     </td>
                 </tr>
             `;
-        });
-}
+                });
+        }
 
 
-/* =========================================================
-   RENDER TABEL LAPORAN PERANGKAT
-   ========================================================= */
+        /* =========================================================
+           RENDER TABEL LAPORAN PERANGKAT
+           ========================================================= */
 
-function renderTroubleReportTable() {
+        function renderTroubleReportTable() {
 
-    const tbody = document.getElementById('troubleReportTableBody');
+            const tbody = document.getElementById('troubleReportTableBody');
 
-    if (!tbody) {
-        return;
-    }
+            if (!tbody) {
+                return;
+            }
 
-    if (!Array.isArray(deviceHistoryData)) {
-        deviceHistoryData = [];
-    }
+            if (!Array.isArray(deviceHistoryData)) {
+                deviceHistoryData = [];
+            }
 
 
-    /*
-     * Jika belum ada laporan
-     */
+            /*
+             * Jika belum ada laporan
+             */
 
-    if (deviceHistoryData.length === 0) {
+            if (deviceHistoryData.length === 0) {
 
-        tbody.innerHTML = `
+                tbody.innerHTML = `
             <tr>
                 <td colspan="7"
                     class="text-center text-success fw-bold py-4">
@@ -1707,89 +2256,89 @@ function renderTroubleReportTable() {
             </tr>
         `;
 
-        return;
-    }
+                return;
+            }
 
 
-    let html = '';
+            let html = '';
 
 
-    /*
-     * device_history sudah diurutkan dari yang terbaru
-     */
+            /*
+             * device_history sudah diurutkan dari yang terbaru
+             */
 
-    deviceHistoryData.forEach((history, index) => {
+            deviceHistoryData.forEach((history, index) => {
 
-        const location =
-            history.location || '-';
+                const location =
+                    history.location || '-';
 
-        const deviceName =
-            history.device_name ||
-            history.device_type ||
-            '-';
+                const deviceName =
+                    history.device_name ||
+                    history.device_type ||
+                    '-';
 
-        const status =
-            (history.status || 'UNKNOWN').toUpperCase();
+                const status =
+                    (history.status || 'UNKNOWN').toUpperCase();
 
-        const notes =
-            history.notes &&
-            history.notes.trim() !== ''
-                ? history.notes
-                : '-';
+                const notes =
+                    history.notes &&
+                    history.notes.trim() !== '' ?
+                    history.notes :
+                    '-';
 
-        const createdAt =
-            history.created_at || '-';
-
-
-        /*
-         * Tentukan warna status
-         */
-
-        let badgeClass = 'bg-danger';
-
-        if (
-            status === 'ONLINE' ||
-            status === 'UP'
-        ) {
-
-            badgeClass = 'bg-success';
-
-        } else if (
-            status === 'WARNING'
-        ) {
-
-            badgeClass = 'bg-warning text-dark';
-
-        } else if (
-            status.includes('NO INTERNET')
-        ) {
-
-            badgeClass = 'bg-danger';
-
-        }
+                const createdAt =
+                    history.created_at || '-';
 
 
-        /*
-         * Gambar
-         */
+                /*
+                 * Tentukan warna status
+                 */
 
-        let imageHtml = `
+                let badgeClass = 'bg-danger';
+
+                if (
+                    status === 'ONLINE' ||
+                    status === 'UP'
+                ) {
+
+                    badgeClass = 'bg-success';
+
+                } else if (
+                    status === 'WARNING'
+                ) {
+
+                    badgeClass = 'bg-warning text-dark';
+
+                } else if (
+                    status.includes('NO INTERNET')
+                ) {
+
+                    badgeClass = 'bg-danger';
+
+                }
+
+
+                /*
+                 * Gambar
+                 */
+
+                let imageHtml = `
             <span class="text-muted">
                 Tidak ada gambar
             </span>
         `;
 
 
-        if (
-            history.image &&
-            history.image.trim() !== ''
-        ) {
+                if (
+                    history.image &&
+                    history.image.trim() !== ''
+                ) {
 
-            const imageUrl =
-                'uploads/' +
-                encodeURIComponent(history.image);
+                    const imageUrl =
+                        'uploads/' +
+                        encodeURIComponent(history.image);
 
-            imageHtml = `
+                    imageHtml = `
                 <button
                     type="button"
                     class="btn btn-sm btn-outline-primary"
@@ -1800,14 +2349,14 @@ function renderTroubleReportTable() {
 
                 </button>
             `;
-        }
+                }
 
 
-        /*
-         * Masukkan baris ke tabel
-         */
+                /*
+                 * Masukkan baris ke tabel
+                 */
 
-        html += `
+                html += `
             <tr>
 
                 <td class="text-center fw-bold">
@@ -1844,47 +2393,47 @@ function renderTroubleReportTable() {
 
             </tr>
         `;
-    });
+            });
 
 
-    tbody.innerHTML = html;
-}
+            tbody.innerHTML = html;
+        }
 
 
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
+        /* =========================================================
+           ESCAPE HTML
+           ========================================================= */
 
-function escapeHtml(value) {
+        function escapeHtml(value) {
 
-    if (value === null || value === undefined) {
-        return '';
-    }
+            if (value === null || value === undefined) {
+                return '';
+            }
 
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-
-/* =========================================================
-   TAMPILKAN GAMBAR HISTORY
-   ========================================================= */
-
-function showHistoryImage(imageUrl) {
-
-    const existingModal =
-        document.getElementById('historyImageModal');
-
-    if (existingModal) {
-        existingModal.remove();
-    }
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
 
-    const modalHtml = `
+        /* =========================================================
+           TAMPILKAN GAMBAR HISTORY
+           ========================================================= */
+
+        function showHistoryImage(imageUrl) {
+
+            const existingModal =
+                document.getElementById('historyImageModal');
+
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+
+            const modalHtml = `
         <div
             class="modal fade"
             id="historyImageModal"
@@ -1928,35 +2477,35 @@ function showHistoryImage(imageUrl) {
     `;
 
 
-    document.body.insertAdjacentHTML(
-        'beforeend',
-        modalHtml
-    );
+            document.body.insertAdjacentHTML(
+                'beforeend',
+                modalHtml
+            );
 
 
-    const modalElement =
-        document.getElementById('historyImageModal');
+            const modalElement =
+                document.getElementById('historyImageModal');
 
-    const modal =
-        new bootstrap.Modal(modalElement);
+            const modal =
+                new bootstrap.Modal(modalElement);
 
-    modal.show();
+            modal.show();
 
 
-    modalElement.addEventListener(
-        'hidden.bs.modal',
-        function () {
+            modalElement.addEventListener(
+                'hidden.bs.modal',
+                function() {
 
-            modalElement.remove();
+                    modalElement.remove();
 
+                }
+            );
         }
-    );
-}
 
-    // Panggil fungsi render setelah data utama dimuat atau saat halaman selesai dimuat
-    document.addEventListener('DOMContentLoaded', function () {
-    loadDeviceHistory();
-});
+        // Panggil fungsi render setelah data utama dimuat atau saat halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDeviceHistory();
+        });
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
@@ -2074,7 +2623,7 @@ function showHistoryImage(imageUrl) {
 
                                 if (!empty($selected_train_id)) {
 
-                                   
+
                                     $stmtAvailable = $pdo->prepare("
                                     SELECT DISTINCT
                                         ml.location
@@ -2212,9 +2761,9 @@ function showHistoryImage(imageUrl) {
             </div>
         </div>
     </div>
-    
 
-<!-- CSS Khusus untuk Print/Cetak -->
+
+    <!-- CSS Khusus untuk Print/Cetak -->
 
 
 </body>
