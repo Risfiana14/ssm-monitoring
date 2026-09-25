@@ -463,7 +463,9 @@
                 class="sidebar-section-title d-flex justify-content-between align-items-center"
                 style="padding-right: 15px;">
                 <span>
-                    MANAJEMEN DATA
+                    <a href="dashboard_main.php" class="text-decoration-none text-light opacity-75" style="font-size: 0.65rem; font-weight: 700;">
+                        DASHBOARD MAIN
+                    </a>
                 </span>
 
                 <!-- Tombol Tambah Data -->
