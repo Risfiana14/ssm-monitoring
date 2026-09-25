@@ -1611,94 +1611,352 @@
 
         setInterval(() => loadCarList(), 5000);
 
-        function renderTroubleReportTable() {
+        let deviceHistoryData = [];
+
+
+/* =========================================================
+   LOAD HISTORY LAPORAN PERANGKAT
+   ========================================================= */
+
+function loadDeviceHistory() {
+
     const tbody = document.getElementById('troubleReportTableBody');
-    if (!tbody) return;
 
-    if (typeof globalDeviceData === 'undefined' || !Array.isArray(globalDeviceData)) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Tidak ada data perangkat yang dimuat.</td></tr>`;
+    if (!tbody) {
         return;
     }
 
-    // 1. Ambil semua nomor kereta (lokasi) yang benar-benar sedang tampil di halaman ini 
-    // dengan mencari teks pada header kartu kereta atau elemen judul bernomor sarana
-    const visibleCarNumbers = [];
-    document.querySelectorAll('.card-header, h5, .fw-bold, span').forEach(el => {
-        const text = el.innerText.trim();
-        // Format nomor kereta biasanya diawali huruf seperti M102411, K102436, dll.
-        if (/^[A-Z]\d{5,}$/.test(text)) {
-            if (!visibleCarNumbers.includes(text)) {
-                visibleCarNumbers.push(text);
+    const urlParams = new URLSearchParams(window.location.search);
+    const trainId = urlParams.get('train_id');
+
+    let url = 'api_device_history.php';
+
+    if (trainId) {
+        url += '?train_id=' + encodeURIComponent(trainId);
+    }
+
+    fetch(url)
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error('HTTP Error ' + response.status);
             }
-        }
-    });
 
-    // 2. Filter perangkat yang mengalami trouble
-    const troubleDevices = globalDeviceData.filter(dev => {
-        const status = (dev.status || '').toUpperCase();
-        const condition = (dev.condition || dev.kondisi_sistem || '').toUpperCase();
-        const hasNotes = dev.notes && dev.notes.trim() !== '' && dev.notes.toLowerCase() !== 'null';
-        
-        const isNotOnline = status.includes('OFFLINE') || status.includes('NO INTERNET') || status.includes('WARNING');
-        const isBadCondition = condition.includes('DOWN') || condition.includes('ERROR') || condition.includes('WARNING') || (condition !== '' && !condition.includes('NORMAL') && !condition.includes('UP'));
-        
-        const isTrouble = isNotOnline || isBadCondition || hasNotes;
-        if (!isTrouble) return false;
+            return response.json();
+        })
+        .then(result => {
 
-        const deviceLocation = (dev.location || '').trim();
-
-        // 3. Jika berada di halaman detail (ada parameter train_id di URL),
-        // pastikan perangkat tersebut memang milik nomor kereta yang tampil di halaman ini.
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('train_id')) {
-            // Jika nomor kereta yang ada di halaman terdeteksi, sesuaikan dengan itu
-            if (visibleCarNumbers.length > 0) {
-                return visibleCarNumbers.includes(deviceLocation);
+            if (result.status !== 'ok') {
+                throw new Error(result.message || 'Gagal mengambil histori.');
             }
-        }
 
-        return true; // Tampilkan semua jika di dashboard utama
-    });
+            deviceHistoryData = Array.isArray(result.data)
+                ? result.data
+                : [];
 
-    if (troubleDevices.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-success fw-bold">Aman! Tidak ada perangkat trouble pada rangkaian kereta ini.</td></tr>`;
+            renderTroubleReportTable();
+
+        })
+        .catch(error => {
+
+            console.error('Gagal mengambil device history:', error);
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-danger py-3">
+                        Gagal memuat histori laporan perangkat.
+                    </td>
+                </tr>
+            `;
+        });
+}
+
+
+/* =========================================================
+   RENDER TABEL LAPORAN PERANGKAT
+   ========================================================= */
+
+function renderTroubleReportTable() {
+
+    const tbody = document.getElementById('troubleReportTableBody');
+
+    if (!tbody) {
         return;
     }
+
+    if (!Array.isArray(deviceHistoryData)) {
+        deviceHistoryData = [];
+    }
+
+
+    /*
+     * Jika belum ada laporan
+     */
+
+    if (deviceHistoryData.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    class="text-center text-success fw-bold py-4">
+
+                    <i class="bi bi-check-circle me-1"></i>
+                    Belum ada laporan perangkat trouble / kerusakan.
+
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
 
     let html = '';
-    troubleDevices.forEach((dev, index) => {
-        const trainNumber = dev.location || '-';
-        const deviceName = (dev.device_name || dev.device_type || '-').toUpperCase();
-        const statusText = dev.status || 'UNKNOWN';
-        const conditionText = dev.condition || dev.kondisi_sistem || 'Normal';
-        const notesText = (dev.notes && dev.notes.trim() !== '') ? dev.notes : '<span class="text-muted fst-italic">Tidak ada catatan kerusakan spesifik.</span>';
+
+
+    /*
+     * device_history sudah diurutkan dari yang terbaru
+     */
+
+    deviceHistoryData.forEach((history, index) => {
+
+        const location =
+            history.location || '-';
+
+        const deviceName =
+            history.device_name ||
+            history.device_type ||
+            '-';
+
+        const status =
+            (history.status || 'UNKNOWN').toUpperCase();
+
+        const notes =
+            history.notes &&
+            history.notes.trim() !== ''
+                ? history.notes
+                : '-';
+
+        const createdAt =
+            history.created_at || '-';
+
+
+        /*
+         * Tentukan warna status
+         */
 
         let badgeClass = 'bg-danger';
-        if (statusText.includes('WARNING')) badgeClass = 'bg-warning text-dark';
-        else if (statusText.includes('ONLINE')) badgeClass = 'bg-success';
+
+        if (
+            status === 'ONLINE' ||
+            status === 'UP'
+        ) {
+
+            badgeClass = 'bg-success';
+
+        } else if (
+            status === 'WARNING'
+        ) {
+
+            badgeClass = 'bg-warning text-dark';
+
+        } else if (
+            status.includes('NO INTERNET')
+        ) {
+
+            badgeClass = 'bg-danger';
+
+        }
+
+
+        /*
+         * Gambar
+         */
+
+        let imageHtml = `
+            <span class="text-muted">
+                Tidak ada gambar
+            </span>
+        `;
+
+
+        if (
+            history.image &&
+            history.image.trim() !== ''
+        ) {
+
+            const imageUrl =
+                'uploads/' +
+                encodeURIComponent(history.image);
+
+            imageHtml = `
+                <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    onclick="showHistoryImage('${imageUrl}')">
+
+                    <i class="bi bi-image me-1"></i>
+                    Lihat Gambar
+
+                </button>
+            `;
+        }
+
+
+        /*
+         * Masukkan baris ke tabel
+         */
 
         html += `
             <tr>
-                <td>${index + 1}</td>
-                <td class="fw-bold">${trainNumber}</td>
-                <td class="fw-bold">${deviceName}</td>
-                <td>
-                    <span class="badge ${badgeClass}">${statusText}</span><br>
-                    <small class="text-muted">${conditionText}</small>
+
+                <td class="text-center fw-bold">
+                    ${index + 1}
                 </td>
-                <td>${notesText}</td>
+
+                <td class="fw-bold">
+                    ${escapeHtml(location)}
+                </td>
+
+                <td class="fw-bold">
+                    ${escapeHtml(deviceName)}
+                </td>
+
+                <td>
+
+                    <span class="badge ${badgeClass}">
+                        ${escapeHtml(status)}
+                    </span>
+
+                </td>
+
+                <td>
+                    ${escapeHtml(createdAt)}
+                </td>
+
+                <td style="white-space: pre-wrap;">
+                    ${escapeHtml(notes)}
+                </td>
+
+                <td class="text-center">
+                    ${imageHtml}
+                </td>
+
             </tr>
         `;
     });
 
+
     tbody.innerHTML = html;
 }
 
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+/* =========================================================
+   TAMPILKAN GAMBAR HISTORY
+   ========================================================= */
+
+function showHistoryImage(imageUrl) {
+
+    const existingModal =
+        document.getElementById('historyImageModal');
+
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+
+    const modalHtml = `
+        <div
+            class="modal fade"
+            id="historyImageModal"
+            tabindex="-1"
+            aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+
+                <div class="modal-content bg-dark text-light">
+
+                    <div class="modal-header border-secondary">
+
+                        <h5 class="modal-title">
+                            <i class="bi bi-image me-2"></i>
+                            Detail Gambar Laporan
+                        </h5>
+
+                        <button
+                            type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body text-center">
+
+                        <img
+                            src="${imageUrl}"
+                            class="img-fluid rounded"
+                            style="max-height:70vh;"
+                            alt="Gambar laporan perangkat">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+
+    document.body.insertAdjacentHTML(
+        'beforeend',
+        modalHtml
+    );
+
+
+    const modalElement =
+        document.getElementById('historyImageModal');
+
+    const modal =
+        new bootstrap.Modal(modalElement);
+
+    modal.show();
+
+
+    modalElement.addEventListener(
+        'hidden.bs.modal',
+        function () {
+
+            modalElement.remove();
+
+        }
+    );
+}
+
     // Panggil fungsi render setelah data utama dimuat atau saat halaman selesai dimuat
-    document.addEventListener('DOMContentLoaded', () => {
-        // Beri jeda sedikit agar globalDeviceData selesai di-fetch/diisi dari backend
-        setTimeout(renderTroubleReportTable, 1000);
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+    loadDeviceHistory();
+});
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
