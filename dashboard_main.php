@@ -430,130 +430,144 @@
         }
 
         /* =====================================================
-   LAPORAN PERANGKAT - RESPONSIVE TABLE
+   LAPORAN PERANGKAT TROUBLE / KERUSAKAN
+   RESPONSIVE + DARK BLUE RAILMAP
    ===================================================== */
 
 #troubleReportSection {
     width: 100% !important;
     max-width: 100% !important;
+
+    background: #173b78 !important;
+    color: #ffffff !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 16px !important;
+
     box-sizing: border-box !important;
     overflow: hidden !important;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* =========================================================
-   LAPORAN PERANGKAT - RESPONSIVE DESKTOP + MOBILE
-   ========================================================= */
 
-/* ---------------------------------------------------------
-   DASAR SECTION
-   --------------------------------------------------------- */
+/* =====================================================
+   JUDUL LAPORAN
+   ===================================================== */
 
-#troubleReportSection {
+#troubleReportSection h5 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+
+/* =====================================================
+   PEMBUNGKUS TABEL
+   ===================================================== */
+
+#troubleReportSection .table-responsive {
     width: 100% !important;
     max-width: 100% !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    display: block !important;
+
+    -webkit-overflow-scrolling: touch;
+
     box-sizing: border-box !important;
-    overflow: hidden !important;
+
+    scrollbar-width: thin;
 }
 
-/* Header laporan */
-#troubleReportSection > .d-flex {
+
+/* =====================================================
+   TABEL
+   ===================================================== */
+
+#troubleReportSection .table-responsive table {
     width: 100% !important;
-    max-width: 100% !important;
+
+    /*
+       Tabel tetap cukup lebar agar isi tidak berantakan.
+       Jika layar kecil, tabel bisa digeser horizontal.
+    */
+    min-width: 1050px !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    table-layout: fixed !important;
+
+    border-collapse: collapse !important;
+
     box-sizing: border-box !important;
+
+    color: #ffffff !important;
+
+    background: #21477f !important;
 }
 
 
-/* ---------------------------------------------------------
-   DESKTOP
-   --------------------------------------------------------- */
+/* =====================================================
+   HEADER TABEL
+   ===================================================== */
 
-@media (min-width: 769px) {
+#troubleReportSection .table-responsive thead {
+    background: #143565 !important;
+}
 
-    /*
-     * Main content tetap memberi ruang untuk sidebar 260px.
-     * Jangan membuat width menjadi 100% karena itu akan
-     * menabrak area sidebar.
-     */
+#troubleReportSection .table-responsive th {
+    background: #143565 !important;
 
-    .main-content {
-        margin-left: 260px !important;
+    color: #ffffff !important;
 
-        width: calc(100% - 260px) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
 
-        max-width: calc(100% - 260px) !important;
+    white-space: nowrap !important;
 
-        box-sizing: border-box !important;
+    vertical-align: middle !important;
 
-        padding: 20px !important;
-    }
-
-
-    /*
-     * Card laporan mengikuti lebar main-content.
-     */
-
-    #troubleReportSection {
-        width: 100% !important;
-        max-width: 100% !important;
-
-        box-sizing: border-box !important;
-
-        overflow: hidden !important;
-    }
-
-
-    /*
-     * Tabel hanya scroll di dalam wrapper.
-     */
-
-    #troubleReportSection .table-responsive {
-        width: 100% !important;
-        max-width: 100% !important;
-
-        display: block !important;
-
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-
-        box-sizing: border-box !important;
-
-        -webkit-overflow-scrolling: touch;
-    }
-
-
-    /*
-     * Desktop:
-     * tabel minimal 1050px.
-     *
-     * Kalau layar cukup lebar → tabel memenuhi area.
-     * Kalau layar lebih kecil → tabel bisa digeser horizontal.
-     */
-
-    #troubleReportSection .table-responsive table {
-        width: 100% !important;
-
-        min-width: 1050px !important;
-
-        max-width: none !important;
-
-        margin: 0 !important;
-
-        table-layout: fixed !important;
-
-        box-sizing: border-box !important;
-    }
+    font-weight: 700 !important;
 }
 
 
-/* ---------------------------------------------------------
-   KOLOM TABEL
-   --------------------------------------------------------- */
+/* =====================================================
+   ISI TABEL
+   ===================================================== */
 
-/* NO */
+#troubleReportSection .table-responsive td {
+    background: #21477f !important;
+
+    color: #ffffff !important;
+
+    border-color: rgba(255, 255, 255, 0.12) !important;
+
+    vertical-align: middle !important;
+
+    word-break: break-word !important;
+}
+
+
+/* =====================================================
+   HOVER BARIS
+   ===================================================== */
+
+#troubleReportSection .table-responsive tbody tr:hover td {
+    background: #28538f !important;
+
+    color: #ffffff !important;
+}
+
+
+/* =====================================================
+   KOLOM 1 - NO
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(1),
 #troubleReportSection .table-responsive td:nth-child(1) {
-
     width: 55px !important;
     min-width: 55px !important;
 
@@ -561,41 +575,45 @@
 }
 
 
-/* NOMOR KERETA / LOKASI */
+/* =====================================================
+   KOLOM 2 - NOMOR KERETA / LOKASI
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(2),
 #troubleReportSection .table-responsive td:nth-child(2) {
-
-    width: 150px !important;
-    min-width: 150px !important;
+    width: 160px !important;
+    min-width: 160px !important;
 }
 
 
-/* NAMA PERANGKAT */
+/* =====================================================
+   KOLOM 3 - NAMA PERANGKAT
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(3),
 #troubleReportSection .table-responsive td:nth-child(3) {
-
     width: 180px !important;
     min-width: 180px !important;
 }
 
 
-/* STATUS / KONDISI */
+/* =====================================================
+   KOLOM 4 - STATUS / KONDISI
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(4),
 #troubleReportSection .table-responsive td:nth-child(4) {
-
     width: 140px !important;
     min-width: 140px !important;
 }
 
 
-/* TANGGAL & WAKTU */
+/* =====================================================
+   KOLOM 5 - TANGGAL & WAKTU
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(5),
 #troubleReportSection .table-responsive td:nth-child(5) {
-
     width: 175px !important;
     min-width: 175px !important;
 
@@ -603,27 +621,28 @@
 }
 
 
-/* CATATAN */
+/* =====================================================
+   KOLOM 6 - CATATAN / KERUSAKAN
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(6),
 #troubleReportSection .table-responsive td:nth-child(6) {
+    width: 280px !important;
+    min-width: 280px !important;
+}
 
-    width: 250px !important;
-    min-width: 250px !important;
-
-    white-space: normal !important;
-
+#troubleReportSection .table-responsive td:nth-child(6) {
+    white-space: pre-wrap !important;
     word-break: break-word !important;
-
-    overflow-wrap: anywhere !important;
 }
 
 
-/* GAMBAR */
+/* =====================================================
+   KOLOM 7 - GAMBAR
+   ===================================================== */
 
 #troubleReportSection .table-responsive th:nth-child(7),
 #troubleReportSection .table-responsive td:nth-child(7) {
-
     width: 120px !important;
     min-width: 120px !important;
 
@@ -631,385 +650,168 @@
 }
 
 
-/* ---------------------------------------------------------
-   HEADER TABEL
-   --------------------------------------------------------- */
-
-#troubleReportSection .table-responsive th {
-
-    white-space: nowrap !important;
-
-    vertical-align: middle !important;
-}
-
-
-/* ---------------------------------------------------------
-   ISI TABEL
-   --------------------------------------------------------- */
-
-#troubleReportSection .table-responsive td {
-
-    vertical-align: middle !important;
-
-    word-break: break-word !important;
-}
-
-
-/* Catatan */
-
-#troubleReportSection .table-responsive td:nth-child(6) {
-
-    white-space: pre-wrap !important;
-
-    word-break: break-word !important;
-
-    overflow-wrap: anywhere !important;
-}
-
-
-/* Tombol gambar */
+/* =====================================================
+   TOMBOL LIHAT GAMBAR
+   ===================================================== */
 
 #troubleReportSection .table-responsive td:nth-child(7) .btn {
-
     white-space: nowrap !important;
 }
 
 
-/* ---------------------------------------------------------
+/* =====================================================
+   PESAN TIDAK ADA DATA
+   ===================================================== */
+
+#troubleReportSection .table-responsive td.text-success {
+    color: #8ff0b5 !important;
+}
+
+
+/* =====================================================
    TABLET
-   --------------------------------------------------------- */
+   ===================================================== */
 
-@media (min-width: 577px) and (max-width: 992px) {
-
-    .main-content {
-
-        margin-left: 260px !important;
-
-        width: calc(100% - 260px) !important;
-
-        max-width: calc(100% - 260px) !important;
-
-        padding: 15px !important;
-
-        box-sizing: border-box !important;
-    }
-
+@media (max-width: 992px) {
 
     #troubleReportSection {
-
         width: 100% !important;
-
         max-width: 100% !important;
 
         padding: 15px !important;
 
-        box-sizing: border-box !important;
+        border-radius: 14px !important;
     }
 
-
     #troubleReportSection .table-responsive {
-
         width: 100% !important;
-
         max-width: 100% !important;
 
         overflow-x: auto !important;
-
         overflow-y: hidden !important;
     }
 
-
     #troubleReportSection .table-responsive table {
-
-        width: 1050px !important;
-
         min-width: 1050px !important;
-
-        max-width: none !important;
     }
 }
 
 
-/* ---------------------------------------------------------
+/* =====================================================
    HP
-   --------------------------------------------------------- */
+   ===================================================== */
 
 @media (max-width: 576px) {
 
-    /*
-     * PENTING:
-     * Sidebar tidak lagi mengambil 260px dari konten.
-     */
-
-    .main-content {
-
-        margin-left: 0 !important;
-
-        width: 100% !important;
-
-        max-width: 100% !important;
-
-        padding: 10px !important;
-
-        box-sizing: border-box !important;
-    }
-
-
-    /*
-     * Sidebar menjadi overlay.
-     */
-
-    .sidebar,
-    .railmap-sidebar {
-
-        position: fixed !important;
-
-        left: 0 !important;
-
-        top: 0 !important;
-
-        width: 260px !important;
-
-        max-width: 85vw !important;
-
-        height: 100vh !important;
-
-        z-index: 2000 !important;
-    }
-
-
-    /*
-     * Card laporan.
-     */
-
     #troubleReportSection {
-
         width: 100% !important;
-
         max-width: 100% !important;
-
-        margin: 0 !important;
 
         padding: 12px !important;
 
-        box-sizing: border-box !important;
-
         border-radius: 12px !important;
-
-        overflow: hidden !important;
     }
 
-
-    /*
-     * Header laporan.
-     */
-
-    #troubleReportSection > .d-flex {
-
-        display: flex !important;
-
-        flex-direction: column !important;
-
-        align-items: flex-start !important;
-
-        gap: 10px !important;
-    }
-
-
-    #troubleReportSection > .d-flex h5 {
-
-        width: 100% !important;
-
+    #troubleReportSection h5 {
         font-size: 1rem !important;
-
         line-height: 1.4 !important;
-
-        margin: 0 !important;
     }
-
-
-    /*
-     * Wrapper tabel.
-     */
 
     #troubleReportSection .table-responsive {
-
-        display: block !important;
-
         width: 100% !important;
-
         max-width: 100% !important;
 
         overflow-x: auto !important;
-
         overflow-y: hidden !important;
 
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        box-sizing: border-box !important;
-
-        -webkit-overflow-scrolling: touch;
-
-        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch !important;
     }
-
-
-    /*
-     * Tabel tetap lebar agar terbaca.
-     * Geser tabel ke kanan/kiri.
-     */
 
     #troubleReportSection .table-responsive table {
-
-        width: 1050px !important;
-
-        min-width: 1050px !important;
-
-        max-width: none !important;
-
-        margin: 0 !important;
-
-        table-layout: fixed !important;
+        min-width: 950px !important;
     }
-
 
     #troubleReportSection .table-responsive th,
     #troubleReportSection .table-responsive td {
-
-        font-size: 0.82rem !important;
-    }
-
-
-    #troubleReportSection .table-responsive td:nth-child(7) .btn {
-
         font-size: 0.8rem !important;
-
-        padding: 6px 9px !important;
     }
 }
 
 
-/* ---------------------------------------------------------
-   HP SANGAT KECIL
-   --------------------------------------------------------- */
-
-@media (max-width: 400px) {
-
-    .main-content {
-
-        padding: 8px !important;
-    }
-
-
-    #troubleReportSection {
-
-        padding: 10px !important;
-
-        border-radius: 10px !important;
-    }
-
-
-    #troubleReportSection > .d-flex h5 {
-
-        font-size: 0.95rem !important;
-    }
-
-
-    #troubleReportSection .table-responsive th,
-    #troubleReportSection .table-responsive td {
-
-        font-size: 0.78rem !important;
-    }
-}
-
-
-/* ---------------------------------------------------------
-   PRINT
-   --------------------------------------------------------- */
+/* =====================================================
+   PRINT LAPORAN
+   Saat dicetak kembali menjadi putih agar
+   hasil print mudah dibaca.
+   ===================================================== */
 
 @media print {
 
     body * {
-
         visibility: hidden;
     }
 
-
     #troubleReportSection,
     #troubleReportSection * {
-
         visibility: visible;
     }
 
-
     #troubleReportSection {
-
         position: absolute !important;
 
         left: 0 !important;
-
         top: 0 !important;
 
         width: 100% !important;
-
         max-width: 100% !important;
 
-        margin: 0 !important;
-
-        padding: 10px !important;
-
-        background: white !important;
-
-        color: black !important;
+        background: #ffffff !important;
+        color: #000000 !important;
 
         box-shadow: none !important;
-
         border: none !important;
 
         box-sizing: border-box !important;
+
+        margin: 0 !important;
+        padding: 10px !important;
     }
 
-
     #troubleReportSection .table-responsive {
-
         width: 100% !important;
-
-        max-width: 100% !important;
 
         overflow: visible !important;
     }
 
-
     #troubleReportSection .table-responsive table {
-
         width: 100% !important;
 
-        min-width: 0 !important;
-
+        min-width: auto !important;
         max-width: 100% !important;
 
         table-layout: auto !important;
-    }
 
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
 
     #troubleReportSection .table-responsive th,
     #troubleReportSection .table-responsive td {
+        background: #ffffff !important;
+        color: #000000 !important;
 
-        font-size: 10px !important;
+        border: 1px solid #000000 !important;
     }
 
-
     .btn,
+    sidebar,
+    header,
     .sidebar,
     .railmap-sidebar,
-    .sidebar-toggle-btn,
-    header {
-
+    .sidebar-toggle-btn {
         display: none !important;
     }
 }
+
     </style>
 </head>
 
@@ -1577,7 +1379,7 @@
     <!-- Bagian Tabel Laporan Perangkat Trouble -->
     <div class="mt-4">
         <div
-            class="card bg-white text-dark shadow-sm border-0 p-3 p-md-4 rounded-4"
+            class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
             id="troubleReportSection">
             <div
                 class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
