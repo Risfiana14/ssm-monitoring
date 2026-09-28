@@ -696,54 +696,161 @@
     }
 }
 
-
-/* =====================================================
-   HP
-   ===================================================== */
-
+/* HP */
 @media (max-width: 576px) {
 
-    #troubleReportSection {
+    /* Konten utama memenuhi layar */
+    .main-content {
+        margin-left: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
-
-        padding: 12px !important;
-
-        border-radius: 12px !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
     }
 
-    #troubleReportSection h5 {
-        font-size: 1rem !important;
-        line-height: 1.4 !important;
+/* Header Railmap */
+
+    .main-content h1 {
+        font-size: 28px !important;
+        text-align: center !important;
+        margin-bottom: 8px !important;
     }
 
-    #troubleReportSection .table-responsive {
+    .main-content h1 + *,
+    .main-content .subtitle {
+        text-align: center !important;
+    }
+
+/* Grid Perangkat 1 baris */
+
+    .device-grid-container {
         width: 100% !important;
         max-width: 100% !important;
-
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-
-        -webkit-overflow-scrolling: touch !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    #troubleReportSection .table-responsive table {
-        min-width: 950px !important;
+/* Setiap kereta 1 baris */
+    .car-col-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    #troubleReportSection .table-responsive th,
-    #troubleReportSection .table-responsive td {
-        font-size: 0.8rem !important;
+/* Card Kereta */
+
+    .car-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 10px 0 !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
+        border-radius: 10px !important;
+    }
+
+/* Header Card */
+
+    .car-card-header {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 5px !important;
+        box-sizing: border-box !important;
+    }
+
+/* Nama nomor sarana */
+    .car-card-header h5,
+    .car-card-header h6,
+    .car-card-header .car-title {
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin: 0 !important;
+    }
+
+/* Badge Status */
+
+    .car-card .badge {
+        font-size: 7px !important;
+        padding: 3px 5px !important;
+
+        white-space: nowrap !important;
+    }
+
+/* Grid Perangkat */
+
+    .car-card .device-grid,
+    .car-card .device-grid-container {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(5, 38px) !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin: 10px auto !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+/* TOMBOL DEVICE */
+
+    .car-card .device-button,
+    .car-card .device-btn,
+    .car-card .device-item {
+        width: 38px !important;
+        min-width: 38px !important;
+        max-width: 38px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 7px !important;
+        border-radius: 7px !important;
+        box-sizing: border-box !important;
+        white-space: nowrap !important;
+    }
+
+    .car-card button.device-button,
+    .car-card button.device-btn {
+        width: 38px !important;
+        height: 38px !important;
+
+        padding: 0 !important;
+
+        font-size: 7px !important;
+    }
+
+    .car-card .last-update {
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 8px !important;
+        margin-top: 5px !important;
+        white-space: nowrap !important;
+    }
+
+    .car-card .btn {
+        font-size: 8px !important;
+    }
+    .car-card .btn-sm {
+        padding: 3px 5px !important;
+        font-size: 8px !important;
     }
 }
 
-
-/* =====================================================
-   PRINT LAPORAN
-   Saat dicetak kembali menjadi putih agar
-   hasil print mudah dibaca.
-   ===================================================== */
-
+/* PRINT LAPORAN */
 @media print {
 
     body * {
@@ -757,39 +864,29 @@
 
     #troubleReportSection {
         position: absolute !important;
-
         left: 0 !important;
         top: 0 !important;
-
         width: 100% !important;
         max-width: 100% !important;
-
         background: #ffffff !important;
         color: #000000 !important;
-
         box-shadow: none !important;
         border: none !important;
-
         box-sizing: border-box !important;
-
         margin: 0 !important;
         padding: 10px !important;
     }
 
     #troubleReportSection .table-responsive {
         width: 100% !important;
-
         overflow: visible !important;
     }
 
     #troubleReportSection .table-responsive table {
         width: 100% !important;
-
         min-width: auto !important;
         max-width: 100% !important;
-
         table-layout: auto !important;
-
         background: #ffffff !important;
         color: #000000 !important;
     }
@@ -798,7 +895,6 @@
     #troubleReportSection .table-responsive td {
         background: #ffffff !important;
         color: #000000 !important;
-
         border: 1px solid #000000 !important;
     }
 
@@ -823,9 +919,7 @@
         type="button"
         onclick="toggleRailmapSidebar()"
         aria-label="Buka menu">
-
         <i class="bi bi-list fs-5"></i>
-
     </button>
 
     <div class="app-wrapper">
