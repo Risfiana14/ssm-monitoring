@@ -1484,12 +1484,23 @@
                     Laporan Perangkat Trouble / Kerusakan
                 </h5>
 
-                <button
-                    class="btn btn-primary btn-sm px-3 fw-bold"
-                    onclick="window.print()">
-                    <i class="bi bi-printer me-1"></i>
-                    Cetak Laporan
-                </button>
+                <div class="d-flex align-items-center gap-2">
+                    <div>
+                        <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
+                        <input type="date" id="filterStartDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
+                    </div>
+
+                    <div>
+                        <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Sampai Tanggal:</label>
+                        <input type="date" id="filterEndDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
+                    </div>
+
+                    <div class="align-self-end">
+            <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Cetak Laporan
+            </button>
+        </div>
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -2074,58 +2085,66 @@
            ========================================================= */
 
         function loadDeviceHistory() {
+    const tbody = document.getElementById('troubleReportTableBody');
 
-            const tbody = document.getElementById('troubleReportTableBody');
+    if (!tbody) {
+        return;
+    }
 
-            if (!tbody) {
-                return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const trainId = urlParams.get('train_id');
+
+    const startDate = document.getElementById('filterStartDate')?.value || '';
+    const endDate = document.getElementById('filterEndDate')?.value || '';
+
+    // Gunakan ?1=1 sebagai base, lalu sambungkan parameter berikutnya dengan &
+    let url = 'api_device_history.php?1=1';
+
+    if (trainId) {
+        url += '&train_id=' + encodeURIComponent(trainId); // Diperbaiki dari '?' menjadi '&'
+    }
+    if (startDate) {
+        url += '&start_date=' + encodeURIComponent(startDate);
+    }
+    if (endDate) {
+        url += '&end_date=' + encodeURIComponent(endDate);
+    }
+
+    fetch(url)
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error('HTTP Error ' + response.status);
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const trainId = urlParams.get('train_id');
+            return response.json();
+        })
+        .then(result => {
 
-            let url = 'api_device_history.php';
-
-            if (trainId) {
-                url += '?train_id=' + encodeURIComponent(trainId);
+            if (result.status !== 'ok') {
+                throw new Error(result.message || 'Gagal mengambil histori.');
             }
 
-            fetch(url)
-                .then(response => {
+            deviceHistoryData = Array.isArray(result.data) ?
+                result.data :
+                [];
 
-                    if (!response.ok) {
-                        throw new Error('HTTP Error ' + response.status);
-                    }
+            renderTroubleReportTable();
 
-                    return response.json();
-                })
-                .then(result => {
+        })
+        .catch(error => {
 
-                    if (result.status !== 'ok') {
-                        throw new Error(result.message || 'Gagal mengambil histori.');
-                    }
+            console.error('Gagal mengambil device history:', error);
 
-                    deviceHistoryData = Array.isArray(result.data) ?
-                        result.data :
-                        [];
-
-                    renderTroubleReportTable();
-
-                })
-                .catch(error => {
-
-                    console.error('Gagal mengambil device history:', error);
-
-                    tbody.innerHTML = `
+            tbody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-danger py-3">
                         Gagal memuat histori laporan perangkat.
                     </td>
                 </tr>
             `;
-                });
-        }
-
+        });
+}
 
         /* =========================================================
            RENDER TABEL LAPORAN PERANGKAT

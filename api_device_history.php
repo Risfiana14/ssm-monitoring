@@ -20,6 +20,10 @@ try {
         exit;
     }
 
+    // Ambil parameter tanggal dari URL
+    $start_date = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
+    $end_date = isset($_GET['end_date']) ? trim($_GET['end_date']) : '';
+
     $sql = "
         SELECT
             dh.id,
@@ -36,11 +40,27 @@ try {
 
         INNER JOIN carriages AS c
             ON TRIM(c.location) COLLATE utf8mb4_unicode_ci
-               =
-               TRIM(dh.location) COLLATE utf8mb4_unicode_ci
+                 =
+                TRIM(dh.location) COLLATE utf8mb4_unicode_ci
 
         WHERE c.train_id = ?
+    ";
 
+    // Siapkan array parameter untuk execute
+    $params = [$train_id];
+
+    // Tambahkan kondisi filter tanggal jika ada
+    if (!empty($start_date)) {
+        $sql .= " AND DATE(dh.created_at) >= ?";
+        $params[] = $start_date;
+    }
+
+    if (!empty($end_date)) {
+        $sql .= " AND DATE(dh.created_at) <= ?";
+        $params[] = $end_date;
+    }
+
+    $sql .= "
         ORDER BY
             dh.created_at DESC,
             dh.id DESC
@@ -48,9 +68,8 @@ try {
 
     $stmt = $pdo->prepare($sql);
 
-    $stmt->execute([
-        $train_id
-    ]);
+    // Eksekusi query dengan parameter train_id dan parameter tanggal dinamis
+    $stmt->execute($params);
 
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
