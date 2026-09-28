@@ -192,17 +192,17 @@
 
         /* CSS KONTEN UTAMA KANAN & ATUR KOLOM (3 vs 4)         */
         .main-content {
-        margin-left: 260px !important;
-        width: calc(100% - 260px) !important;
-        max-width: calc(100% - 260px) !important;
-        min-width: 0 !important;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        transition: all 0.3s ease;
-    }
+            margin-left: 260px !important;
+            width: calc(100% - 260px) !important;
+            max-width: calc(100% - 260px) !important;
+            min-width: 0 !important;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
+            transition: all 0.3s ease;
+        }
 
         /* Default saat Sidebar Terbuka: 3 Kolom */
         .car-col-item {
@@ -434,480 +434,480 @@
    RESPONSIVE + DARK BLUE RAILMAP
    ===================================================== */
 
-#troubleReportSection {
-    width: 100% !important;
-    max-width: 100% !important;
+        #troubleReportSection {
+            width: 100% !important;
+            max-width: 100% !important;
 
-    background: #173b78 !important;
-    color: #ffffff !important;
+            background: #173b78 !important;
+            color: #ffffff !important;
 
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 16px !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 16px !important;
 
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
-}
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    JUDUL LAPORAN
    ===================================================== */
 
-#troubleReportSection h5 {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-}
+        #troubleReportSection h5 {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    PEMBUNGKUS TABEL
    ===================================================== */
 
-#troubleReportSection .table-responsive {
-    width: 100% !important;
-    max-width: 100% !important;
+        #troubleReportSection .table-responsive {
+            width: 100% !important;
+            max-width: 100% !important;
 
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
 
-    display: block !important;
+            display: block !important;
 
-    -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch;
 
-    box-sizing: border-box !important;
+            box-sizing: border-box !important;
 
-    scrollbar-width: thin;
-}
+            scrollbar-width: thin;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    TABEL
    ===================================================== */
 
-#troubleReportSection .table-responsive table {
-    width: 100% !important;
+        #troubleReportSection .table-responsive table {
+            width: 100% !important;
 
-    /*
+            /*
        Tabel tetap cukup lebar agar isi tidak berantakan.
        Jika layar kecil, tabel bisa digeser horizontal.
     */
-    min-width: 1050px !important;
+            min-width: 1050px !important;
 
-    max-width: none !important;
+            max-width: none !important;
 
-    margin: 0 !important;
+            margin: 0 !important;
 
-    table-layout: fixed !important;
+            table-layout: fixed !important;
 
-    border-collapse: collapse !important;
+            border-collapse: collapse !important;
 
-    box-sizing: border-box !important;
+            box-sizing: border-box !important;
 
-    color: #ffffff !important;
+            color: #ffffff !important;
 
-    background: #21477f !important;
-}
+            background: #21477f !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    HEADER TABEL
    ===================================================== */
 
-#troubleReportSection .table-responsive thead {
-    background: #143565 !important;
-}
+        #troubleReportSection .table-responsive thead {
+            background: #143565 !important;
+        }
 
-#troubleReportSection .table-responsive th {
-    background: #143565 !important;
+        #troubleReportSection .table-responsive th {
+            background: #143565 !important;
 
-    color: #ffffff !important;
+            color: #ffffff !important;
 
-    border-color: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
 
-    white-space: nowrap !important;
+            white-space: nowrap !important;
 
-    vertical-align: middle !important;
+            vertical-align: middle !important;
 
-    font-weight: 700 !important;
-}
+            font-weight: 700 !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    ISI TABEL
    ===================================================== */
 
-#troubleReportSection .table-responsive td {
-    background: #21477f !important;
+        #troubleReportSection .table-responsive td {
+            background: #21477f !important;
 
-    color: #ffffff !important;
+            color: #ffffff !important;
 
-    border-color: rgba(255, 255, 255, 0.12) !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
 
-    vertical-align: middle !important;
+            vertical-align: middle !important;
 
-    word-break: break-word !important;
-}
+            word-break: break-word !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    HOVER BARIS
    ===================================================== */
 
-#troubleReportSection .table-responsive tbody tr:hover td {
-    background: #28538f !important;
+        #troubleReportSection .table-responsive tbody tr:hover td {
+            background: #28538f !important;
 
-    color: #ffffff !important;
-}
+            color: #ffffff !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 1 - NO
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(1),
-#troubleReportSection .table-responsive td:nth-child(1) {
-    width: 55px !important;
-    min-width: 55px !important;
+        #troubleReportSection .table-responsive th:nth-child(1),
+        #troubleReportSection .table-responsive td:nth-child(1) {
+            width: 55px !important;
+            min-width: 55px !important;
 
-    text-align: center !important;
-}
+            text-align: center !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 2 - NOMOR KERETA / LOKASI
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(2),
-#troubleReportSection .table-responsive td:nth-child(2) {
-    width: 160px !important;
-    min-width: 160px !important;
-}
+        #troubleReportSection .table-responsive th:nth-child(2),
+        #troubleReportSection .table-responsive td:nth-child(2) {
+            width: 160px !important;
+            min-width: 160px !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 3 - NAMA PERANGKAT
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(3),
-#troubleReportSection .table-responsive td:nth-child(3) {
-    width: 180px !important;
-    min-width: 180px !important;
-}
+        #troubleReportSection .table-responsive th:nth-child(3),
+        #troubleReportSection .table-responsive td:nth-child(3) {
+            width: 180px !important;
+            min-width: 180px !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 4 - STATUS / KONDISI
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(4),
-#troubleReportSection .table-responsive td:nth-child(4) {
-    width: 140px !important;
-    min-width: 140px !important;
-}
+        #troubleReportSection .table-responsive th:nth-child(4),
+        #troubleReportSection .table-responsive td:nth-child(4) {
+            width: 140px !important;
+            min-width: 140px !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 5 - TANGGAL & WAKTU
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(5),
-#troubleReportSection .table-responsive td:nth-child(5) {
-    width: 175px !important;
-    min-width: 175px !important;
+        #troubleReportSection .table-responsive th:nth-child(5),
+        #troubleReportSection .table-responsive td:nth-child(5) {
+            width: 175px !important;
+            min-width: 175px !important;
 
-    white-space: nowrap !important;
-}
+            white-space: nowrap !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 6 - CATATAN / KERUSAKAN
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(6),
-#troubleReportSection .table-responsive td:nth-child(6) {
-    width: 280px !important;
-    min-width: 280px !important;
-}
+        #troubleReportSection .table-responsive th:nth-child(6),
+        #troubleReportSection .table-responsive td:nth-child(6) {
+            width: 280px !important;
+            min-width: 280px !important;
+        }
 
-#troubleReportSection .table-responsive td:nth-child(6) {
-    white-space: pre-wrap !important;
-    word-break: break-word !important;
-}
+        #troubleReportSection .table-responsive td:nth-child(6) {
+            white-space: pre-wrap !important;
+            word-break: break-word !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    KOLOM 7 - GAMBAR
    ===================================================== */
 
-#troubleReportSection .table-responsive th:nth-child(7),
-#troubleReportSection .table-responsive td:nth-child(7) {
-    width: 120px !important;
-    min-width: 120px !important;
+        #troubleReportSection .table-responsive th:nth-child(7),
+        #troubleReportSection .table-responsive td:nth-child(7) {
+            width: 120px !important;
+            min-width: 120px !important;
 
-    text-align: center !important;
-}
+            text-align: center !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    TOMBOL LIHAT GAMBAR
    ===================================================== */
 
-#troubleReportSection .table-responsive td:nth-child(7) .btn {
-    white-space: nowrap !important;
-}
+        #troubleReportSection .table-responsive td:nth-child(7) .btn {
+            white-space: nowrap !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    PESAN TIDAK ADA DATA
    ===================================================== */
 
-#troubleReportSection .table-responsive td.text-success {
-    color: #8ff0b5 !important;
-}
+        #troubleReportSection .table-responsive td.text-success {
+            color: #8ff0b5 !important;
+        }
 
 
-/* =====================================================
+        /* =====================================================
    TABLET
    ===================================================== */
 
-@media (max-width: 992px) {
+        @media (max-width: 992px) {
 
-    #troubleReportSection {
-        width: 100% !important;
-        max-width: 100% !important;
+            #troubleReportSection {
+                width: 100% !important;
+                max-width: 100% !important;
 
-        padding: 15px !important;
+                padding: 15px !important;
 
-        border-radius: 14px !important;
-    }
+                border-radius: 14px !important;
+            }
 
-    #troubleReportSection .table-responsive {
-        width: 100% !important;
-        max-width: 100% !important;
+            #troubleReportSection .table-responsive {
+                width: 100% !important;
+                max-width: 100% !important;
 
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-    }
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+            }
 
-    #troubleReportSection .table-responsive table {
-        min-width: 1050px !important;
-    }
-}
+            #troubleReportSection .table-responsive table {
+                min-width: 1050px !important;
+            }
+        }
 
-/* HP */
-@media (max-width: 576px) {
+        /* HP */
+        @media (max-width: 576px) {
 
-    /* Konten utama memenuhi layar */
-    .main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 10px !important;
-        box-sizing: border-box !important;
-    }
+            /* Konten utama memenuhi layar */
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 10px !important;
+                box-sizing: border-box !important;
+            }
 
-/* Header Railmap */
+            /* Header Railmap */
 
-    .main-content h1 {
-        font-size: 28px !important;
-        text-align: center !important;
-        margin-bottom: 8px !important;
-    }
+            .main-content h1 {
+                font-size: 28px !important;
+                text-align: center !important;
+                margin-bottom: 8px !important;
+            }
 
-    .main-content h1 + *,
-    .main-content .subtitle {
-        text-align: center !important;
-    }
+            .main-content h1+*,
+            .main-content .subtitle {
+                text-align: center !important;
+            }
 
-/* Grid Perangkat 1 baris */
+            /* Grid Perangkat 1 baris */
 
-    .device-grid-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 10px !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-    }
+            .device-grid-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+            }
 
-/* Setiap kereta 1 baris */
-    .car-col-item {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 0 0 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-    }
+            /* Setiap kereta 1 baris */
+            .car-col-item {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+            }
 
-/* Card Kereta */
+            /* Card Kereta */
 
-    .car-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 0 10px 0 !important;
-        padding: 10px !important;
-        box-sizing: border-box !important;
-        border-radius: 10px !important;
-    }
+            .car-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 0 10px 0 !important;
+                padding: 10px !important;
+                box-sizing: border-box !important;
+                border-radius: 10px !important;
+            }
 
-/* Header Card */
+            /* Header Card */
 
-    .car-card-header {
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 5px !important;
-        box-sizing: border-box !important;
-    }
+            .car-card-header {
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 5px !important;
+                box-sizing: border-box !important;
+            }
 
-/* Nama nomor sarana */
-    .car-card-header h5,
-    .car-card-header h6,
-    .car-card-header .car-title {
-        font-size: 11px !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        margin: 0 !important;
-    }
+            /* Nama nomor sarana */
+            .car-card-header h5,
+            .car-card-header h6,
+            .car-card-header .car-title {
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                margin: 0 !important;
+            }
 
-/* Badge Status */
+            /* Badge Status */
 
-    .car-card .badge {
-        font-size: 7px !important;
-        padding: 3px 5px !important;
+            .car-card .badge {
+                font-size: 7px !important;
+                padding: 3px 5px !important;
 
-        white-space: nowrap !important;
-    }
+                white-space: nowrap !important;
+            }
 
-/* Grid Perangkat */
+            /* Grid Perangkat */
 
-    .car-card .device-grid,
-    .car-card .device-grid-container {
-        width: 100% !important;
-        display: grid !important;
-        grid-template-columns: repeat(5, 38px) !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 6px !important;
-        margin: 10px auto !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
+            .car-card .device-grid,
+            .car-card .device-grid-container {
+                width: 100% !important;
+                display: grid !important;
+                grid-template-columns: repeat(5, 38px) !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 6px !important;
+                margin: 10px auto !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+            }
 
-/* TOMBOL DEVICE */
+            /* TOMBOL DEVICE */
 
-    .car-card .device-button,
-    .car-card .device-btn,
-    .car-card .device-item {
-        width: 38px !important;
-        min-width: 38px !important;
-        max-width: 38px !important;
-        height: 38px !important;
-        min-height: 38px !important;
-        max-height: 38px !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 7px !important;
-        border-radius: 7px !important;
-        box-sizing: border-box !important;
-        white-space: nowrap !important;
-    }
+            .car-card .device-button,
+            .car-card .device-btn,
+            .car-card .device-item {
+                width: 38px !important;
+                min-width: 38px !important;
+                max-width: 38px !important;
+                height: 38px !important;
+                min-height: 38px !important;
+                max-height: 38px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 7px !important;
+                border-radius: 7px !important;
+                box-sizing: border-box !important;
+                white-space: nowrap !important;
+            }
 
-    .car-card button.device-button,
-    .car-card button.device-btn {
-        width: 38px !important;
-        height: 38px !important;
+            .car-card button.device-button,
+            .car-card button.device-btn {
+                width: 38px !important;
+                height: 38px !important;
 
-        padding: 0 !important;
+                padding: 0 !important;
 
-        font-size: 7px !important;
-    }
+                font-size: 7px !important;
+            }
 
-    .car-card .last-update {
-        width: 100% !important;
-        text-align: center !important;
-        font-size: 8px !important;
-        margin-top: 5px !important;
-        white-space: nowrap !important;
-    }
+            .car-card .last-update {
+                width: 100% !important;
+                text-align: center !important;
+                font-size: 8px !important;
+                margin-top: 5px !important;
+                white-space: nowrap !important;
+            }
 
-    .car-card .btn {
-        font-size: 8px !important;
-    }
-    .car-card .btn-sm {
-        padding: 3px 5px !important;
-        font-size: 8px !important;
-    }
-}
+            .car-card .btn {
+                font-size: 8px !important;
+            }
 
-/* PRINT LAPORAN */
-@media print {
+            .car-card .btn-sm {
+                padding: 3px 5px !important;
+                font-size: 8px !important;
+            }
+        }
 
-    body * {
-        visibility: hidden;
-    }
+        /* PRINT LAPORAN */
+        @media print {
 
-    #troubleReportSection,
-    #troubleReportSection * {
-        visibility: visible;
-    }
+            body * {
+                visibility: hidden;
+            }
 
-    #troubleReportSection {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-        box-shadow: none !important;
-        border: none !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        padding: 10px !important;
-    }
+            #troubleReportSection,
+            #troubleReportSection * {
+                visibility: visible;
+            }
 
-    #troubleReportSection .table-responsive {
-        width: 100% !important;
-        overflow: visible !important;
-    }
+            #troubleReportSection {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                border: none !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                padding: 10px !important;
+            }
 
-    #troubleReportSection .table-responsive table {
-        width: 100% !important;
-        min-width: auto !important;
-        max-width: 100% !important;
-        table-layout: auto !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-    }
+            #troubleReportSection .table-responsive {
+                width: 100% !important;
+                overflow: visible !important;
+            }
 
-    #troubleReportSection .table-responsive th,
-    #troubleReportSection .table-responsive td {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 1px solid #000000 !important;
-    }
+            #troubleReportSection .table-responsive table {
+                width: 100% !important;
+                min-width: auto !important;
+                max-width: 100% !important;
+                table-layout: auto !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
 
-    .btn,
-    sidebar,
-    header,
-    .sidebar,
-    .railmap-sidebar,
-    .sidebar-toggle-btn {
-        display: none !important;
-    }
-}
+            #troubleReportSection .table-responsive th,
+            #troubleReportSection .table-responsive td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+            }
 
+            .btn,
+            sidebar,
+            header,
+            .sidebar,
+            .railmap-sidebar,
+            .sidebar-toggle-btn {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -1379,170 +1379,170 @@
                 }
                 ?>
 
-    <!-- Modal Pop-Up Detail Status -->
-    <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="device_ip" id="uploadDeviceIP">
-                    <input type="hidden" name="location" id="uploadDeviceLocation">
+                <!-- Modal Pop-Up Detail Status -->
+                <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="device_ip" id="uploadDeviceIP">
+                                <input type="hidden" name="location" id="uploadDeviceLocation">
 
-                    <div class="modal-header py-2">
-                        <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header py-2">
+                                    <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body p-3">
+                                    <table class="table table-dark table-borderless table-sm mb-3">
+                                        <tbody style="font-size: 0.8rem;">
+                                            <tr>
+                                                <td class="text-light opacity-75">IP Address</td>
+                                                <td class="fw-bold text-end" id="modalDeviceIP">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-light opacity-75">Tipe Perangkat</td>
+                                                <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-light opacity-75">Lokasi Kereta</td>
+                                                <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-light opacity-75">Status Connection</td>
+                                                <td class="text-end" id="modalDeviceStatus">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-light opacity-75">Kondisi Sistem</td>
+                                                <td class="text-end" id="modalDeviceState">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-light opacity-75">Waktu Log / Photo</td>
+                                                <td class="text-end small" id="modalDeviceTime">-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-light opacity-75 mb-1">
+                                            <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
+                                        </label>
+
+                                        <div class="mb-2">
+                                            <div class="saved-notes-display" id="modalDisplayNotes">
+                                                <em class="opacity-50">Belum ada catatan tersimpan.</em>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="text-light opacity-75" style="font-size: 0.72rem;">
+                                                <i class="bi bi-pencil-square me-1 text-info"></i>Isi Catatan Baru:
+                                            </span>
+                                            <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" style="font-size: 0.68rem;" onclick="clearNotesInput()" title="Hapus teks di kolom input">
+                                                <i class="bi bi-trash me-1"></i>Clear Input
+                                            </button>
+                                        </div>
+
+                                        <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm input-notes-area" rows="2" placeholder="Masukkan catatan penanganan baru..."></textarea>
+                                    </div>
+
+                                    <hr class="my-2 border-secondary">
+
+                                    <div class="mt-2">
+                                        <label class="form-label fw-bold small text-light opacity-75 mb-1">
+                                            <i class="bi bi-image me-1 text-info"></i>Foto Fisik Perangkat
+                                        </label>
+                                        <div class="text-center mb-3">
+                                            <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
+                                        </div>
+
+                                        <input type="file" name="device_image" id="inputDeviceImage" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer py-2 d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary btn-sm py-1 px-3" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-primary btn-sm py-1 px-3" id="btnSubmitForm" style="font-size:0.75rem;">
+                                        <i class="bi bi-save me-1"></i>Simpan Perubahan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="modal-body p-3">
-                        <table class="table table-dark table-borderless table-sm mb-3">
-                            <tbody style="font-size: 0.8rem;">
-                                <tr>
-                                    <td class="text-light opacity-75">IP Address</td>
-                                    <td class="fw-bold text-end" id="modalDeviceIP">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-light opacity-75">Tipe Perangkat</td>
-                                    <td class="fw-bold text-end text-uppercase" id="modalDeviceType">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-light opacity-75">Lokasi Kereta</td>
-                                    <td class="fw-bold text-end" id="modalDeviceLocation">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-light opacity-75">Status Connection</td>
-                                    <td class="text-end" id="modalDeviceStatus">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-light opacity-75">Kondisi Sistem</td>
-                                    <td class="text-end" id="modalDeviceState">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-light opacity-75">Waktu Log / Photo</td>
-                                    <td class="text-end small" id="modalDeviceTime">-</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Bagian Tabel Laporan Perangkat Trouble -->
+                <div class="mt-4">
+                    <div
+                        class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
+                        id="troubleReportSection">
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <h5
+                                class="m-0 fw-bold text-dark"
+                                style="font-size: 1.15rem;">
+                                <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                Laporan Perangkat Trouble / Kerusakan
+                            </h5>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-light opacity-75 mb-1">
-                                <i class="bi bi-journal-text me-1 text-warning"></i>Catatan Perangkat
-                            </label>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
+                                    <input type="date" id="filterStartDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
+                                </div>
 
-                            <div class="mb-2">
-                                <div class="saved-notes-display" id="modalDisplayNotes">
-                                    <em class="opacity-50">Belum ada catatan tersimpan.</em>
+                                <div>
+                                    <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Sampai Tanggal:</label>
+                                    <input type="date" id="filterEndDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
+                                </div>
+
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="window.print()">
+                                        <i class="bi bi-printer me-1"></i> Cetak Laporan
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="text-light opacity-75" style="font-size: 0.72rem;">
-                                    <i class="bi bi-pencil-square me-1 text-info"></i>Isi Catatan Baru:
-                                </span>
-                                <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" style="font-size: 0.68rem;" onclick="clearNotesInput()" title="Hapus teks di kolom input">
-                                    <i class="bi bi-trash me-1"></i>Clear Input
-                                </button>
-                            </div>
-
-                            <textarea name="notes" id="modalDeviceNotes" class="form-control form-control-sm input-notes-area" rows="2" placeholder="Masukkan catatan penanganan baru..."></textarea>
                         </div>
 
-                        <hr class="my-2 border-secondary">
+                        <div class="table-responsive">
+                            <table
+                                class="table table-hover table-bordered table-sm align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>
+                                            Nomor Kereta
+                                        </th>
+                                        <th>
+                                            Nama Perangkat
+                                        </th>
+                                        <th>
+                                            Status / Kondisi
+                                        </th>
+                                        <th>
+                                            Tanggal &amp; Waktu
+                                        </th>
+                                        <th>
+                                            Catatan / Kerusakan
+                                        </th>
+                                        <th>
+                                            Gambar
+                                        </th>
+                                    </tr>
+                                </thead>
 
-                        <div class="mt-2">
-                            <label class="form-label fw-bold small text-light opacity-75 mb-1">
-                                <i class="bi bi-image me-1 text-info"></i>Foto Fisik Perangkat
-                            </label>
-                            <div class="text-center mb-3">
-                                <img id="modalDeviceImage" src="https://via.placeholder.com/300x160?text=Belum+Ada+Foto" class="device-img-preview" alt="Foto Perangkat">
-                            </div>
-
-                            <input type="file" name="device_image" id="inputDeviceImage" class="form-control form-control-sm bg-dark text-light border-secondary" accept="image/*">
+                                <tbody id="troubleReportTableBody">
+                                    <tr>
+                                        <td
+                                            colspan="7"
+                                            class="text-center text-muted py-3">
+                                            Memuat data laporan perangkat...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
-                    <div class="modal-footer py-2 d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary btn-sm py-1 px-3" style="font-size:0.75rem;" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary btn-sm py-1 px-3" id="btnSubmitForm" style="font-size:0.75rem;">
-                            <i class="bi bi-save me-1"></i>Simpan Perubahan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bagian Tabel Laporan Perangkat Trouble -->
-    <div class="mt-4">
-        <div
-            class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
-            id="troubleReportSection">
-            <div
-                class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <h5
-                    class="m-0 fw-bold text-dark"
-                    style="font-size: 1.15rem;">
-                    <i class="bi bi-file-earmark-text me-2 text-primary"></i>
-                    Laporan Perangkat Trouble / Kerusakan
-                </h5>
-
-                <div class="d-flex align-items-center gap-2">
-                    <div>
-                        <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
-                        <input type="date" id="filterStartDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
-                    </div>
-
-                    <div>
-                        <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Sampai Tanggal:</label>
-                        <input type="date" id="filterEndDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
-                    </div>
-
-                    <div class="align-self-end">
-            <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="window.print()">
-                <i class="bi bi-printer me-1"></i> Cetak Laporan
-            </button>
-        </div>
                 </div>
-            </div>
-
-            <div class="table-responsive">
-                <table
-                    class="table table-hover table-bordered table-sm align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>No</th>
-                            <th>
-                                Nomor Kereta
-                            </th>
-                            <th>
-                                Nama Perangkat
-                            </th>
-                            <th>
-                                Status / Kondisi
-                            </th>
-                            <th>
-                                Tanggal &amp; Waktu
-                            </th>
-                            <th>
-                                Catatan / Kerusakan
-                            </th>
-                            <th>
-                                Gambar
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="troubleReportTableBody">
-                        <tr>
-                            <td
-                                colspan="7"
-                                class="text-center text-muted py-3">
-                                Memuat data laporan perangkat...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
             </div>
         </div>
     </div>
@@ -2079,81 +2079,73 @@
 
         let deviceHistoryData = [];
 
-
-        /* =========================================================
-           LOAD HISTORY LAPORAN PERANGKAT
-           ========================================================= */
+// Fungsi untuk memuat histori laporan perangkat
 
         function loadDeviceHistory() {
-    const tbody = document.getElementById('troubleReportTableBody');
+            const tbody = document.getElementById('troubleReportTableBody');
 
-    if (!tbody) {
-        return;
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const trainId = urlParams.get('train_id');
-
-    const startDate = document.getElementById('filterStartDate')?.value || '';
-    const endDate = document.getElementById('filterEndDate')?.value || '';
-
-    // Gunakan ?1=1 sebagai base, lalu sambungkan parameter berikutnya dengan &
-    let url = 'api_device_history.php?1=1';
-
-    if (trainId) {
-        url += '&train_id=' + encodeURIComponent(trainId); // Diperbaiki dari '?' menjadi '&'
-    }
-    if (startDate) {
-        url += '&start_date=' + encodeURIComponent(startDate);
-    }
-    if (endDate) {
-        url += '&end_date=' + encodeURIComponent(endDate);
-    }
-
-    fetch(url)
-        .then(response => {
-
-            if (!response.ok) {
-                throw new Error('HTTP Error ' + response.status);
+            if (!tbody) {
+                return;
             }
 
-            return response.json();
-        })
-        .then(result => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trainId = urlParams.get('train_id');
 
-            if (result.status !== 'ok') {
-                throw new Error(result.message || 'Gagal mengambil histori.');
+            const startDate = document.getElementById('filterStartDate')?.value || '';
+            const endDate = document.getElementById('filterEndDate')?.value || '';
+
+            // Gunakan ?1=1 sebagai base, lalu sambungkan parameter berikutnya dengan &
+            let url = 'api_device_history.php?1=1';
+
+            if (trainId) {
+                url += '&train_id=' + encodeURIComponent(trainId); // Diperbaiki dari '?' menjadi '&'
+            }
+            if (startDate) {
+                url += '&start_date=' + encodeURIComponent(startDate);
+            }
+            if (endDate) {
+                url += '&end_date=' + encodeURIComponent(endDate);
             }
 
-            deviceHistoryData = Array.isArray(result.data) ?
-                result.data :
-                [];
+            fetch(url)
+                .then(response => {
 
-            renderTroubleReportTable();
+                    if (!response.ok) {
+                        throw new Error('HTTP Error ' + response.status);
+                    }
 
-        })
-        .catch(error => {
+                    return response.json();
+                })
+                .then(result => {
 
-            console.error('Gagal mengambil device history:', error);
+                    if (result.status !== 'ok') {
+                        throw new Error(result.message || 'Gagal mengambil histori.');
+                    }
 
-            tbody.innerHTML = `
+                    deviceHistoryData = Array.isArray(result.data) ?
+                        result.data : [];
+
+                    renderTroubleReportTable();
+
+                })
+                .catch(error => {
+
+                    console.error('Gagal mengambil device history:', error);
+
+                    tbody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-danger py-3">
                         Gagal memuat histori laporan perangkat.
                     </td>
                 </tr>
             `;
-        });
-}
+                });
+        }
 
-        /* =========================================================
-           RENDER TABEL LAPORAN PERANGKAT
-           ========================================================= */
+// Tabel laporan perangkat trouble / kerusakan
 
         function renderTroubleReportTable() {
-
             const tbody = document.getElementById('troubleReportTableBody');
-
             if (!tbody) {
                 return;
             }
@@ -2162,35 +2154,21 @@
                 deviceHistoryData = [];
             }
 
-
-            /*
-             * Jika belum ada laporan
-             */
-
             if (deviceHistoryData.length === 0) {
 
                 tbody.innerHTML = `
             <tr>
                 <td colspan="7"
                     class="text-center text-success fw-bold py-4">
-
                     <i class="bi bi-check-circle me-1"></i>
                     Belum ada laporan perangkat trouble / kerusakan.
-
                 </td>
             </tr>
         `;
-
                 return;
             }
 
-
             let html = '';
-
-
-            /*
-             * device_history sudah diurutkan dari yang terbaru
-             */
 
             deviceHistoryData.forEach((history, index) => {
 
@@ -2214,11 +2192,6 @@
                 const createdAt =
                     history.created_at || '-';
 
-
-                /*
-                 * Tentukan warna status
-                 */
-
                 let badgeClass = 'bg-danger';
 
                 if (
@@ -2227,32 +2200,23 @@
                 ) {
 
                     badgeClass = 'bg-success';
-
                 } else if (
                     status === 'WARNING'
                 ) {
 
                     badgeClass = 'bg-warning text-dark';
-
                 } else if (
                     status.includes('NO INTERNET')
                 ) {
 
                     badgeClass = 'bg-danger';
-
                 }
-
-
-                /*
-                 * Gambar
-                 */
 
                 let imageHtml = `
             <span class="text-muted">
                 Tidak ada gambar
             </span>
         `;
-
 
                 if (
                     history.image &&
@@ -2268,66 +2232,43 @@
                     type="button"
                     class="btn btn-sm btn-outline-primary"
                     onclick="showHistoryImage('${imageUrl}')">
-
                     <i class="bi bi-image me-1"></i>
                     Lihat Gambar
-
                 </button>
             `;
                 }
 
-
-                /*
-                 * Masukkan baris ke tabel
-                 */
-
                 html += `
             <tr>
-
                 <td class="text-center fw-bold">
                     ${index + 1}
                 </td>
-
                 <td class="fw-bold">
                     ${escapeHtml(location)}
                 </td>
-
                 <td class="fw-bold">
                     ${escapeHtml(deviceName)}
                 </td>
-
                 <td>
-
                     <span class="badge ${badgeClass}">
                         ${escapeHtml(status)}
                     </span>
-
                 </td>
-
                 <td>
                     ${escapeHtml(createdAt)}
                 </td>
-
                 <td style="white-space: pre-wrap;">
                     ${escapeHtml(notes)}
                 </td>
-
                 <td class="text-center">
                     ${imageHtml}
                 </td>
-
             </tr>
         `;
             });
 
-
             tbody.innerHTML = html;
         }
-
-
-        /* =========================================================
-           ESCAPE HTML
-           ========================================================= */
 
         function escapeHtml(value) {
 
@@ -2343,20 +2284,14 @@
                 .replace(/'/g, '&#039;');
         }
 
-
-        /* =========================================================
-           TAMPILKAN GAMBAR HISTORY
-           ========================================================= */
-
+// Gambar history laporan perangkat
         function showHistoryImage(imageUrl) {
-
             const existingModal =
                 document.getElementById('historyImageModal');
 
             if (existingModal) {
                 existingModal.remove();
             }
-
 
             const modalHtml = `
         <div
@@ -2366,11 +2301,8 @@
             aria-hidden="true">
 
             <div class="modal-dialog modal-dialog-centered modal-lg">
-
                 <div class="modal-content bg-dark text-light">
-
                     <div class="modal-header border-secondary">
-
                         <h5 class="modal-title">
                             <i class="bi bi-image me-2"></i>
                             Detail Gambar Laporan
@@ -2381,32 +2313,24 @@
                             class="btn-close btn-close-white"
                             data-bs-dismiss="modal">
                         </button>
-
                     </div>
 
                     <div class="modal-body text-center">
-
                         <img
                             src="${imageUrl}"
                             class="img-fluid rounded"
                             style="max-height:70vh;"
                             alt="Gambar laporan perangkat">
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     `;
-
 
             document.body.insertAdjacentHTML(
                 'beforeend',
                 modalHtml
             );
-
 
             const modalElement =
                 document.getElementById('historyImageModal');
@@ -2422,7 +2346,6 @@
                 function() {
 
                     modalElement.remove();
-
                 }
             );
         }
@@ -2502,24 +2425,18 @@
 
     <!-- Modal Contoh untuk Tombol Create Kereta (Opsional / Siap Pakai) -->
     <div class="modal fade" id="modalAddLocation" tabindex="-1" aria-hidden="true">
-
         <div class="modal-dialog modal-dialog-centered">
-
             <div class="modal-content"
                 style="background-color:#1a233a;color:#fff;">
-
                 <div class="modal-header border-bottom border-secondary">
-
                     <h5 class="modal-title">
                         Tambah Nomor Sarana ke Rangkaian
                     </h5>
-
                     <button
                         type="button"
                         class="btn-close btn-close-white"
                         data-bs-dismiss="modal">
                     </button>
-
                 </div>
 
                 <form id="formAddLocation">
@@ -2543,11 +2460,9 @@
                                 <option value="">
                                     -- Pilih Nomor Sarana --
                                 </option>
-
                                 <?php
 
                                 if (!empty($selected_train_id)) {
-
 
                                     $stmtAvailable = $pdo->prepare("
                                     SELECT DISTINCT
@@ -2587,23 +2502,18 @@
                                             '</option>';
                                     }
                                 }
-
                                 ?>
 
                             </select>
 
-
                             <div class="form-text text-secondary">
-
                                 Hanya nomor sarana yang sudah terdeteksi
                                 oleh monitoring dan belum masuk rangkaian lain.
-
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-
                         <button
                             type="button"
                             class="btn btn-secondary btn-sm"
@@ -2625,25 +2535,19 @@
 
     <!-- Modal Edit Depo -->
     <div class="modal fade" id="modalEditDepo" tabindex="-1" aria-hidden="true">
-
         <div class="modal-dialog modal-dialog-centered">
-
             <div class="modal-content"
                 style="background-color:#1a233a;color:#fff;">
-
                 <div class="modal-header border-bottom border-secondary">
-
                     <h5 class="modal-title">
                         <i class="bi bi-pencil-square text-warning me-1"></i>
                         Edit Nama Depo
                     </h5>
-
                     <button
                         type="button"
                         class="btn-close btn-close-white"
                         data-bs-dismiss="modal">
                     </button>
-
                 </div>
 
                 <form action="edit_depo.php" method="POST">
@@ -2668,7 +2572,6 @@
                     </div>
 
                     <div class="modal-footer">
-
                         <button
                             type="button"
                             class="btn btn-secondary btn-sm"
@@ -2686,11 +2589,5 @@
             </div>
         </div>
     </div>
-
-
-    <!-- CSS Khusus untuk Print/Cetak -->
-
-
 </body>
-
 </html>
