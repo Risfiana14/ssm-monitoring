@@ -1194,9 +1194,13 @@
             <div class="mt-3">
                 <button
                     type="button"
-                    id="btnLaporanPerangkat"
                     class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
-                    onclick="showDeviceReport()">
+                    data-bs-toggle="collapse"
+                    data-bs-target="#laporanPerangkatMenu"
+                    aria-expanded="false"
+                    aria-controls="laporanPerangkatMenu">
+
+                    <i class="bi bi-chevron-down train-arrow me-2"></i>
 
                     <i class="bi bi-file-earmark-text text-info me-2"></i>
 
@@ -1204,6 +1208,28 @@
                         Laporan Perangkat
                     </span>
                 </button>
+
+                <div class="collapse" id="laporanPerangkatMenu">
+                    <div class="train-ids" style="padding-left: 25px;">
+
+                        <button
+                            type="button"
+                            class="train-id w-100 border-0 bg-transparent text-start"
+                            onclick="showTroubleReport()">
+                            <i class="bi bi-exclamation-triangle me-2 text-warning"></i>
+                            Laporan Perangkat Trouble
+                        </button>
+
+                        <button
+                            type="button"
+                            class="train-id w-100 border-0 bg-transparent text-start"
+                            onclick="showRepairReport()">
+                            <i class="bi bi-tools me-2 text-success"></i>
+                            Laporan Perangkat Perbaikan
+                        </button>
+
+                    </div>
+                </div>
             </div>
         </aside>
 
@@ -1486,8 +1512,6 @@
                     </div>
                 </div>
 
-            </div>
-
                 <!-- Bagian Tabel Laporan Perangkat Trouble -->
                 <div class="mt-4" id="deviceReportPage" style="display: none;">
                     <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
@@ -1548,6 +1572,87 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- HALAMAN LAPORAN PERANGKAT PERBAIKAN -->
+                <div class="mt-4" id="deviceRepairReportPage" style="display: none;">
+                    <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
+                        id="repairReportSection"
+                        style="background: #173b78; border: 1px solid rgba(255,255,255,0.12) !important;">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+                            <h5 class="m-0 fw-bold text-light" style="font-size: 1.15rem;">
+                                <i class="bi bi-tools me-2 text-success"></i>
+                                Laporan Perangkat Perbaikan
+                            </h5>
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                <div>
+                                    <label class="form-label text-light mb-1"
+                                        style="font-size: 0.75rem; font-weight: 600;">
+                                        Dari Tanggal:
+                                    </label>
+
+                                    <input type="date"
+                                        id="filterRepairStartDate"
+                                        class="form-control form-control-sm">
+                                </div>
+
+                                <div>
+                                    <label class="form-label text-light mb-1"
+                                        style="font-size: 0.75rem; font-weight: 600;">
+                                        Sampai Tanggal:
+                                    </label>
+
+                                    <input type="date"
+                                        id="filterRepairEndDate"
+                                        class="form-control form-control-sm">
+                                </div>
+
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap"
+                                            onclick="window.print()">
+                                        <i class="bi bi-printer me-1"></i>
+                                        Cetak Laporan
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered table-sm align-middle mb-0"
+                                style="min-width: 900px;">
+
+                                <thead style="background-color: #173b78; color: white;">
+                                    <tr>
+                                        <th class="text-center align-middle">No</th>
+                                        <th class="text-center align-middle">Nomor Kereta</th>
+                                        <th class="text-center align-middle">Nama Perangkat</th>
+                                        <th class="text-center align-middle">Status Perbaikan</th>
+                                        <th class="text-center align-middle">Tanggal & Waktu</th>
+                                        <th class="text-center align-middle">Catatan Perbaikan</th>
+                                        <th class="text-center align-middle">Gambar</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="repairReportTableBody">
+                                    <tr>
+                                        <td colspan="6"
+                                            class="text-center text-light py-3"
+                                            style="background-color: #173b78;">
+                                            Belum ada data laporan perangkat perbaikan.
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2060,22 +2165,53 @@
             }
         }
 
-        function showDeviceReport() {
+        function showTroubleReport() {
             const reportPage = document.getElementById('deviceReportPage');
-            if (!reportPage) {
-                return;
-            }
-            // Sembunyikan konten rangkaian/dashboard
-            const trainContent = document.querySelector(
-                '.container-fluid.px-2.px-md-3'
-            );
-            if (trainContent) {
-                trainContent.style.display = 'none';
-            }
-            // Tampilkan halaman laporan
+            const repairPage = document.getElementById('deviceRepairReportPage');
+            const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+            const dashboardHeader = document.querySelector('.dashboard-header');
+
+            if (!reportPage || !contentArea) return;
+
+            if (dashboardHeader) dashboardHeader.style.display = 'none';
+            contentArea.style.display = 'block';
+
+            Array.from(contentArea.children).forEach(child => {
+                if (child !== reportPage && child !== repairPage) {
+                    child.style.display = 'none';
+                }
+            });
+
+            if (repairPage) repairPage.style.display = 'none';
             reportPage.style.display = 'block';
-            // Muat data histori laporan
+
             loadDeviceHistory();
+        }
+
+        function showRepairReport() {
+            const reportPage = document.getElementById('deviceReportPage');
+            const repairPage = document.getElementById('deviceRepairReportPage');
+            const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+            const dashboardHeader = document.querySelector('.dashboard-header');
+
+            if (!repairPage || !contentArea) return;
+
+            if (dashboardHeader) dashboardHeader.style.display = 'none';
+            contentArea.style.display = 'block';
+
+            Array.from(contentArea.children).forEach(child => {
+                if (child !== reportPage && child !== repairPage) {
+                    child.style.display = 'none';
+                }
+            });
+
+            if (reportPage) reportPage.style.display = 'none';
+            repairPage.style.display = 'block';
+        }
+
+        // Dipertahankan agar pemanggilan lama tidak error.
+        function showDeviceReport() {
+            showTroubleReport();
         }
 
         document.addEventListener('click', function(event) {
