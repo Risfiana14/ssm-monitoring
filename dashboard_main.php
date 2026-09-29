@@ -2169,30 +2169,31 @@
             const reportPage = document.getElementById('deviceReportPage');
             const repairPage = document.getElementById('deviceRepairReportPage');
             const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+            const mainContent = document.querySelector('.main-content');
             const dashboardHeader = document.querySelector('.dashboard-header');
 
-            if (!reportPage || !contentArea) return;
-
-            if (dashboardHeader) dashboardHeader.style.display = 'none';
-
-            // Sembunyikan header rangkaian kereta yang sedang dipilih
-            const trainHeader = contentArea.querySelector(
-                '.px-4.py-3.mb-4.d-flex.justify-content-between.align-items-center.gap-3'
-            );
-
-            if (trainHeader) {
-                trainHeader.style.display = 'none';
+            if (!reportPage || !contentArea || !mainContent) {
+                return;
             }
 
-            contentArea.style.display = 'block';
+            // Sembunyikan header RAILMAP
+            if (dashboardHeader) {
+                dashboardHeader.style.display = 'none';
+            }
 
-            Array.from(contentArea.children).forEach(child => {
-                if (child !== reportPage && child !== repairPage && child !== trainHeader) {
-                    child.style.display = 'none';
-                }
-            });
+            if (reportPage.parentElement !== mainContent) {
+                mainContent.appendChild(reportPage);
+            }
 
-            if (repairPage) repairPage.style.display = 'none';
+            if (repairPage && repairPage.parentElement !== mainContent) {
+                mainContent.appendChild(repairPage);
+            }
+
+            contentArea.style.display = 'none';
+
+            if (repairPage) {
+                repairPage.style.display = 'none';
+            }
 
             reportPage.style.display = 'block';
 
@@ -2203,31 +2204,35 @@
             const reportPage = document.getElementById('deviceReportPage');
             const repairPage = document.getElementById('deviceRepairReportPage');
             const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+            const mainContent = document.querySelector('.main-content');
             const dashboardHeader = document.querySelector('.dashboard-header');
 
-            if (!repairPage || !contentArea) return;
-
-            if (dashboardHeader) dashboardHeader.style.display = 'none';
-
-            // Sembunyikan header rangkaian kereta yang sedang dipilih
-            const trainHeader = contentArea.querySelector(
-                '.px-4.py-3.mb-4.d-flex.justify-content-between.align-items-center.gap-3'
-            );
-
-            if (trainHeader) {
-                trainHeader.style.display = 'none';
+            if (!repairPage || !contentArea || !mainContent) {
+                return;
             }
 
-            contentArea.style.display = 'block';
+            // Sembunyikan header RAILMAP
+            if (dashboardHeader) {
+                dashboardHeader.style.display = 'none';
+            }
 
-            Array.from(contentArea.children).forEach(child => {
-                if (child !== reportPage && child !== repairPage && child !== trainHeader) {
-                    child.style.display = 'none';
-                }
-            });
+            if (reportPage && reportPage.parentElement !== mainContent) {
+                mainContent.appendChild(reportPage);
+            }
 
-            if (reportPage) reportPage.style.display = 'none';
+            if (repairPage.parentElement !== mainContent) {
+                mainContent.appendChild(repairPage);
+            }
 
+            // Sembunyikan seluruh area detail kereta
+            contentArea.style.display = 'none';
+
+            // Sembunyikan laporan trouble
+            if (reportPage) {
+                reportPage.style.display = 'none';
+            }
+
+            // Tampilkan laporan perbaikan
             repairPage.style.display = 'block';
         }
 
@@ -2260,7 +2265,6 @@
         let deviceHistoryData = [];
 
         // Fungsi untuk memuat histori laporan perangkat
-
         function loadDeviceHistory() {
             const tbody = document.getElementById('troubleReportTableBody');
 
@@ -2496,16 +2500,11 @@
                 'beforeend',
                 modalHtml
             );
-
             const modalElement =
                 document.getElementById('historyImageModal');
-
             const modal =
                 new bootstrap.Modal(modalElement);
-
             modal.show();
-
-
             modalElement.addEventListener(
                 'hidden.bs.modal',
                 function() {
@@ -2514,7 +2513,6 @@
                 }
             );
         }
-
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
