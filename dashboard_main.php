@@ -1233,11 +1233,11 @@
                             echo '<div>';
 
                             echo '<h4 class="text-info mb-1 d-flex align-items-center gap-2" style="font-weight: 700; font-size: 1.25rem;">';
-                            echo '<i class="bi bi-train-front"></i> Rangkaian Kereta: ' . htmlspecialchars($currentTrain['nama_kereta']);
+                            echo '<i class="bi bi-train-front"></i> Rangkaian Kereta ' . htmlspecialchars($currentTrain['nama_kereta']);
                             echo '</h4>';
 
                             echo '<small class="text-light opacity-75" style="font-size: 0.8rem;">';
-                            echo '<i class="bi bi-folder2-open me-1 text-warning"></i> Depo: ' . htmlspecialchars($currentTrain['nama_depo'] ?? '-');
+                            echo '<i class="bi bi-folder2-open me-1 text-warning"></i>' . htmlspecialchars($currentTrain['nama_depo'] ?? '-');
                             echo '</small>';
 
                             echo '</div>';
@@ -1481,7 +1481,7 @@
                                 class="m-0 fw-bold text-dark"
                                 style="font-size: 1.15rem;">
                                 <i class="bi bi-file-earmark-text me-2 text-primary"></i>
-                                Laporan Perangkat Trouble / Kerusakan
+                                Laporan Perangkat Trouble
                             </h5>
 
                             <div class="d-flex align-items-center gap-2">
@@ -1508,25 +1508,13 @@
                                 class="table table-hover table-bordered table-sm align-middle mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>No</th>
-                                        <th>
-                                            Nomor Kereta
-                                        </th>
-                                        <th>
-                                            Nama Perangkat
-                                        </th>
-                                        <th>
-                                            Status / Kondisi
-                                        </th>
-                                        <th>
-                                            Tanggal &amp; Waktu
-                                        </th>
-                                        <th>
-                                            Catatan / Kerusakan
-                                        </th>
-                                        <th>
-                                            Gambar
-                                        </th>
+                                        <th scope="col" class="text-center align-middle">No</th>
+                                        <th scope="col" class="text-center align-middle">Nomor Kereta</th>
+                                        <th scope="col" class="text-center align-middle">Nama Perangkat</th>
+                                        <th scope="col" class="text-center align-middle">Status</th>
+                                        <th scope="col" class="text-center align-middle">Tanggal & Waktu</th>
+                                        <th scope="col" class="text-center align-middle">Catatan Kerusakan</th>
+                                        <th scope="col" class="text-center align-middle">Gambar</th>
                                     </tr>
                                 </thead>
 
@@ -2239,32 +2227,16 @@
                 }
 
                 html += `
-            <tr>
-                <td class="text-center fw-bold">
-                    ${index + 1}
-                </td>
-                <td class="fw-bold">
-                    ${escapeHtml(location)}
-                </td>
-                <td class="fw-bold">
-                    ${escapeHtml(deviceName)}
-                </td>
-                <td>
-                    <span class="badge ${badgeClass}">
-                        ${escapeHtml(status)}
-                    </span>
-                </td>
-                <td>
-                    ${escapeHtml(createdAt)}
-                </td>
-                <td style="white-space: pre-wrap;">
-                    ${escapeHtml(notes)}
-                </td>
-                <td class="text-center">
-                    ${imageHtml}
-                </td>
-            </tr>
-        `;
+                    <tr>
+                        <td class="text-center fw-bold align-middle">${index + 1}</td>
+                        <td class="fw-bold text-center align-middle">${escapeHtml(location)}</td>
+                        <td class="fw-bold text-center align-middle">${escapeHtml(deviceName)}</td>
+                        <td class="text-center align-middle"><span class="badge ${badgeClass}">${escapeHtml(status)}</span></td>
+                        <td class="text-center align-middle">${escapeHtml(createdAt)}</td>
+                        <td class="text-center align-middle" style="white-space: pre-wrap;">${escapeHtml(notes)}</td>
+                        <td class="text-center align-middle">${imageHtml}</td>
+                    </tr>
+                `;
             });
 
             tbody.innerHTML = html;
