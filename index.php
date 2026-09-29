@@ -222,52 +222,73 @@
             border: 1px solid #0dcaf0 !important;
         }
 
-        /* ---------------------------------------------------- */
-        /* CSS RESPONSIVE & PENYESUAIAN HEADER MOBIL (2 KOLOM) */
-        /* ---------------------------------------------------- */
-        @media (max-width: 575.98px) {
-            .car-card {
-                padding: 8px 6px !important;
-            }
+        /* RESPONSIVE MOBILE - 1 RANGKAIAN PER BARIS */
+    @media (max-width: 575.98px) {
 
-            .car-header {
-                font-size: 0.68rem !important;
-                margin-bottom: 6px !important;
-                padding-bottom: 2px !important;
-            }
-
-            .car-title-long {
-                display: none !important;
-            }
-
-            .car-title-short {
-                display: inline !important;
-            }
-
-            .device-grid-container {
-                grid-template-columns: repeat(5, 28px) !important;
-                grid-template-rows: repeat(3, 28px) !important;
-                gap: 4px !important;
-            }
-
-            .device-box {
-                width: 28px !important;
-                height: 28px !important;
-                font-size: 0.48rem !important;
-                border-radius: 5px !important;
-            }
-
-            .badge-status {
-                font-size: 0.5rem !important;
-                padding: 1px 4px !important;
-            }
+        .car-wrapper {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
         }
 
-        @media (min-width: 576px) {
-            .car-title-short {
-                display: none !important;
-            }
+        /* Ukuran kartu mengikuti isi device */
+        .car-card {
+            width: fit-content !important;
+            max-width: 100% !important;
+            padding: 8px 6px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
+
+        /* Header */
+        .car-header {
+            font-size: 0.68rem !important;
+            margin-bottom: 6px !important;
+            padding-bottom: 2px !important;
+        }
+
+        .car-title-long {
+            display: none !important;
+        }
+
+        .car-title-short {
+            display: inline !important;
+        }
+
+        /* Grid device tetap 5 kolom x 3 baris */
+        .device-grid-container {
+            grid-template-columns: repeat(5, 28px) !important;
+            grid-template-rows: repeat(3, 28px) !important;
+            gap: 4px !important;
+
+            width: fit-content !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        /* Kotak device */
+        .device-box {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 0.48rem !important;
+            border-radius: 5px !important;
+        }
+
+        /* Badge status */
+        .badge-status {
+            font-size: 0.5rem !important;
+            padding: 1px 4px !important;
+        }
+    }
+
+    /* TABLET / DESKTOP */
+    @media (min-width: 576px) {
+
+        .car-title-short {
+            display: none !important;
+        }
+    }
+    
     </style>
 </head>
 <body class="p-2 p-md-3">
@@ -644,7 +665,7 @@
             
             uniqueCars.forEach(car => {
                 gridContainer.innerHTML += `
-                    <div class="col-6 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
+                    <div class="col-12 col-md-4 col-xl-3 d-flex justify-content-center car-wrapper" data-car-id="${car}">
                         <div class="car-card">
                             <div class="car-header">
                                 <span class="car-title-text">
