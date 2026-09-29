@@ -1189,6 +1189,22 @@
                     ?>
                 </div>
             </div>
+
+            <!-- MENU LAPORAN PERANGKAT -->
+            <div class="mt-3">
+                <button
+                    type="button"
+                    id="btnLaporanPerangkat"
+                    class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
+                    onclick="showDeviceReport()">
+
+                    <i class="bi bi-file-earmark-text text-info me-2"></i>
+
+                    <span class="text-light">
+                        Laporan Perangkat
+                    </span>
+                </button>
+            </div>
         </aside>
 
         <!-- KONTEN UTAMA KANAN -->
@@ -1470,10 +1486,11 @@
                     </div>
                 </div>
 
+            </div>
+
                 <!-- Bagian Tabel Laporan Perangkat Trouble -->
-                <div class="mt-4">
-                    <div
-                        class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
+                <div class="mt-4" id="deviceReportPage" style="display: none;">
+                    <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
                         id="troubleReportSection">
                         <div
                             class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -1531,7 +1548,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 
@@ -2044,6 +2060,24 @@
             }
         }
 
+        function showDeviceReport() {
+            const reportPage = document.getElementById('deviceReportPage');
+            if (!reportPage) {
+                return;
+            }
+            // Sembunyikan konten rangkaian/dashboard
+            const trainContent = document.querySelector(
+                '.container-fluid.px-2.px-md-3'
+            );
+            if (trainContent) {
+                trainContent.style.display = 'none';
+            }
+            // Tampilkan halaman laporan
+            reportPage.style.display = 'block';
+            // Muat data histori laporan
+            loadDeviceHistory();
+        }
+
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('railmapSidebar');
             const toggleBtn = document.querySelector('.sidebar-toggle-btn');
@@ -2322,10 +2356,6 @@
             );
         }
 
-        // Panggil fungsi render setelah data utama dimuat atau saat halaman selesai dimuat
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDeviceHistory();
-        });
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
