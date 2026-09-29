@@ -2174,15 +2174,26 @@
             if (!reportPage || !contentArea) return;
 
             if (dashboardHeader) dashboardHeader.style.display = 'none';
+
+            // Sembunyikan header rangkaian kereta yang sedang dipilih
+            const trainHeader = contentArea.querySelector(
+                '.px-4.py-3.mb-4.d-flex.justify-content-between.align-items-center.gap-3'
+            );
+
+            if (trainHeader) {
+                trainHeader.style.display = 'none';
+            }
+
             contentArea.style.display = 'block';
 
             Array.from(contentArea.children).forEach(child => {
-                if (child !== reportPage && child !== repairPage) {
+                if (child !== reportPage && child !== repairPage && child !== trainHeader) {
                     child.style.display = 'none';
                 }
             });
 
             if (repairPage) repairPage.style.display = 'none';
+
             reportPage.style.display = 'block';
 
             loadDeviceHistory();
@@ -2197,15 +2208,26 @@
             if (!repairPage || !contentArea) return;
 
             if (dashboardHeader) dashboardHeader.style.display = 'none';
+
+            // Sembunyikan header rangkaian kereta yang sedang dipilih
+            const trainHeader = contentArea.querySelector(
+                '.px-4.py-3.mb-4.d-flex.justify-content-between.align-items-center.gap-3'
+            );
+
+            if (trainHeader) {
+                trainHeader.style.display = 'none';
+            }
+
             contentArea.style.display = 'block';
 
             Array.from(contentArea.children).forEach(child => {
-                if (child !== reportPage && child !== repairPage) {
+                if (child !== reportPage && child !== repairPage && child !== trainHeader) {
                     child.style.display = 'none';
                 }
             });
 
             if (reportPage) reportPage.style.display = 'none';
+
             repairPage.style.display = 'block';
         }
 
@@ -2237,7 +2259,7 @@
 
         let deviceHistoryData = [];
 
-// Fungsi untuk memuat histori laporan perangkat
+        // Fungsi untuk memuat histori laporan perangkat
 
         function loadDeviceHistory() {
             const tbody = document.getElementById('troubleReportTableBody');
@@ -2246,26 +2268,22 @@
                 return;
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const trainId = urlParams.get('train_id');
-
             const startDate = document.getElementById('filterStartDate')?.value || '';
             const endDate = document.getElementById('filterEndDate')?.value || '';
 
-            // Gunakan ?1=1 sebagai base, lalu sambungkan parameter berikutnya dengan &
             let url = 'api_device_history.php?1=1';
 
-            if (trainId) {
-                url += '&train_id=' + encodeURIComponent(trainId); // Diperbaiki dari '?' menjadi '&'
-            }
             if (startDate) {
                 url += '&start_date=' + encodeURIComponent(startDate);
             }
+
             if (endDate) {
                 url += '&end_date=' + encodeURIComponent(endDate);
             }
 
-            fetch(url)
+            fetch(url, {
+                cache: 'no-store'
+            })
                 .then(response => {
 
                     if (!response.ok) {
@@ -2277,31 +2295,36 @@
                 .then(result => {
 
                     if (result.status !== 'ok') {
-                        throw new Error(result.message || 'Gagal mengambil histori.');
+                        throw new Error(
+                            result.message || 'Gagal mengambil histori.'
+                        );
                     }
 
-                    deviceHistoryData = Array.isArray(result.data) ?
-                        result.data : [];
+                    deviceHistoryData = Array.isArray(result.data)
+                        ? result.data
+                        : [];
 
                     renderTroubleReportTable();
 
                 })
                 .catch(error => {
 
-                    console.error('Gagal mengambil device history:', error);
+                    console.error(
+                        'Gagal mengambil device history:',
+                        error
+                    );
 
                     tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center text-danger py-3">
-                        Gagal memuat histori laporan perangkat.
-                    </td>
-                </tr>
-            `;
+                        <tr>
+                            <td colspan="7" class="text-center text-danger py-3">
+                                Gagal memuat histori laporan perangkat.
+                            </td>
+                        </tr>
+                    `;
                 });
         }
 
-// Tabel laporan perangkat trouble / kerusakan
-
+        // Tabel laporan perangkat trouble / kerusakan
         function renderTroubleReportTable() {
             const tbody = document.getElementById('troubleReportTableBody');
             if (!tbody) {
@@ -2426,7 +2449,7 @@
                 .replace(/'/g, '&#039;');
         }
 
-// Gambar history laporan perangkat
+        // Gambar history laporan perangkat
         function showHistoryImage(imageUrl) {
             const existingModal =
                 document.getElementById('historyImageModal');
