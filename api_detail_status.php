@@ -61,6 +61,51 @@ try {
     $result = array_values($latestDevices);
 
     // -------------------------------------------------------------------------
+    // OTOMATIS CATAT KE TABEL TROUBLE & REPAIR JIKA ADA DEVICE MERAH / OFFLINE
+    // -------------------------------------------------------------------------
+    foreach ($result as $device) {
+        $statusUpper = strtoupper(trim($device['status'] ?? ''));
+        
+        // Jika status perangkat bukan ONLINE atau UP (artinya mengalami gangguan / merah)
+        if (!empty($statusUpper) && $statusUpper !== 'ONLINE' && $statusUpper !== 'UP') {
+            $loc = $device['location'] ?? '';
+            $dIp = $device['device_ip'] ?? '';
+            $dName = $device['device_name'] ?? '';
+            $dType = $device['device_type'] ?? '';
+
+            if (!empty($loc) && !empty($dIp)) {
+                // Cek apakah dalam 1 jam terakhir perangkat ini sudah tercatat trouble agar tidak duplikat terus menerus
+                $stmtCheck = $pdo->prepare("
+                    SELECT id FROM device_history 
+                    WHERE location = ? AND device_ip = ? AND status = ? 
+                      AND created_at >= NOW() - INTERVAL 1 HOUR
+                    LIMIT 1
+                ");
+                $stmtCheck->execute([$loc, $dIp, $statusUpper]);
+
+                if ($stmtCheck->rowCount() === 0) {
+                    $autoNotes = "Terdeteksi otomatis oleh sistem (Status: " . $statusUpper . ")";
+
+                    // 1. Masukkan otomatis ke tabel laporan kerusakan (device_history)
+                    $insTrouble = $pdo->prepare("
+                        INSERT INTO device_history (location, device_name, device_ip, device_type, status, notes, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $insTrouble->execute([$loc, $dName, $dIp, $dType, $statusUpper, $autoNotes]);
+
+                    // 2. Masukkan otomatis ke tabel laporan perbaikan (repair_history)
+                    // Kolom status default: 'Belum ditindaklanjuti'
+                    $insRepair = $pdo->prepare("
+                        INSERT INTO repair_history (location, device_name, device_ip, device_type, status, notes, created_at)
+                        VALUES (?, ?, ?, ?, 'Belum ditindaklanjuti', ?, NOW())
+                    ");
+                    $insRepair->execute([$loc, $dName, $dIp, $dType, $autoNotes]);
+                }
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // LOGIKA KHUSUS INTERNET STATUS (BERDASARKAN KIRIMAN NETWATCH 8.8.8.8)
     // -------------------------------------------------------------------------
     foreach ($result as &$device) {
