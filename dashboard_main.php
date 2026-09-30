@@ -908,7 +908,8 @@
                 display: none !important;
             }
         }
-            #repairReportSection {
+
+        #repairReportSection {
             width: 100% !important;
             max-width: 100% !important;
             background: #173b78 !important;
@@ -918,11 +919,130 @@
             box-sizing: border-box !important;
             overflow: hidden !important;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
-            }
+        }
 
-            #repairReportSection h5 {
-                color: #ffffff !important;
-                font-weight: 700 !important;
+        #repairReportSection h5 {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+        }
+
+        /* Tabel */
+        #repairReportSection .table-responsive {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            display: block !important;
+            -webkit-overflow-scrolling: touch;
+            box-sizing: border-box !important;
+            scrollbar-width: thin;
+        }
+
+        #repairReportSection .table-responsive table {
+            width: 100% !important;
+            min-width: 950px !important;
+            max-width: none !important;
+            margin: 0 !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            box-sizing: border-box !important;
+            color: #ffffff !important;
+            background: #21477f !important;
+        }
+
+        #repairReportSection .table-responsive th {
+            background: #143565 !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            white-space: nowrap !important;
+            vertical-align: middle !important;
+            font-weight: 700 !important;
+            padding: 8px 6px !important;
+        }
+
+        #repairReportSection .table-responsive td {
+            background: #21477f !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            vertical-align: middle !important;
+            word-break: break-word !important;
+            padding: 8px 6px !important;
+        }
+
+        /* Lebar kolom */
+        #repairReportSection .table-responsive th:nth-child(1),
+        #repairReportSection .table-responsive td:nth-child(1) {
+            width: 55px !important;
+            min-width: 55px !important;
+            text-align: center !important;
+        }
+
+        #repairReportSection .table-responsive th:nth-child(2),
+        #repairReportSection .table-responsive td:nth-child(2) {
+            width: 130px !important;
+            min-width: 130px !important;
+        }
+
+        #repairReportSection .table-responsive th:nth-child(3),
+        #repairReportSection .table-responsive td:nth-child(3) {
+            width: 150px !important;
+            min-width: 150px !important;
+        }
+
+        #repairReportSection .table-responsive th:nth-child(4),
+        #repairReportSection .table-responsive td:nth-child(4) {
+            width: 150px !important;
+            min-width: 150px !important;
+        }
+
+        #repairReportSection .table-responsive th:nth-child(5),
+        #repairReportSection .table-responsive td:nth-child(5) {
+            width: 150px !important;
+            min-width: 150px !important;
+            white-space: nowrap !important;
+        }
+
+        #repairReportSection .table-responsive th:nth-child(6),
+        #repairReportSection .table-responsive td:nth-child(6) {
+            width: 260px !important;
+            min-width: 260px !important;
+        }
+
+        #repairReportSection .table-responsive th:nth-child(7),
+        #repairReportSection .table-responsive td:nth-child(7) {
+            width: 110px !important;
+            min-width: 110px !important;
+            text-align: center !important;
+        }
+
+        /* Isi catatan */
+        #repairReportSection .table-responsive td:nth-child(6) {
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+
+        #repairReportSection .repair-textarea {
+            width: 100% !important;
+            min-height: 50px !important;
+            max-height: 80px !important;
+            resize: vertical !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Placeholder */
+        .repair-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.65) !important;
+            opacity: 1;
+        }
+
+        /* Tablet / HP */
+        @media (max-width: 992px) {
+
+            #repairReportSection {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 15px !important;
+                border-radius: 14px !important;
             }
 
             #repairReportSection .table-responsive {
@@ -930,90 +1050,44 @@
                 max-width: 100% !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
-                display: block !important;
-                -webkit-overflow-scrolling: touch;
-                box-sizing: border-box !important;
-                scrollbar-width: thin;
             }
 
             #repairReportSection .table-responsive table {
+                min-width: 950px !important;
+            }
+        }
+
+        /* Print */
+        @media print {
+
+            #repairReportSection,
+            #repairReportSection * {
+                visibility: visible;
+            }
+
+            #repairReportSection {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
                 width: 100% !important;
-                min-width: 1050px !important;
-                max-width: none !important;
-                margin: 0 !important;
-                table-layout: fixed !important;
-                border-collapse: collapse !important;
-                box-sizing: border-box !important;
-                color: #ffffff !important;
-                background: #21477f !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                border: none !important;
             }
 
-            #repairReportSection .table-responsive thead {
-                background: #143565 !important;
+            #repairReportSection .table-responsive table {
+                background: #ffffff !important;
+                color: #000000 !important;
             }
 
-            #repairReportSection .table-responsive th {
-                background: #143565 !important;
-                color: #ffffff !important;
-                border-color: rgba(255, 255, 255, 0.15) !important;
-                white-space: nowrap !important;
-                vertical-align: middle !important;
-                font-weight: 700 !important;
-            }
-
+            #repairReportSection .table-responsive th,
             #repairReportSection .table-responsive td {
-                background: #21477f !important;
-                color: #ffffff !important;
-                border-color: rgba(255, 255, 255, 0.12) !important;
-                vertical-align: middle !important;
-                word-break: break-word !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
             }
-
-            #repairReportSection .table-responsive tbody tr:hover td {
-                background: #28538f !important;
-                color: #ffffff !important;
-            }
-
-            /* Pengaturan Lebar Kolom Perbaikan */
-            #repairReportSection .table-responsive th:nth-child(1), #repairReportSection .table-responsive td:nth-child(1) { width: 55px !important; min-width: 55px !important; text-align: center !important; }
-            #repairReportSection .table-responsive th:nth-child(2), #repairReportSection .table-responsive td:nth-child(2) { width: 160px !important; min-width: 160px !important; }
-            #repairReportSection .table-responsive th:nth-child(3), #repairReportSection .table-responsive td:nth-child(3) { width: 180px !important; min-width: 180px !important; }
-            #repairReportSection .table-responsive th:nth-child(4), #repairReportSection .table-responsive td:nth-child(4) { width: 140px !important; min-width: 140px !important; }
-            #repairReportSection .table-responsive th:nth-child(5), #repairReportSection .table-responsive td:nth-child(5) { width: 175px !important; min-width: 175px !important; white-space: nowrap !important; }
-            #repairReportSection .table-responsive th:nth-child(6), #repairReportSection .table-responsive td:nth-child(6) { width: 280px !important; min-width: 280px !important; white-space: pre-wrap !important; }
-            #repairReportSection .table-responsive th:nth-child(7), #repairReportSection .table-responsive td:nth-child(7) { width: 120px !important; min-width: 120px !important; text-align: center !important; }
-
-            /* Print Styles Tambahan untuk Perbaikan */
-            @media print {
-                #repairReportSection, #repairReportSection * {
-                    visibility: visible;
-                }
-                #repairReportSection {
-                    position: absolute !important;
-                    left: 0 !important;
-                    top: 0 !important;
-                    width: 100% !important;
-                    background: #ffffff !important;
-                    color: #000000 !important;
-                    box-shadow: none !important;
-                    border: none !important;
-                }
-                #repairReportSection .table-responsive table {
-                    background: #ffffff !important;
-                    color: #000000 !important;
-                }
-                #repairReportSection .table-responsive th,
-                #repairReportSection .table-responsive td {
-                    background: #ffffff !important;
-                    color: #000000 !important;
-                    border: 1px solid #000000 !important;
-                }
-            }
-            /* Membuat teks placeholder pada catatan perbaikan lebih terang/jelas */
-            .repair-textarea::placeholder {
-                color: rgba(255, 255, 255, 0.65) !important;
-                opacity: 1;
-            }
+        }
     </style>
 </head>
 
