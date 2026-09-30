@@ -15,6 +15,7 @@ try {
             device_type,
             status,
             notes,
+            repair_notes,
             image,
             image_before,
             image_after,

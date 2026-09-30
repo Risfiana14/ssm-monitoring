@@ -2799,13 +2799,13 @@ function renderRepairReportTable() {
 
         // Kolom Catatan: Catatan Kerusakan (Statis) di atas, Kolom Catatan Perbaikan (Editable) di bawahnya
         let notesContainer = `
-            <div style="font-size: 0.78rem;">
+            <div style="font-size: 0.78rem; width: 100%;">
                 <!-- Catatan Kerusakan (Statis / Tidak bisa diubah) -->
                 <div class="mb-2 pb-2 border-bottom border-secondary border-opacity-25">
                     <span class="text-warning fw-bold" style="font-size: 0.7rem; display: block; margin-bottom: 2px;">
                         <i class="bi bi-exclamation-triangle me-1"></i>Catatan Kerusakan:
                     </span>
-                    <span class="text-light opacity-90">${escapeHtml(initialNotes)}</span>
+                    <span class="text-light opacity-90" style="word-break: break-word; display: block;">${escapeHtml(initialNotes)}</span>
                 </div>
 
                 <!-- Kolom Catatan Perbaikan (Editable) -->
