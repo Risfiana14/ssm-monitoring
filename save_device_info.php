@@ -7,19 +7,14 @@ require_once 'db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $deviceIP = $_POST['device_ip'] ?? null;
-
     $location = $_POST['location'] ?? null; // Menangkap lokasi gerbong
-
     $notes    = trim($_POST['notes'] ?? '');
 
     if (!$deviceIP || !$location) {
-
         die("Device IP atau Lokasi Gerbong tidak ditemukan.");
-
     }
 
     try {
-
         // =========================================================
         // AMBIL DATA DEVICE YANG SEDANG AKTIF
         // =========================================================
@@ -111,10 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         // =========================================================
-        // 3. SIMPAN HISTORI
+        // 3. SIMPAN HISTORI KERUSAKAN (Trouble)
         // =========================================================
-        // Hanya dibuat jika user benar-benar mengisi catatan
-        // atau mengunggah gambar baru.
         if ($notes !== '' || $newFileName !== null) {
 
             $historyStmt = $pdo->prepare("
@@ -133,6 +126,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
 
             $historyStmt->execute([
+                $location,
+                $deviceData['device_name'] ?? null,
+                $deviceIP,
+                $deviceData['device_type'] ?? null,
+                $deviceData['status'] ?? null,
+                $notes !== '' ? $notes : null,
+                $newFileName
+            ]);
+
+            // =========================================================
+            // 4. SIMPAN HISTORI PERBAIKAN (Repair)
+            // =========================================================
+            $repairHistoryStmt = $pdo->prepare("
+                INSERT INTO repair_history
+                (
+                    location,
+                    device_name,
+                    device_ip,
+                    device_type,
+                    status,
+                    notes,
+                    image,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            ");
+
+            $repairHistoryStmt->execute([
                 $location,
                 $deviceData['device_name'] ?? null,
                 $deviceIP,

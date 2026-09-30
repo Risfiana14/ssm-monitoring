@@ -908,6 +908,112 @@
                 display: none !important;
             }
         }
+            #repairReportSection {
+            width: 100% !important;
+            max-width: 100% !important;
+            background: #173b78 !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 16px !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+            }
+
+            #repairReportSection h5 {
+                color: #ffffff !important;
+                font-weight: 700 !important;
+            }
+
+            #repairReportSection .table-responsive {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                display: block !important;
+                -webkit-overflow-scrolling: touch;
+                box-sizing: border-box !important;
+                scrollbar-width: thin;
+            }
+
+            #repairReportSection .table-responsive table {
+                width: 100% !important;
+                min-width: 1050px !important;
+                max-width: none !important;
+                margin: 0 !important;
+                table-layout: fixed !important;
+                border-collapse: collapse !important;
+                box-sizing: border-box !important;
+                color: #ffffff !important;
+                background: #21477f !important;
+            }
+
+            #repairReportSection .table-responsive thead {
+                background: #143565 !important;
+            }
+
+            #repairReportSection .table-responsive th {
+                background: #143565 !important;
+                color: #ffffff !important;
+                border-color: rgba(255, 255, 255, 0.15) !important;
+                white-space: nowrap !important;
+                vertical-align: middle !important;
+                font-weight: 700 !important;
+            }
+
+            #repairReportSection .table-responsive td {
+                background: #21477f !important;
+                color: #ffffff !important;
+                border-color: rgba(255, 255, 255, 0.12) !important;
+                vertical-align: middle !important;
+                word-break: break-word !important;
+            }
+
+            #repairReportSection .table-responsive tbody tr:hover td {
+                background: #28538f !important;
+                color: #ffffff !important;
+            }
+
+            /* Pengaturan Lebar Kolom Perbaikan */
+            #repairReportSection .table-responsive th:nth-child(1), #repairReportSection .table-responsive td:nth-child(1) { width: 55px !important; min-width: 55px !important; text-align: center !important; }
+            #repairReportSection .table-responsive th:nth-child(2), #repairReportSection .table-responsive td:nth-child(2) { width: 160px !important; min-width: 160px !important; }
+            #repairReportSection .table-responsive th:nth-child(3), #repairReportSection .table-responsive td:nth-child(3) { width: 180px !important; min-width: 180px !important; }
+            #repairReportSection .table-responsive th:nth-child(4), #repairReportSection .table-responsive td:nth-child(4) { width: 140px !important; min-width: 140px !important; }
+            #repairReportSection .table-responsive th:nth-child(5), #repairReportSection .table-responsive td:nth-child(5) { width: 175px !important; min-width: 175px !important; white-space: nowrap !important; }
+            #repairReportSection .table-responsive th:nth-child(6), #repairReportSection .table-responsive td:nth-child(6) { width: 280px !important; min-width: 280px !important; white-space: pre-wrap !important; }
+            #repairReportSection .table-responsive th:nth-child(7), #repairReportSection .table-responsive td:nth-child(7) { width: 120px !important; min-width: 120px !important; text-align: center !important; }
+
+            /* Print Styles Tambahan untuk Perbaikan */
+            @media print {
+                #repairReportSection, #repairReportSection * {
+                    visibility: visible;
+                }
+                #repairReportSection {
+                    position: absolute !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    background: #ffffff !important;
+                    color: #000000 !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+                #repairReportSection .table-responsive table {
+                    background: #ffffff !important;
+                    color: #000000 !important;
+                }
+                #repairReportSection .table-responsive th,
+                #repairReportSection .table-responsive td {
+                    background: #ffffff !important;
+                    color: #000000 !important;
+                    border: 1px solid #000000 !important;
+                }
+            }
+            /* Membuat teks placeholder pada catatan perbaikan lebih terang/jelas */
+            .repair-textarea::placeholder {
+                color: rgba(255, 255, 255, 0.65) !important;
+                opacity: 1;
+            }
     </style>
 </head>
 
@@ -1575,6 +1681,7 @@
                     </div>
                 </div>
 
+                
                 <!-- HALAMAN LAPORAN PERANGKAT PERBAIKAN -->
                 <div class="mt-4" id="deviceRepairReportPage" style="display: none;">
                     <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
@@ -1582,76 +1689,53 @@
                         style="background: #173b78; border: 1px solid rgba(255,255,255,0.12) !important;">
 
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-
                             <h5 class="m-0 fw-bold text-light" style="font-size: 1.15rem;">
                                 <i class="bi bi-tools me-2 text-success"></i>
                                 Laporan Perangkat Perbaikan
                             </h5>
 
                             <div class="d-flex align-items-center gap-2">
-
                                 <div>
-                                    <label class="form-label text-light mb-1"
-                                        style="font-size: 0.75rem; font-weight: 600;">
-                                        Dari Tanggal:
-                                    </label>
-
-                                    <input type="date"
-                                        id="filterRepairStartDate"
-                                        class="form-control form-control-sm">
+                                    <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
+                                    <input type="date" id="filterRepairStartDate" class="form-control form-control-sm" onchange="loadRepairHistory()">
                                 </div>
 
                                 <div>
-                                    <label class="form-label text-light mb-1"
-                                        style="font-size: 0.75rem; font-weight: 600;">
-                                        Sampai Tanggal:
-                                    </label>
-
-                                    <input type="date"
-                                        id="filterRepairEndDate"
-                                        class="form-control form-control-sm">
+                                    <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Sampai Tanggal:</label>
+                                    <input type="date" id="filterRepairEndDate" class="form-control form-control-sm" onchange="loadRepairHistory()">
                                 </div>
 
                                 <div class="align-self-end">
-                                    <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap"
-                                            onclick="window.print()">
-                                        <i class="bi bi-printer me-1"></i>
-                                        Cetak Laporan
+                                    <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="window.print()">
+                                        <i class="bi bi-printer me-1"></i> Cetak Laporan
                                     </button>
                                 </div>
-
                             </div>
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm align-middle mb-0"
-                                style="min-width: 900px;">
-
-                                <thead style="background-color: #173b78; color: white;">
+                            <table class="table table-hover table-bordered table-sm align-middle mb-0">
+                                <thead class="table-light">
                                     <tr>
-                                        <th class="text-center align-middle">No</th>
-                                        <th class="text-center align-middle">Nomor Kereta</th>
-                                        <th class="text-center align-middle">Nama Perangkat</th>
-                                        <th class="text-center align-middle">Status Perbaikan</th>
-                                        <th class="text-center align-middle">Tanggal & Waktu</th>
-                                        <th class="text-center align-middle">Catatan Perbaikan</th>
-                                        <th class="text-center align-middle">Gambar</th>
+                                        <th scope="col" class="text-center align-middle">No</th>
+                                        <th scope="col" class="text-center align-middle">Nomor Kereta</th>
+                                        <th scope="col" class="text-center align-middle">Nama Perangkat</th>
+                                        <th scope="col" class="text-center align-middle">Status Perbaikan</th>
+                                        <th scope="col" class="text-center align-middle">Tanggal & Waktu</th>
+                                        <th scope="col" class="text-center align-middle">Catatan Perbaikan</th>
+                                        <th scope="col" class="text-center align-middle">Gambar</th>
                                     </tr>
                                 </thead>
 
                                 <tbody id="repairReportTableBody">
                                     <tr>
-                                        <td colspan="6"
-                                            class="text-center text-light py-3"
-                                            style="background-color: #173b78;">
-                                            Belum ada data laporan perangkat perbaikan.
+                                        <td colspan="7" class="text-center text-muted py-3">
+                                            Memuat data laporan perbaikan...
                                         </td>
                                     </tr>
                                 </tbody>
-
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -2540,6 +2624,164 @@
                 }
             );
         }
+        let repairHistoryData = [];
+
+function showRepairReport() {
+    const reportPage = document.getElementById('deviceReportPage');
+    const repairPage = document.getElementById('deviceRepairReportPage');
+    const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+    const mainContent = document.querySelector('.main-content');
+    const dashboardHeader = document.querySelector('.dashboard-header');
+
+    if (!repairPage || !contentArea || !mainContent) return;
+
+    if (dashboardHeader) dashboardHeader.style.display = 'none';
+
+    if (reportPage && reportPage.parentElement !== mainContent) mainContent.appendChild(reportPage);
+    if (repairPage.parentElement !== mainContent) mainContent.appendChild(repairPage);
+
+    contentArea.style.display = 'none';
+    if (reportPage) reportPage.style.display = 'none';
+    repairPage.style.display = 'block';
+
+    loadRepairHistory();
+}
+
+// Fungsi untuk mengambil data histori perbaikan dari database
+function loadRepairHistory() {
+    const tbody = document.getElementById('repairReportTableBody');
+    if (!tbody) return;
+
+    const startDate = document.getElementById('filterRepairStartDate')?.value || '';
+    const endDate = document.getElementById('filterRepairEndDate')?.value || '';
+
+    let url = 'api_repair_history.php?1=1';
+    if (startDate) url += '&start_date=' + encodeURIComponent(startDate);
+    if (endDate) url += '&end_date=' + encodeURIComponent(endDate);
+
+    fetch(url, { cache: 'no-store' })
+        .then(async response => {
+            const text = await response.text();
+            if (!response.ok) throw new Error('HTTP ' + response.status + ': ' + text);
+            return JSON.parse(text);
+        })
+        .then(result => {
+            if (result.status !== 'ok') throw new Error(result.message || 'Gagal mengambil histori perbaikan.');
+            repairHistoryData = Array.isArray(result.data) ? result.data : [];
+            renderRepairReportTable();
+        })
+        .catch(error => {
+            console.error('Gagal mengambil repair history:', error);
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-3">${escapeHtml(error.message)}</td></tr>`;
+        });
+}
+
+function renderRepairReportTable() {
+    const tbody = document.getElementById('repairReportTableBody');
+    if (!tbody) return;
+
+    if (!Array.isArray(repairHistoryData) || repairHistoryData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-success fw-bold py-4">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Belum ada data laporan perangkat perbaikan.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    let html = '';
+    repairHistoryData.forEach((history, index) => {
+        const id = history.id;
+        const location = history.location || '-';
+        const deviceName = history.device_name || history.device_type || '-';
+        const currentStatus = history.status || 'Belum ditindaklanjuti';
+        const initialNotes = history.notes && history.notes.trim() !== '' ? history.notes : '-';
+        const repairNotes = history.repair_notes || '';
+        const createdAt = history.created_at || '-';
+
+        // Dropdown Status Perbaikan dengan desain yang lebih elegan & bersih
+        let statusDropdown = `
+            <select class="form-select form-select-sm text-light shadow-none" 
+                    style="font-size: 0.75rem; background-color: #163673; border: 1px solid rgba(255,255,255,0.25); border-radius: 6px; cursor: pointer; padding: 5px 8px;" 
+                    onchange="updateRepairField(${id}, 'status', this.value)">
+                <option value="Belum ditindaklanjuti" style="background-color: #1a233a; color: #fff;" ${currentStatus === 'Belum ditindaklanjuti' ? 'selected' : ''}>⏳ Belum ditindaklanjuti</option>
+                <option value="Sedang ditindaklanjuti" style="background-color: #1a233a; color: #fff;" ${currentStatus === 'Sedang ditindaklanjuti' ? 'selected' : ''}>🔄 Sedang ditindaklanjuti</option>
+                <option value="Sudah diperbaiki" style="background-color: #1a233a; color: #fff;" ${currentStatus === 'Sudah diperbaiki' ? 'selected' : ''}>✅ Sudah diperbaiki</option>
+            </select>
+        `;
+
+        // Kolom Catatan: Catatan Kerusakan (Statis) di atas, Kolom Catatan Perbaikan (Editable) di bawahnya
+        let notesContainer = `
+            <div style="font-size: 0.78rem;">
+                <!-- Catatan Kerusakan (Statis / Tidak bisa diubah) -->
+                <div class="mb-2 pb-2 border-bottom border-secondary border-opacity-25">
+                    <span class="text-warning fw-bold" style="font-size: 0.7rem; display: block; margin-bottom: 2px;">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Catatan Kerusakan:
+                    </span>
+                    <span class="text-light opacity-90">${escapeHtml(initialNotes)}</span>
+                </div>
+
+                <!-- Kolom Catatan Perbaikan (Editable) -->
+                <div>
+                    <span class="text-info fw-bold" style="font-size: 0.7rem; display: block; margin-bottom: 1px;">
+                        <i class="bi bi-tools me-1"></i>Catatan Perbaikan:
+                    </span>
+                    <textarea class="form-control form-control-sm text-light shadow-none repair-textarea" 
+                              style="font-size: 0.75rem; width: 100%; background-color: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; resize: vertical; min-height: 34px; padding: 4px 8px;" 
+                              placeholder="Belum ada catatan perbaikan..." 
+                              onblur="updateRepairField(${id}, 'repair_notes', this.value)">${escapeHtml(repairNotes)}</textarea>
+                </div>
+            </div>
+        `;
+
+        let imageHtml = `<span class="text-muted">Tidak ada gambar</span>`;
+        if (history.image && history.image.trim() !== '') {
+            const imageUrl = 'uploads/' + encodeURIComponent(history.image);
+            imageHtml = `
+                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 0.75rem;" onclick="showHistoryImage('${imageUrl}')">
+                    <i class="bi bi-image me-1"></i> Lihat Gambar
+                </button>
+            `;
+        }
+
+        html += `
+            <tr>
+                <td class="text-center fw-bold align-middle">${index + 1}</td>
+                <td class="fw-bold text-center align-middle">${escapeHtml(location)}</td>
+                <td class="fw-bold text-center align-middle">${escapeHtml(deviceName)}</td>
+                <td class="text-center align-middle" style="min-width: 170px;">${statusDropdown}</td>
+                <td class="text-center align-middle" style="white-space: nowrap;">${escapeHtml(createdAt)}</td>
+                <td class="align-middle" style="min-width: 250px;">${notesContainer}</td>
+                <td class="text-center align-middle">${imageHtml}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function updateRepairField(id, field, value) {
+    fetch('update_repair.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${id}&field=${field}&value=${encodeURIComponent(value)}`
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.status !== 'ok') {
+            alert('Gagal memperbarui data: ' + (result.message || 'Unknown error'));
+        }
+    })
+    .catch(err => {
+        console.error('Error updating repair field:', err);
+        alert('Terjadi kesalahan koneksi saat menyimpan perubahan.');
+    });
+}
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
