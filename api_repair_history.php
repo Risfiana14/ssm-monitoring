@@ -16,6 +16,8 @@ try {
             status,
             notes,
             image,
+            image_before,
+            image_after,
             created_at,
             updated_at
         FROM repair_history

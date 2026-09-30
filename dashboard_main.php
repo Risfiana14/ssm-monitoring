@@ -2782,6 +2782,8 @@ function renderRepairReportTable() {
         const currentStatus = history.status || 'Belum ditindaklanjuti';
         const initialNotes = history.notes && history.notes.trim() !== '' ? history.notes : '-';
         const repairNotes = history.repair_notes || '';
+        const imageBefore = history.image_before || '';
+        const imageAfter = history.image_after || '';
         const createdAt = history.updated_at || history.created_at || '-';
 
         // Dropdown Status Perbaikan dengan desain yang lebih elegan & bersih
@@ -2841,6 +2843,22 @@ function renderRepairReportTable() {
                         Sebelum Diperbaiki
                     </div>
 
+                    ${imageBefore ? `
+                        <img
+                            src="uploads/${encodeURIComponent(imageBefore)}"
+                            alt="Sebelum diperbaiki"
+                            style="
+                                width: 110px;
+                                height: 75px;
+                                object-fit: cover;
+                                border-radius: 5px;
+                                border: 1px solid rgba(255,255,255,0.3);
+                                display: block;
+                                margin: 4px auto 6px;
+                            "
+                        >
+                    ` : ''}
+
                     <div style="
                         display: flex;
                         gap: 4px;
@@ -2865,7 +2883,7 @@ function renderRepairReportTable() {
                             id="${beforeInputId}"
                             accept="image/*"
                             style="display:none;"
-                            onchange="previewRepairImage(this, 'beforePreview_${index}')"
+                            onchange="uploadRepairImage(this, ${id}, 'image_before', 'beforePreview_${index}')"
                         >
 
                         <button
@@ -2876,9 +2894,7 @@ function renderRepairReportTable() {
                                 padding: 3px 6px;
                                 cursor: pointer;
                                 margin: 0;
-                            "
-                            onclick="openRepairCamera('beforePreview_${index}')"
-                        >
+                            "onclick="openRepairCamera('beforePreview_${index}', ${id}, 'image_before', '${beforeInputId}')">
                             <i class="bi bi-camera"></i> Kamera
                         </button>
                     </div>
@@ -2904,6 +2920,22 @@ function renderRepairReportTable() {
                         Sesudah Diperbaiki
                     </div>
 
+                    ${imageAfter ? `
+                        <img
+                            src="uploads/${encodeURIComponent(imageAfter)}"
+                            alt="Sesudah diperbaiki"
+                            style="
+                                width: 110px;
+                                height: 75px;
+                                object-fit: cover;
+                                border-radius: 5px;
+                                border: 1px solid rgba(255,255,255,0.3);
+                                display: block;
+                                margin: 4px auto 6px;
+                            "
+                        >
+                    ` : ''}
+
                     <div style="
                         display: flex;
                         gap: 4px;
@@ -2918,8 +2950,7 @@ function renderRepairReportTable() {
                                 padding: 3px 6px;
                                 cursor: pointer;
                                 margin: 0;
-                            "
-                        >
+                        ">
                             <i class="bi bi-folder2-open"></i> File
                         </label>
 
@@ -2928,7 +2959,7 @@ function renderRepairReportTable() {
                             id="${afterInputId}"
                             accept="image/*"
                             style="display:none;"
-                            onchange="previewRepairImage(this, 'afterPreview_${index}')"
+                            onchange="uploadRepairImage(this, ${id}, 'image_after', 'afterPreview_${index}')"
                         >
 
                         <button
@@ -2940,7 +2971,7 @@ function renderRepairReportTable() {
                                 cursor: pointer;
                                 margin: 0;
                             "
-                            onclick="openRepairCamera('afterPreview_${index}')"
+                            onclick="openRepairCamera('afterPreview_${index}', ${id}, 'image_after', '${afterInputId}')"
                         >
                             <i class="bi bi-camera"></i> Kamera
                         </button>
@@ -2974,7 +3005,8 @@ function renderRepairReportTable() {
     tbody.innerHTML = html;
 }
 
-function previewRepairImage(input, previewId) {
+function uploadRepairImage(input, repairId, field, previewId) {
+
     const preview = document.getElementById(previewId);
 
     if (!preview || !input.files || !input.files[0]) {
@@ -2990,6 +3022,7 @@ function previewRepairImage(input, previewId) {
         return;
     }
 
+    // Tampilkan preview terlebih dahulu
     const reader = new FileReader();
 
     reader.onload = function (e) {
@@ -3011,13 +3044,64 @@ function previewRepairImage(input, previewId) {
     };
 
     reader.readAsDataURL(file);
+
+    // Upload ke server
+    const formData = new FormData();
+
+    formData.append('id', repairId);
+    formData.append('field', field);
+    formData.append('image', file);
+
+    fetch('upload_repair_image.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+
+        if (result.status === 'ok') {
+
+            // Ambil kembali data dari database
+            loadRepairHistory();
+
+        } else {
+
+            alert(
+                result.message ||
+                'Gagal menyimpan gambar.'
+            );
+
+        }
+
+    })
+    .catch(error => {
+
+        console.error('Upload gambar gagal:', error);
+
+        alert(
+            'Terjadi kesalahan saat menyimpan gambar.'
+        );
+
+    });
 }
 
 let repairCameraStream = null;
 let repairCameraTarget = null;
+let repairCameraRepairId = null;
+let repairCameraField = null;
+let repairCameraInputId = null;
 
-        function openRepairCamera(previewId) {
+        function openRepairCamera(
+            previewId,
+            repairId,
+            field,
+            inputId
+        ) {
+
             repairCameraTarget = previewId;
+            repairCameraRepairId = repairId;
+            repairCameraField = field;
+            repairCameraInputId = inputId;
 
             const cameraModal = document.createElement('div');
 
@@ -3034,6 +3118,7 @@ let repairCameraTarget = null;
                     justify-content: center;
                     padding: 20px;
                 ">
+
                     <div style="
                         width: 100%;
                         max-width: 500px;
@@ -3070,6 +3155,7 @@ let repairCameraTarget = null;
                             gap: 8px;
                             margin-top: 12px;
                         ">
+
                             <button
                                 type="button"
                                 class="btn btn-success"
@@ -3086,9 +3172,11 @@ let repairCameraTarget = null;
                             >
                                 Batal
                             </button>
+
                         </div>
 
                     </div>
+
                 </div>
             `;
 
@@ -3103,15 +3191,20 @@ let repairCameraTarget = null;
                 audio: false
             })
             .then(stream => {
+
                 repairCameraStream = stream;
 
-                const video = document.getElementById('repairCameraVideo');
+                const video = document.getElementById(
+                    'repairCameraVideo'
+                );
 
                 if (video) {
                     video.srcObject = stream;
                 }
+
             })
             .catch(error => {
+
                 console.error('Camera error:', error);
 
                 alert(
@@ -3119,6 +3212,7 @@ let repairCameraTarget = null;
                 );
 
                 closeRepairCamera();
+
             });
         }
 
@@ -3146,6 +3240,7 @@ let repairCameraTarget = null;
             );
 
             canvas.toBlob(blob => {
+
                 if (!blob) {
                     alert('Gagal mengambil foto.');
                     return;
@@ -3156,13 +3251,14 @@ let repairCameraTarget = null;
                 const preview = document.getElementById(repairCameraTarget);
 
                 if (preview) {
+
                     preview.innerHTML = `
                         <img
                             src="${imageUrl}"
                             alt="Foto hasil kamera"
                             style="
-                                width: 70px;
-                                height: 55px;
+                                width: 110px;
+                                height: 75px;
                                 object-fit: cover;
                                 border-radius: 5px;
                                 border: 1px solid rgba(255,255,255,0.3);
@@ -3171,9 +3267,41 @@ let repairCameraTarget = null;
                             "
                         >
                     `;
+
+                }
+
+                // Buat File dari hasil kamera
+                const cameraFile = new File(
+                    [blob],
+                    'camera_repair.jpg',
+                    {
+                        type: 'image/jpeg'
+                    }
+                );
+
+                // Masukkan hasil kamera ke input file
+                const input = document.getElementById(repairCameraInputId);
+
+                if (input) {
+
+                    const dataTransfer = new DataTransfer();
+
+                    dataTransfer.items.add(cameraFile);
+
+                    input.files = dataTransfer.files;
+
+                    // Upload ke database/server
+                    uploadRepairImage(
+                        input,
+                        repairCameraRepairId,
+                        repairCameraField,
+                        repairCameraTarget
+                    );
+
                 }
 
                 closeRepairCamera();
+
             }, 'image/jpeg', 0.9);
         }
 
