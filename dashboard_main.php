@@ -2811,15 +2811,144 @@ function renderRepairReportTable() {
             </div>
         `;
 
-        let imageHtml = `<span class="text-muted">Tidak ada gambar</span>`;
-        if (history.image && history.image.trim() !== '') {
-            const imageUrl = 'uploads/' + encodeURIComponent(history.image);
-            imageHtml = `
-                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 0.75rem;" onclick="showHistoryImage('${imageUrl}')">
-                    <i class="bi bi-image me-1"></i> Lihat Gambar
-                </button>
-            `;
-        }
+        const beforeInputId = `beforeImage_${index}`;
+        const afterInputId = `afterImage_${index}`;
+
+        let imageHtml = `
+            <div style="
+                width: 150px;
+                max-width: 100%;
+                margin: 0 auto;
+                text-align: center;
+            ">
+
+                <!-- SEBELUM -->
+                <div style="margin-bottom: 10px;">
+                    <div style="
+                        color: #0dcaf0;
+                        font-size: 0.68rem;
+                        font-weight: 700;
+                        margin-bottom: 4px;
+                    ">
+                        Sebelum Diperbaiki
+                    </div>
+
+                    <div style="
+                        display: flex;
+                        gap: 4px;
+                        justify-content: center;
+                        flex-wrap: wrap;
+                    ">
+                        <label
+                            for="${beforeInputId}"
+                            class="btn btn-sm btn-outline-light"
+                            style="
+                                font-size: 0.65rem;
+                                padding: 3px 6px;
+                                cursor: pointer;
+                                margin: 0;
+                            "
+                        >
+                            <i class="bi bi-folder2-open"></i> File
+                        </label>
+
+                        <input
+                            type="file"
+                            id="${beforeInputId}"
+                            accept="image/*"
+                            style="display:none;"
+                            onchange="previewRepairImage(this, 'beforePreview_${index}')"
+                        >
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-info"
+                            style="
+                                font-size: 0.65rem;
+                                padding: 3px 6px;
+                                cursor: pointer;
+                                margin: 0;
+                            "
+                            onclick="openRepairCamera('beforePreview_${index}')"
+                        >
+                            <i class="bi bi-camera"></i> Kamera
+                        </button>
+                    </div>
+
+                    <div
+                        id="beforePreview_${index}"
+                        style="
+                            margin-top: 5px;
+                            min-height: 0;
+                        "
+                    ></div>
+                </div>
+
+
+                <!-- SESUDAH -->
+                <div>
+                    <div style="
+                        color: #20c997;
+                        font-size: 0.68rem;
+                        font-weight: 700;
+                        margin-bottom: 4px;
+                    ">
+                        Sesudah Diperbaiki
+                    </div>
+
+                    <div style="
+                        display: flex;
+                        gap: 4px;
+                        justify-content: center;
+                        flex-wrap: wrap;
+                    ">
+                        <label
+                            for="${afterInputId}"
+                            class="btn btn-sm btn-outline-light"
+                            style="
+                                font-size: 0.65rem;
+                                padding: 3px 6px;
+                                cursor: pointer;
+                                margin: 0;
+                            "
+                        >
+                            <i class="bi bi-folder2-open"></i> File
+                        </label>
+
+                        <input
+                            type="file"
+                            id="${afterInputId}"
+                            accept="image/*"
+                            style="display:none;"
+                            onchange="previewRepairImage(this, 'afterPreview_${index}')"
+                        >
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-success"
+                            style="
+                                font-size: 0.65rem;
+                                padding: 3px 6px;
+                                cursor: pointer;
+                                margin: 0;
+                            "
+                            onclick="openRepairCamera('afterPreview_${index}')"
+                        >
+                            <i class="bi bi-camera"></i> Kamera
+                        </button>
+                    </div>
+
+                    <div
+                        id="afterPreview_${index}"
+                        style="
+                            margin-top: 5px;
+                            min-height: 0;
+                        "
+                    ></div>
+                </div>
+
+            </div>
+        `;
 
         html += `
             <tr>
@@ -2835,6 +2964,228 @@ function renderRepairReportTable() {
     });
 
     tbody.innerHTML = html;
+}
+
+function previewRepairImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+
+    if (!preview || !input.files || !input.files[0]) {
+        return;
+    }
+
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+        preview.innerHTML = '';
+        alert('File yang dipilih harus berupa gambar.');
+        input.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        preview.innerHTML = `
+            <img
+                src="${e.target.result}"
+                alt="Preview"
+                style="
+                    width: 70px;
+                    height: 55px;
+                    object-fit: cover;
+                    border-radius: 5px;
+                    border: 1px solid rgba(255,255,255,0.3);
+                    display: block;
+                    margin: 4px auto 0;
+                "
+            >
+        `;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+let repairCameraStream = null;
+let repairCameraTarget = null;
+
+function openRepairCamera(previewId) {
+    repairCameraTarget = previewId;
+
+    const cameraModal = document.createElement('div');
+
+    cameraModal.id = 'repairCameraModal';
+
+    cameraModal.innerHTML = `
+        <div style="
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        ">
+            <div style="
+                width: 100%;
+                max-width: 500px;
+                background: #173b78;
+                border-radius: 15px;
+                padding: 15px;
+                text-align: center;
+            ">
+
+                <h5 style="
+                    color: #fff;
+                    margin-bottom: 12px;
+                ">
+                    <i class="bi bi-camera me-2"></i>
+                    Ambil Foto
+                </h5>
+
+                <video
+                    id="repairCameraVideo"
+                    autoplay
+                    playsinline
+                    style="
+                        width: 100%;
+                        max-height: 60vh;
+                        object-fit: cover;
+                        border-radius: 10px;
+                        background: #000;
+                    "
+                ></video>
+
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    gap: 8px;
+                    margin-top: 12px;
+                ">
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="captureRepairPhoto()"
+                    >
+                        <i class="bi bi-camera-fill me-1"></i>
+                        Ambil Foto
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="closeRepairCamera()"
+                    >
+                        Batal
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(cameraModal);
+
+    navigator.mediaDevices.getUserMedia({
+        video: {
+            facingMode: {
+                ideal: 'environment'
+            }
+        },
+        audio: false
+    })
+    .then(stream => {
+        repairCameraStream = stream;
+
+        const video = document.getElementById('repairCameraVideo');
+
+        if (video) {
+            video.srcObject = stream;
+        }
+    })
+    .catch(error => {
+        console.error('Camera error:', error);
+
+        alert(
+            'Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan pada browser.'
+        );
+
+        closeRepairCamera();
+    });
+}
+
+// Fungsi untuk mengambil foto
+function captureRepairPhoto() {
+    const video = document.getElementById('repairCameraVideo');
+
+    if (!video) {
+        return;
+    }
+
+    const canvas = document.createElement('canvas');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    canvas.toBlob(blob => {
+        if (!blob) {
+            alert('Gagal mengambil foto.');
+            return;
+        }
+
+        const imageUrl = URL.createObjectURL(blob);
+
+        const preview = document.getElementById(repairCameraTarget);
+
+        if (preview) {
+            preview.innerHTML = `
+                <img
+                    src="${imageUrl}"
+                    alt="Foto hasil kamera"
+                    style="
+                        width: 70px;
+                        height: 55px;
+                        object-fit: cover;
+                        border-radius: 5px;
+                        border: 1px solid rgba(255,255,255,0.3);
+                        display: block;
+                        margin: 4px auto 0;
+                    "
+                >
+            `;
+        }
+
+        closeRepairCamera();
+    }, 'image/jpeg', 0.9);
+}
+
+// Fungsi untuk menutup modal kamera dan menghentikan stream kamera
+function closeRepairCamera() {
+    if (repairCameraStream) {
+        repairCameraStream.getTracks().forEach(track => {
+            track.stop();
+        });
+
+        repairCameraStream = null;
+    }
+
+    const modal = document.getElementById('repairCameraModal');
+
+    if (modal) {
+        modal.remove();
+    }
+
+    repairCameraTarget = null;
 }
 
 function updateRepairField(id, field, value) {
