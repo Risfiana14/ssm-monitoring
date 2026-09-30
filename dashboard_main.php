@@ -1428,6 +1428,8 @@
                             <form action="save_device_info.php" method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="device_ip" id="uploadDeviceIP">
                                 <input type="hidden" name="location" id="uploadDeviceLocation">
+                                <input type="hidden" name="device_name" id="uploadDeviceName">
+                                <input type="hidden" name="status" id="uploadDeviceStatus">
 
                                 <div class="modal-header py-2">
                                     <h6 class="modal-title fw-bold" id="modalDeviceName">Detail Device</h6>
@@ -1773,6 +1775,10 @@
 
             document.getElementById('uploadDeviceIP').value = dev.device_ip;
             document.getElementById('uploadDeviceLocation').value = dev.location;
+            document.getElementById('uploadDeviceName').value =
+                dev.device_name || dev.device_type || '';
+            document.getElementById('uploadDeviceStatus').value =
+                dev.status || '';
 
             const displayNotesElem = document.getElementById('modalDisplayNotes');
             const notesInputElem = document.getElementById('modalDeviceNotes');
@@ -2272,8 +2278,11 @@
                 return;
             }
 
-            const startDate = document.getElementById('filterStartDate')?.value || '';
-            const endDate = document.getElementById('filterEndDate')?.value || '';
+            const startDate =
+                document.getElementById('filterStartDate')?.value || '';
+
+            const endDate =
+                document.getElementById('filterEndDate')?.value || '';
 
             let url = 'api_device_history.php?1=1';
 
@@ -2285,47 +2294,65 @@
                 url += '&end_date=' + encodeURIComponent(endDate);
             }
 
+            console.log('Memanggil API:', url);
+
             fetch(url, {
                 cache: 'no-store'
             })
-                .then(response => {
+            .then(async response => {
+                const text = await response.text();
 
-                    if (!response.ok) {
-                        throw new Error('HTTP Error ' + response.status);
-                    }
+                console.log('HTTP Status:', response.status);
+                console.log('Response API:', text);
 
-                    return response.json();
-                })
-                .then(result => {
-
-                    if (result.status !== 'ok') {
-                        throw new Error(
-                            result.message || 'Gagal mengambil histori.'
-                        );
-                    }
-
-                    deviceHistoryData = Array.isArray(result.data)
-                        ? result.data
-                        : [];
-
-                    renderTroubleReportTable();
-
-                })
-                .catch(error => {
-
-                    console.error(
-                        'Gagal mengambil device history:',
-                        error
+                if (!response.ok) {
+                    throw new Error(
+                        'HTTP ' + response.status + ': ' + text
                     );
+                }
 
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="7" class="text-center text-danger py-3">
-                                Gagal memuat histori laporan perangkat.
-                            </td>
-                        </tr>
-                    `;
-                });
+                let result;
+
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    throw new Error(
+                        'Response API bukan JSON: ' + text
+                    );
+                }
+
+                return result;
+            })
+            .then(result => {
+                console.log('Hasil histori:', result);
+
+                if (result.status !== 'ok') {
+                    throw new Error(
+                        result.message || 'Gagal mengambil histori.'
+                    );
+                }
+
+                deviceHistoryData = Array.isArray(result.data)
+                    ? result.data
+                    : [];
+
+                renderTroubleReportTable();
+            })
+            .catch(error => {
+                console.error(
+                    'Gagal mengambil device history:',
+                    error
+                );
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7"
+                            class="text-center text-danger py-3">
+                            ${escapeHtml(error.message)}
+                        </td>
+                    </tr>
+                `;
+            });
         }
 
         // Tabel laporan perangkat trouble / kerusakan

@@ -6,23 +6,14 @@ header('Content-Type: application/json; charset=utf-8');
 
 try {
 
-    $train_id = isset($_GET['train_id'])
-        ? (int) $_GET['train_id']
-        : 0;
-
-    if ($train_id <= 0) {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'train_id tidak valid.'
-        ]);
-
-        exit;
-    }
-
     // Ambil parameter tanggal dari URL
-    $start_date = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
-    $end_date = isset($_GET['end_date']) ? trim($_GET['end_date']) : '';
+    $start_date = isset($_GET['start_date'])
+        ? trim($_GET['start_date'])
+        : '';
+
+    $end_date = isset($_GET['end_date'])
+        ? trim($_GET['end_date'])
+        : '';
 
     $sql = "
         SELECT
@@ -35,31 +26,26 @@ try {
             dh.notes,
             dh.image,
             dh.created_at
-
         FROM device_history AS dh
-
-        INNER JOIN carriages AS c
-            ON TRIM(c.location) COLLATE utf8mb4_unicode_ci
-                 =
-                TRIM(dh.location) COLLATE utf8mb4_unicode_ci
-
-        WHERE c.train_id = ?
+        WHERE 1 = 1
     ";
 
-    // Siapkan array parameter untuk execute
-    $params = [$train_id];
+    // Parameter query
+    $params = [];
 
-    // Tambahkan kondisi filter tanggal jika ada
+    // Filter tanggal mulai
     if (!empty($start_date)) {
         $sql .= " AND DATE(dh.created_at) >= ?";
         $params[] = $start_date;
     }
 
+    // Filter tanggal akhir
     if (!empty($end_date)) {
         $sql .= " AND DATE(dh.created_at) <= ?";
         $params[] = $end_date;
     }
 
+    // Data terbaru ditampilkan paling atas
     $sql .= "
         ORDER BY
             dh.created_at DESC,
@@ -67,8 +53,6 @@ try {
     ";
 
     $stmt = $pdo->prepare($sql);
-
-    // Eksekusi query dengan parameter train_id dan parameter tanggal dinamis
     $stmt->execute($params);
 
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -88,4 +72,5 @@ try {
         'error' => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
+
 ?>
