@@ -1788,7 +1788,16 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm align-middle mb-0">
+                            <table class="table table-hover table-bordered table-sm align-middle mb-0" style=" width: 100%; min-width: 1050px; table-layout: fixed;">
+                                <colgroup>
+                                    <col style="width: 5%;">
+                                    <col style="width: 12%;">
+                                    <col style="width: 14%;">
+                                    <col style="width: 13%;">
+                                    <col style="width: 13%;">
+                                    <col style="width: 20%;">
+                                    <col style="width: 23%;">
+                                </colgroup>
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" class="text-center align-middle">No</th>
@@ -2955,9 +2964,9 @@ function renderRepairReportTable() {
                 <td class="text-center fw-bold align-middle">${index + 1}</td>
                 <td class="fw-bold text-center align-middle">${escapeHtml(location)}</td>
                 <td class="fw-bold text-center align-middle">${escapeHtml(deviceName)}</td>
-                <td class="text-center align-middle" style="min-width: 170px;">${statusDropdown}</td>
+                <td class="text-center align-middle">${statusDropdown}</td>
                 <td class="text-center align-middle" style="white-space: nowrap;">${escapeHtml(createdAt)}</td>
-                <td class="align-middle" style="min-width: 250px;">${notesContainer}</td>
+                <td class="align-middle">${notesContainer}</td>
                 <td class="text-center align-middle">${imageHtml}</td>
             </tr>
         `;
@@ -2990,8 +2999,8 @@ function previewRepairImage(input, previewId) {
                 src="${e.target.result}"
                 alt="Preview"
                 style="
-                    width: 70px;
-                    height: 55px;
+                    width: 110px;
+                    height: 75px;
                     object-fit: cover;
                     border-radius: 5px;
                     border: 1px solid rgba(255,255,255,0.3);
