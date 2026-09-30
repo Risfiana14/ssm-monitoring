@@ -16,7 +16,8 @@ try {
             status,
             notes,
             image,
-            created_at
+            created_at,
+            updated_at
         FROM repair_history
         WHERE 1 = 1
     ";
@@ -33,7 +34,7 @@ try {
         $params[] = $end_date;
     }
 
-    $sql .= " ORDER BY created_at DESC, id DESC";
+    $sql .= " ORDER BY updated_at DESC, id DESC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

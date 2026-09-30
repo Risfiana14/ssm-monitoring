@@ -16,7 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("UPDATE repair_history SET {$field} = ? WHERE id = ?");
+        $stmt = $pdo->prepare("
+            UPDATE repair_history
+            SET {$field} = ?, updated_at = NOW()
+            WHERE id = ?
+        ");
         $stmt->execute([$value, $id]);
 
         echo json_encode(['status' => 'ok', 'message' => 'Berhasil diperbarui.']);

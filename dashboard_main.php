@@ -2568,8 +2568,7 @@
                     history.notes :
                     '-';
 
-                const createdAt =
-                    history.created_at || '-';
+                const createdAt = history.updated_at || history.created_at || '-';
 
                 let badgeClass = 'bg-danger';
 
@@ -2783,7 +2782,7 @@ function renderRepairReportTable() {
         const currentStatus = history.status || 'Belum ditindaklanjuti';
         const initialNotes = history.notes && history.notes.trim() !== '' ? history.notes : '-';
         const repairNotes = history.repair_notes || '';
-        const createdAt = history.created_at || '-';
+        const createdAt = history.updated_at || history.created_at || '-';
 
         // Dropdown Status Perbaikan dengan desain yang lebih elegan & bersih
         let statusDropdown = `
@@ -3017,205 +3016,208 @@ function previewRepairImage(input, previewId) {
 let repairCameraStream = null;
 let repairCameraTarget = null;
 
-function openRepairCamera(previewId) {
-    repairCameraTarget = previewId;
+        function openRepairCamera(previewId) {
+            repairCameraTarget = previewId;
 
-    const cameraModal = document.createElement('div');
+            const cameraModal = document.createElement('div');
 
-    cameraModal.id = 'repairCameraModal';
+            cameraModal.id = 'repairCameraModal';
 
-    cameraModal.innerHTML = `
-        <div style="
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        ">
-            <div style="
-                width: 100%;
-                max-width: 500px;
-                background: #173b78;
-                border-radius: 15px;
-                padding: 15px;
-                text-align: center;
-            ">
-
-                <h5 style="
-                    color: #fff;
-                    margin-bottom: 12px;
-                ">
-                    <i class="bi bi-camera me-2"></i>
-                    Ambil Foto
-                </h5>
-
-                <video
-                    id="repairCameraVideo"
-                    autoplay
-                    playsinline
-                    style="
-                        width: 100%;
-                        max-height: 60vh;
-                        object-fit: cover;
-                        border-radius: 10px;
-                        background: #000;
-                    "
-                ></video>
-
+            cameraModal.innerHTML = `
                 <div style="
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(0,0,0,0.85);
+                    z-index: 99999;
                     display: flex;
+                    align-items: center;
                     justify-content: center;
-                    gap: 8px;
-                    margin-top: 12px;
+                    padding: 20px;
                 ">
-                    <button
-                        type="button"
-                        class="btn btn-success"
-                        onclick="captureRepairPhoto()"
-                    >
-                        <i class="bi bi-camera-fill me-1"></i>
-                        Ambil Foto
-                    </button>
+                    <div style="
+                        width: 100%;
+                        max-width: 500px;
+                        background: #173b78;
+                        border-radius: 15px;
+                        padding: 15px;
+                        text-align: center;
+                    ">
 
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        onclick="closeRepairCamera()"
-                    >
-                        Batal
-                    </button>
+                        <h5 style="
+                            color: #fff;
+                            margin-bottom: 12px;
+                        ">
+                            <i class="bi bi-camera me-2"></i>
+                            Ambil Foto
+                        </h5>
+
+                        <video
+                            id="repairCameraVideo"
+                            autoplay
+                            playsinline
+                            style="
+                                width: 100%;
+                                max-height: 60vh;
+                                object-fit: cover;
+                                border-radius: 10px;
+                                background: #000;
+                            "
+                        ></video>
+
+                        <div style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 8px;
+                            margin-top: 12px;
+                        ">
+                            <button
+                                type="button"
+                                class="btn btn-success"
+                                onclick="captureRepairPhoto()"
+                            >
+                                <i class="bi bi-camera-fill me-1"></i>
+                                Ambil Foto
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                onclick="closeRepairCamera()"
+                            >
+                                Batal
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
-
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(cameraModal);
-
-    navigator.mediaDevices.getUserMedia({
-        video: {
-            facingMode: {
-                ideal: 'environment'
-            }
-        },
-        audio: false
-    })
-    .then(stream => {
-        repairCameraStream = stream;
-
-        const video = document.getElementById('repairCameraVideo');
-
-        if (video) {
-            video.srcObject = stream;
-        }
-    })
-    .catch(error => {
-        console.error('Camera error:', error);
-
-        alert(
-            'Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan pada browser.'
-        );
-
-        closeRepairCamera();
-    });
-}
-
-// Fungsi untuk mengambil foto
-function captureRepairPhoto() {
-    const video = document.getElementById('repairCameraVideo');
-
-    if (!video) {
-        return;
-    }
-
-    const canvas = document.createElement('canvas');
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    const context = canvas.getContext('2d');
-
-    context.drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    canvas.toBlob(blob => {
-        if (!blob) {
-            alert('Gagal mengambil foto.');
-            return;
-        }
-
-        const imageUrl = URL.createObjectURL(blob);
-
-        const preview = document.getElementById(repairCameraTarget);
-
-        if (preview) {
-            preview.innerHTML = `
-                <img
-                    src="${imageUrl}"
-                    alt="Foto hasil kamera"
-                    style="
-                        width: 70px;
-                        height: 55px;
-                        object-fit: cover;
-                        border-radius: 5px;
-                        border: 1px solid rgba(255,255,255,0.3);
-                        display: block;
-                        margin: 4px auto 0;
-                    "
-                >
             `;
+
+            document.body.appendChild(cameraModal);
+
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: {
+                        ideal: 'environment'
+                    }
+                },
+                audio: false
+            })
+            .then(stream => {
+                repairCameraStream = stream;
+
+                const video = document.getElementById('repairCameraVideo');
+
+                if (video) {
+                    video.srcObject = stream;
+                }
+            })
+            .catch(error => {
+                console.error('Camera error:', error);
+
+                alert(
+                    'Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan pada browser.'
+                );
+
+                closeRepairCamera();
+            });
         }
 
-        closeRepairCamera();
-    }, 'image/jpeg', 0.9);
-}
+        // Fungsi untuk mengambil foto
+        function captureRepairPhoto() {
+            const video = document.getElementById('repairCameraVideo');
 
-// Fungsi untuk menutup modal kamera dan menghentikan stream kamera
-function closeRepairCamera() {
-    if (repairCameraStream) {
-        repairCameraStream.getTracks().forEach(track => {
-            track.stop();
-        });
+            if (!video) {
+                return;
+            }
 
-        repairCameraStream = null;
-    }
+            const canvas = document.createElement('canvas');
 
-    const modal = document.getElementById('repairCameraModal');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
 
-    if (modal) {
-        modal.remove();
-    }
+            const context = canvas.getContext('2d');
 
-    repairCameraTarget = null;
-}
+            context.drawImage(
+                video,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
 
-function updateRepairField(id, field, value) {
-    fetch('update_repair.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `id=${id}&field=${field}&value=${encodeURIComponent(value)}`
-    })
-    .then(res => res.json())
-    .then(result => {
-        if (result.status !== 'ok') {
-            alert('Gagal memperbarui data: ' + (result.message || 'Unknown error'));
+            canvas.toBlob(blob => {
+                if (!blob) {
+                    alert('Gagal mengambil foto.');
+                    return;
+                }
+
+                const imageUrl = URL.createObjectURL(blob);
+
+                const preview = document.getElementById(repairCameraTarget);
+
+                if (preview) {
+                    preview.innerHTML = `
+                        <img
+                            src="${imageUrl}"
+                            alt="Foto hasil kamera"
+                            style="
+                                width: 70px;
+                                height: 55px;
+                                object-fit: cover;
+                                border-radius: 5px;
+                                border: 1px solid rgba(255,255,255,0.3);
+                                display: block;
+                                margin: 4px auto 0;
+                            "
+                        >
+                    `;
+                }
+
+                closeRepairCamera();
+            }, 'image/jpeg', 0.9);
         }
-    })
-    .catch(err => {
-        console.error('Error updating repair field:', err);
-        alert('Terjadi kesalahan koneksi saat menyimpan perubahan.');
-    });
-}
+
+        // Fungsi untuk menutup modal kamera dan menghentikan stream kamera
+        function closeRepairCamera() {
+            if (repairCameraStream) {
+                repairCameraStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+
+                repairCameraStream = null;
+            }
+
+            const modal = document.getElementById('repairCameraModal');
+
+            if (modal) {
+                modal.remove();
+            }
+
+            repairCameraTarget = null;
+        }
+
+        function updateRepairField(id, field, value) {
+            fetch('update_repair.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${id}&field=${field}&value=${encodeURIComponent(value)}`
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 'ok') {
+                    // Ambil ulang data agar tanggal & waktu terbaru tampil
+                    loadRepairHistory();
+                } else {
+                    alert('Gagal memperbarui data: ' + (result.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error('Error updating repair field:', err);
+                alert('Terjadi kesalahan koneksi saat menyimpan perubahan.');
+            });
+        }
     </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
