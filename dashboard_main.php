@@ -1933,6 +1933,7 @@
             if (name.includes('MODEM')) return 'MDM';
             if (name.includes('WIFI') || name.includes('ACCESS POINT')) return 'AP';
             if (name.includes('PLCVCU') || name.includes('VCU')) return 'VCU';
+            if (name.includes('ROUTER MAKAN') || name.includes('ROUTER MAKAN')) return 'RM';
 
             return name.substring(0, 4);
         }
