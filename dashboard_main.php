@@ -1929,11 +1929,11 @@
             if (name.includes('SOT TV 2') || name.includes('CSOT U2')) return 'TV2';
             if (name.includes('MINI PC') || name.includes('CPU')) return 'MPC';
             if (name.includes('SWITCH')) return 'SW';
+            if (name.includes('ROUTER MAKAN')) return 'RM';
             if (name.includes('ROUTER')) return 'RTR';
             if (name.includes('MODEM')) return 'MDM';
             if (name.includes('WIFI') || name.includes('ACCESS POINT')) return 'AP';
             if (name.includes('PLCVCU') || name.includes('VCU')) return 'VCU';
-            if (name.includes('ROUTER MAKAN') || name.includes('ROUTER MAKAN')) return 'RM';
 
             return name.substring(0, 4);
         }
