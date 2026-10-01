@@ -696,6 +696,32 @@
             }
         }
 
+        /* HP: filter tanggal & tombol cetak laporan trouble tidak terpotong */
+        @media (max-width: 576px) {
+            #troubleReportSection .trouble-filter-wrap {
+                width: 100%;
+            }
+
+            #troubleReportSection .trouble-filter-item {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 0;
+            }
+
+            #troubleReportSection .trouble-filter-item input {
+                width: 100%;
+            }
+
+            #troubleReportSection .trouble-print-wrap {
+                flex: 1 1 100%;
+            }
+
+            #troubleReportSection .trouble-print-wrap .btn {
+                width: 100%;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+            }
+        }
+
         /* HP */
         @media (max-width: 576px) {
 
@@ -1733,18 +1759,18 @@
                                 Laporan Perangkat Trouble
                             </h5>
 
-                            <div class="d-flex align-items-center gap-2">
-                                <div>
+                            <div class="d-flex align-items-center flex-wrap gap-2 trouble-filter-wrap">
+                                <div class="trouble-filter-item">
                                     <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
                                     <input type="date" id="filterStartDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
                                 </div>
 
-                                <div>
+                                <div class="trouble-filter-item">
                                     <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Sampai Tanggal:</label>
                                     <input type="date" id="filterEndDate" class="form-control form-control-sm" onchange="loadDeviceHistory()">
                                 </div>
 
-                                <div class="align-self-end">
+                                <div class="align-self-end trouble-print-wrap">
                                     <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="window.print()">
                                         <i class="bi bi-printer me-1"></i> Cetak Laporan
                                     </button>
