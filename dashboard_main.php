@@ -940,7 +940,7 @@
 
         #repairReportSection .table-responsive table {
             width: 100% !important;
-            min-width: 950px !important;
+            min-width: 1105px !important;
             max-width: none !important;
             margin: 0 !important;
             table-layout: fixed !important;
@@ -991,14 +991,14 @@
 
         #repairReportSection .table-responsive th:nth-child(4),
         #repairReportSection .table-responsive td:nth-child(4) {
-            width: 150px !important;
-            min-width: 150px !important;
+            width: 160px !important;
+            min-width: 160px !important;
         }
 
         #repairReportSection .table-responsive th:nth-child(5),
         #repairReportSection .table-responsive td:nth-child(5) {
-            width: 150px !important;
-            min-width: 150px !important;
+            width: 170px !important;
+            min-width: 170px !important;
             white-space: nowrap !important;
         }
 
@@ -1010,8 +1010,8 @@
 
         #repairReportSection .table-responsive th:nth-child(7),
         #repairReportSection .table-responsive td:nth-child(7) {
-            width: 110px !important;
-            min-width: 110px !important;
+            width: 180px !important;
+            min-width: 180px !important;
             text-align: center !important;
         }
 
@@ -1053,10 +1053,36 @@
             }
 
             #repairReportSection .table-responsive table {
-                min-width: 950px !important;
+                min-width: 1105px !important;
             }
         }
 
+        /* HP: filter tanggal & tombol cetak tidak terpotong */
+        @media (max-width: 576px) {
+            #repairReportSection .repair-filter-wrap {
+                width: 100%;
+            }
+
+            #repairReportSection .repair-filter-item {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 0;
+            }
+
+            #repairReportSection .repair-filter-item input {
+                width: 100%;
+            }
+
+            #repairReportSection .repair-print-wrap {
+                flex: 1 1 100%;
+            }
+
+            #repairReportSection .repair-print-wrap .btn {
+                width: 100%;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+            }
+        }
+        
         /* Print */
         @media print {
 
@@ -1768,18 +1794,18 @@
                                 Laporan Perangkat Perbaikan
                             </h5>
 
-                            <div class="d-flex align-items-center gap-2">
-                                <div>
+                            <div class="d-flex align-items-center flex-wrap gap-2 repair-filter-wrap">
+                                <div class="repair-filter-item">
                                     <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
                                     <input type="date" id="filterRepairStartDate" class="form-control form-control-sm" onchange="loadRepairHistory()">
                                 </div>
 
-                                <div>
+                                <div class="repair-filter-item">
                                     <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Sampai Tanggal:</label>
                                     <input type="date" id="filterRepairEndDate" class="form-control form-control-sm" onchange="loadRepairHistory()">
                                 </div>
 
-                                <div class="align-self-end">
+                                <div class="align-self-end repair-print-wrap">
                                     <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="window.print()">
                                         <i class="bi bi-printer me-1"></i> Cetak Laporan
                                     </button>
@@ -1788,16 +1814,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-sm align-middle mb-0" style=" width: 100%; min-width: 1050px; table-layout: fixed;">
-                                <colgroup>
-                                    <col style="width: 5%;">
-                                    <col style="width: 12%;">
-                                    <col style="width: 14%;">
-                                    <col style="width: 13%;">
-                                    <col style="width: 13%;">
-                                    <col style="width: 20%;">
-                                    <col style="width: 23%;">
-                                </colgroup>
+                            <table class="table table-hover table-bordered table-sm align-middle mb-0" style="width: 100%; table-layout: fixed;">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" class="text-center align-middle">No</th>
@@ -3219,18 +3236,22 @@ let repairCameraInputId = null;
         // Fungsi untuk mengambil foto
         function captureRepairPhoto() {
             const video = document.getElementById('repairCameraVideo');
-
             if (!video) {
                 return;
             }
-
+            // Pastikan kamera sudah siap
+            if (!video.videoWidth || !video.videoHeight) {
+                alert('Kamera belum siap. Tunggu beberapa detik sampai tampilan kamera muncul.');
+                return;
+            }
             const canvas = document.createElement('canvas');
-
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-
             const context = canvas.getContext('2d');
-
+            if (!context) {
+                alert('Gagal menyiapkan kamera.');
+                return;
+            }
             context.drawImage(
                 video,
                 0,
@@ -3240,18 +3261,13 @@ let repairCameraInputId = null;
             );
 
             canvas.toBlob(blob => {
-
                 if (!blob) {
                     alert('Gagal mengambil foto.');
                     return;
                 }
-
                 const imageUrl = URL.createObjectURL(blob);
-
                 const preview = document.getElementById(repairCameraTarget);
-
                 if (preview) {
-
                     preview.innerHTML = `
                         <img
                             src="${imageUrl}"
@@ -3267,7 +3283,6 @@ let repairCameraInputId = null;
                             "
                         >
                     `;
-
                 }
 
                 // Buat File dari hasil kamera
@@ -3281,15 +3296,10 @@ let repairCameraInputId = null;
 
                 // Masukkan hasil kamera ke input file
                 const input = document.getElementById(repairCameraInputId);
-
                 if (input) {
-
                     const dataTransfer = new DataTransfer();
-
                     dataTransfer.items.add(cameraFile);
-
                     input.files = dataTransfer.files;
-
                     // Upload ke database/server
                     uploadRepairImage(
                         input,
@@ -3297,11 +3307,8 @@ let repairCameraInputId = null;
                         repairCameraField,
                         repairCameraTarget
                     );
-
                 }
-
                 closeRepairCamera();
-
             }, 'image/jpeg', 0.9);
         }
 
