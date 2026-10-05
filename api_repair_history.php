@@ -6,38 +6,47 @@ try {
     $start_date = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
     $end_date = isset($_GET['end_date']) ? trim($_GET['end_date']) : '';
 
+    // Menggunakan Subquery agar data yang ditarik benar-benar dari ID terbaru per perangkat
     $sql = "
         SELECT
-            id,
-            location,
-            device_name,
-            device_ip,
-            device_type,
-            status,
-            notes,
-            repair_notes,
-            image,
-            image_before,
-            image_after,
-            created_at,
-            updated_at
-        FROM repair_history
-        WHERE 1 = 1
+            rh.id,
+            rh.location,
+            rh.device_name,
+            rh.device_ip,
+            rh.device_type,
+            rh.status AS status,
+            rh.notes,
+            rh.repair_notes,
+            rh.image,
+            rh.image_before,
+            rh.image_after,
+            rh.created_at,
+            rh.updated_at
+        FROM repair_history rh
+        JOIN monitoring_logs ml 
+          ON rh.location COLLATE utf8mb4_unicode_ci = ml.location COLLATE utf8mb4_unicode_ci 
+         AND rh.device_ip COLLATE utf8mb4_unicode_ci = ml.device_ip COLLATE utf8mb4_unicode_ci
+        JOIN (
+            SELECT location, device_ip, MAX(id) as max_id
+            FROM repair_history
+            GROUP BY location, device_ip
+        ) latest ON rh.id = latest.max_id
+        WHERE ml.status != 'ONLINE' AND ml.status != 'UP'
     ";
 
     $params = [];
 
     if (!empty($start_date)) {
-        $sql .= " AND DATE(created_at) >= ?";
+        $sql .= " AND DATE(rh.created_at) >= ?";
         $params[] = $start_date;
     }
 
     if (!empty($end_date)) {
-        $sql .= " AND DATE(created_at) <= ?";
+        $sql .= " AND DATE(rh.created_at) <= ?";
         $params[] = $end_date;
     }
 
-    $sql .= " ORDER BY updated_at DESC, id DESC";
+    $sql .= " ORDER BY rh.updated_at DESC, rh.id DESC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

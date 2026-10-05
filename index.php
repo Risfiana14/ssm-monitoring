@@ -324,6 +324,7 @@
             <!-- KAPSUL UTUH DENGAN GARIS BORDER DAN BACKGROUND JELAS -->
             <div class="search-container position-relative d-flex align-items-center mb-0 px-3" style="width: 100%; background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50px; padding: 6px 12px; backdrop-filter: blur(5px);">
                 
+                
                 <!-- Sisi Kiri: Dropdown Filter (F) -->
                 <select id="statusFilterDropdown" class="form-select form-select-sm bg-transparent text-light border-0 shadow-none" style="width: 140px; cursor: pointer; font-size: 0.85rem;" onchange="filterCars()">
                     <option value="all" style="background-color: #1a233a; color: #fff;">Semua Status</option>
