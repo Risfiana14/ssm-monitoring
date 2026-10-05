@@ -6,7 +6,8 @@ try {
     $start_date = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
     $end_date = isset($_GET['end_date']) ? trim($_GET['end_date']) : '';
 
-    // Menggunakan Subquery agar data yang ditarik benar-benar dari ID terbaru per perangkat
+    // Logika: Tampilkan jika device masih bermasalah (offline/warning) 
+    // ATAU jika status perbaikannya sudah diubah menjadi 'Sudah diperbaiki' (biar tidak hilang)
     $sql = "
         SELECT
             rh.id,
@@ -31,7 +32,8 @@ try {
             FROM repair_history
             GROUP BY location, device_ip
         ) latest ON rh.id = latest.max_id
-        WHERE ml.status != 'ONLINE' AND ml.status != 'UP'
+        WHERE (ml.status != 'ONLINE' AND ml.status != 'UP') 
+           OR rh.status = 'Sudah diperbaiki'
     ";
 
     $params = [];
