@@ -461,7 +461,7 @@
         /* Tabel */
         #troubleReportSection .table-responsive table {
             width: 100% !important;
-            min-width: 1050px !important;
+            min-width: 1200px !important;
             max-width: none !important;
             margin: 0 !important;
             table-layout: fixed !important;
@@ -536,25 +536,46 @@
             white-space: nowrap !important;
         }
 
-        /* Kolom 6 - CATATAN */
+        /* Kolom 6 - UPDATE TERAKHIR */
         #troubleReportSection .table-responsive th:nth-child(6),
         #troubleReportSection .table-responsive td:nth-child(6) {
+            width: 160px !important;
+            min-width: 160px !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+
+        /* Isi Update Terakhir */
+        #troubleReportSection .table-responsive td:nth-child(6) {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+
+        /* Kolom 7 - CATATAN KERUSAKAN */
+        #troubleReportSection .table-responsive th:nth-child(7),
+        #troubleReportSection .table-responsive td:nth-child(7) {
             width: 280px !important;
             min-width: 280px !important;
         }
 
-        #troubleReportSection .table-responsive td:nth-child(6) {
-            white-space: pre-wrap !important;
-            word-break: break-word !important;
+        /* Isi Catatan Kerusakan */
+        #troubleReportSection .table-responsive td:nth-child(7) {
+            white-space: normal !important;
+            word-break: normal !important;
+            overflow-wrap: break-word !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            line-height: 1.5 !important;
+            padding: 15px 12px !important;
         }
 
-        /* Kolom 7 - LIHAT GAMBAR */
-        #troubleReportSection .table-responsive th:nth-child(7),
-        #troubleReportSection .table-responsive td:nth-child(7) {
-            width: 120px !important;
-            min-width: 120px !important;
-
+        /* Kolom 8 - GAMBAR */
+        #troubleReportSection .table-responsive th:nth-child(8),
+        #troubleReportSection .table-responsive td:nth-child(8) {
+            width: 140px !important;
+            min-width: 140px !important;
             text-align: center !important;
+            vertical-align: middle !important;
         }
 
         /* LIHAT GAMBAR */
@@ -582,7 +603,7 @@
                 overflow-y: hidden !important;
             }
             #troubleReportSection .table-responsive table {
-                min-width: 1050px !important;
+                min-width: 1200px !important;
             }
         }
 
