@@ -1759,6 +1759,40 @@
                                 Laporan Perangkat Trouble
                             </h5>
 
+                            <!-- FILTER NOMOR KERETA -->
+                            <div>
+                                <label
+                                    class="form-label text-light mb-1"
+                                    style="font-size: 0.75rem; font-weight: 600;">
+                                    Nomor Kereta:
+                                </label>
+
+                                <select
+                                    id="filterTrainTrouble"
+                                    class="form-select form-select-sm"
+                                    onchange="renderTroubleReportTable()"
+                                    style="min-width: 150px;">
+                                    <option value="">Semua Kereta</option>
+                                </select>
+                            </div>
+
+                            <!-- FILTER NAMA PERANGKAT -->
+                            <div>
+                                <label
+                                    class="form-label text-light mb-1"
+                                    style="font-size: 0.75rem; font-weight: 600;">
+                                    Nama Perangkat:
+                                </label>
+
+                                <select
+                                    id="filterDeviceTrouble"
+                                    class="form-select form-select-sm"
+                                    onchange="renderTroubleReportTable()"
+                                    style="min-width: 150px;">
+                                    <option value="">Semua Perangkat</option>
+                                </select>
+                            </div>
+
                             <div class="d-flex align-items-center flex-wrap gap-2 trouble-filter-wrap">
                                 <div class="trouble-filter-item">
                                     <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">Dari Tanggal:</label>
@@ -1788,6 +1822,7 @@
                                         <th scope="col" class="text-center align-middle">Nama Perangkat</th>
                                         <th scope="col" class="text-center align-middle">Status</th>
                                         <th scope="col" class="text-center align-middle">Tanggal & Waktu</th>
+                                        <th scope="col" class="text-center align-middle">Update Terakhir</th>
                                         <th scope="col" class="text-center align-middle">Catatan Kerusakan</th>
                                         <th scope="col" class="text-center align-middle">Gambar</th>
                                     </tr>
@@ -1796,7 +1831,7 @@
                                 <tbody id="troubleReportTableBody">
                                     <tr>
                                         <td
-                                            colspan="7"
+                                            colspan="8"
                                             class="text-center text-muted py-3">
                                             Memuat data laporan perangkat...
                                         </td>
@@ -2547,6 +2582,7 @@
                     ? result.data
                     : [];
 
+                updateTroubleFilterOptions();
                 renderTroubleReportTable();
             })
             .catch(error => {
@@ -2557,7 +2593,7 @@
 
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7"
+                        <td colspan="8"
                             class="text-center text-danger py-3">
                             ${escapeHtml(error.message)}
                         </td>
@@ -2566,9 +2602,117 @@
             });
         }
 
+        // Fungsi untuk mengisi pilihan filter nomor kereta dan nama perangkat
+        function updateTroubleFilterOptions() {
+            const trainSelect = document.getElementById('filterTrainTrouble');
+            const deviceSelect = document.getElementById('filterDeviceTrouble');
+
+            if (!trainSelect || !deviceSelect) {
+                return;
+            }
+
+            const selectedTrain = trainSelect.value;
+            const selectedDevice = deviceSelect.value;
+
+            const trains = [...new Set(
+                deviceHistoryData
+                    .map(item => (item.location || '').trim())
+                    .filter(value => value !== '')
+            )].sort();
+
+            const devices = [...new Set(
+                deviceHistoryData
+                    .map(item => {
+                        return (
+                            item.device_name ||
+                            item.device_type ||
+                            ''
+                        ).trim();
+                    })
+                    .filter(value => value !== '')
+            )].sort();
+
+            trainSelect.innerHTML = `
+                <option value="">Semua Kereta</option>
+                ${trains.map(train => `
+                    <option value="${escapeHtml(train)}">
+                        ${escapeHtml(train)}
+                    </option>
+                `).join('')}
+            `;
+
+            deviceSelect.innerHTML = `
+                <option value="">Semua Perangkat</option>
+                ${devices.map(device => `
+                    <option value="${escapeHtml(device)}">
+                        ${escapeHtml(device)}
+                    </option>
+                `).join('')}
+            `;
+
+            if (trains.includes(selectedTrain)) {
+                trainSelect.value = selectedTrain;
+            }
+
+            if (devices.includes(selectedDevice)) {
+                deviceSelect.value = selectedDevice;
+            }
+        }
+
+        // Fungsi untuk menghitung update terakhir
+        function getRelativeTime(dateTimeString) {
+            if (!dateTimeString || dateTimeString === '-') {
+                return '-';
+            }
+            const parts = dateTimeString.split(/[- :]/);
+            if (parts.length < 6) {
+                return '-';
+            }
+            const date = new Date(
+                Number(parts[0]),
+                Number(parts[1]) - 1,
+                Number(parts[2]),
+                Number(parts[3]),
+                Number(parts[4]),
+                Number(parts[5])
+            );
+            if (isNaN(date.getTime())) {
+                return '-';
+            }
+            const now = new Date();
+            let diffSeconds = Math.floor(
+                (now.getTime() - date.getTime()) / 1000
+            );
+            if (diffSeconds < 0) {
+                return 'Baru saja';
+            }
+            if (diffSeconds < 60) {
+                return 'Baru saja';
+            }
+            const minutes = Math.floor(diffSeconds / 60);
+            if (minutes < 60) {
+                return minutes + ' menit yang lalu';
+            }
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) {
+                return hours + ' jam yang lalu';
+            }
+            const days = Math.floor(hours / 24);
+            if (days < 30) {
+                return days + ' hari yang lalu';
+            }
+            const months = Math.floor(days / 30);
+            if (months < 12) {
+                return months + ' bulan yang lalu';
+            }
+            const years = Math.floor(months / 12);
+            return years + ' tahun yang lalu';
+        }
+
         // Tabel laporan perangkat trouble / kerusakan
         function renderTroubleReportTable() {
             const tbody = document.getElementById('troubleReportTableBody');
+
             if (!tbody) {
                 return;
             }
@@ -2577,23 +2721,51 @@
                 deviceHistoryData = [];
             }
 
-            if (deviceHistoryData.length === 0) {
+            const selectedTrain =
+                document.getElementById('filterTrainTrouble')?.value || '';
 
+            const selectedDevice =
+                document.getElementById('filterDeviceTrouble')?.value || '';
+
+            const filteredData = deviceHistoryData.filter(history => {
+
+                const location =
+                    (history.location || '').trim();
+
+                const deviceName =
+                    (
+                        history.device_name ||
+                        history.device_type ||
+                        ''
+                    ).trim();
+
+                const trainMatch =
+                    selectedTrain === '' ||
+                    location === selectedTrain;
+
+                const deviceMatch =
+                    selectedDevice === '' ||
+                    deviceName === selectedDevice;
+
+                return trainMatch && deviceMatch;
+            });
+
+            if (filteredData.length === 0) {
                 tbody.innerHTML = `
-            <tr>
-                <td colspan="7"
-                    class="text-center text-success fw-bold py-4">
-                    <i class="bi bi-check-circle me-1"></i>
-                    Belum ada laporan perangkat trouble / kerusakan.
-                </td>
-            </tr>
-        `;
+                    <tr>
+                        <td colspan="8"
+                            class="text-center text-success fw-bold py-4">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Tidak ada data laporan sesuai filter.
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
             let html = '';
 
-            deviceHistoryData.forEach((history, index) => {
+            filteredData.forEach((history, index) => {
 
                 const location =
                     history.location || '-';
@@ -2608,11 +2780,17 @@
 
                 const notes =
                     history.notes &&
-                    history.notes.trim() !== '' ?
-                    history.notes :
+                    history.notes.trim() !== ''
+                        ? history.notes
+                        : '-';
+
+                const createdAt =
+                    history.updated_at ||
+                    history.created_at ||
                     '-';
 
-                const createdAt = history.updated_at || history.created_at || '-';
+                const relativeTime =
+                    getRelativeTime(createdAt);
 
                 let badgeClass = 'bg-danger';
 
@@ -2620,61 +2798,103 @@
                     status === 'ONLINE' ||
                     status === 'UP'
                 ) {
-
                     badgeClass = 'bg-success';
+
                 } else if (
                     status === 'WARNING'
                 ) {
-
                     badgeClass = 'bg-warning text-dark';
+
                 } else if (
                     status.includes('NO INTERNET')
                 ) {
-
                     badgeClass = 'bg-danger';
                 }
 
                 let imageHtml = `
-            <span class="text-muted">
-                Tidak ada gambar
-            </span>
-        `;
+                    <span class="text-muted">
+                        Tidak ada gambar
+                    </span>
+                `;
 
                 if (
                     history.image &&
                     history.image.trim() !== ''
                 ) {
-
                     const imageUrl =
                         'uploads/' +
                         encodeURIComponent(history.image);
 
                     imageHtml = `
-                <button
-                    type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    onclick="showHistoryImage('${imageUrl}')">
-                    <i class="bi bi-image me-1"></i>
-                    Lihat Gambar
-                </button>
-            `;
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            onclick="showHistoryImage('${imageUrl}')">
+                            <i class="bi bi-image me-1"></i>
+                            Lihat Gambar
+                        </button>
+                    `;
                 }
 
                 html += `
                     <tr>
-                        <td class="text-center fw-bold align-middle">${index + 1}</td>
-                        <td class="fw-bold text-center align-middle">${escapeHtml(location)}</td>
-                        <td class="fw-bold text-center align-middle">${escapeHtml(deviceName)}</td>
-                        <td class="text-center align-middle"><span class="badge ${badgeClass}">${escapeHtml(status)}</span></td>
-                        <td class="text-center align-middle">${escapeHtml(createdAt)}</td>
-                        <td class="text-center align-middle" style="white-space: pre-wrap;">${escapeHtml(notes)}</td>
-                        <td class="text-center align-middle">${imageHtml}</td>
+                        <td class="text-center fw-bold align-middle">
+                            ${index + 1}
+                        </td>
+
+                        <td class="fw-bold text-center align-middle">
+                            ${escapeHtml(location)}
+                        </td>
+
+                        <td class="fw-bold text-center align-middle">
+                            ${escapeHtml(deviceName)}
+                        </td>
+
+                        <td class="text-center align-middle">
+                            <span class="badge ${badgeClass}">
+                                ${escapeHtml(status)}
+                            </span>
+                        </td>
+
+                        <td class="text-center align-middle">
+                            ${escapeHtml(createdAt)}
+                        </td>
+
+                        <td class="text-center align-middle">
+                            <span
+                                class="badge bg-info text-dark"
+                                title="${escapeHtml(createdAt)}">
+                                ${escapeHtml(relativeTime)}
+                            </span>
+                        </td>
+
+                        <td
+                            class="text-center align-middle"
+                            style="white-space: pre-wrap;">
+                            ${escapeHtml(notes)}
+                        </td>
+
+                        <td class="text-center align-middle">
+                            ${imageHtml}
+                        </td>
                     </tr>
                 `;
             });
 
             tbody.innerHTML = html;
         }
+
+        // Perbarui tampilan waktu relatif setiap 1 menit
+        setInterval(() => {
+            const reportPage = document.getElementById('deviceReportPage');
+
+            if (
+                reportPage &&
+                reportPage.style.display !== 'none'
+            ) {
+                renderTroubleReportTable();
+            }
+        }, 60000);
 
         function escapeHtml(value) {
 
