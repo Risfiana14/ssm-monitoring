@@ -429,189 +429,105 @@
             }
         }
 
-        /* =====================================================
-   LAPORAN PERANGKAT TROUBLE / KERUSAKAN
-   RESPONSIVE + DARK BLUE RAILMAP
-   ===================================================== */
-
+        /* responsive laporan perangkat trouble */
         #troubleReportSection {
             width: 100% !important;
             max-width: 100% !important;
-
             background: #173b78 !important;
             color: #ffffff !important;
-
             border: 1px solid rgba(255, 255, 255, 0.12) !important;
             border-radius: 16px !important;
-
             box-sizing: border-box !important;
             overflow: hidden !important;
-
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
         }
-
-
-        /* =====================================================
-   JUDUL LAPORAN
-   ===================================================== */
-
         #troubleReportSection h5 {
             color: #ffffff !important;
             font-weight: 700 !important;
         }
 
-
-        /* =====================================================
-   PEMBUNGKUS TABEL
-   ===================================================== */
-
+        /* Judul laporan perangkat trouble */
         #troubleReportSection .table-responsive {
             width: 100% !important;
             max-width: 100% !important;
-
             overflow-x: auto !important;
             overflow-y: hidden !important;
-
             display: block !important;
-
             -webkit-overflow-scrolling: touch;
-
             box-sizing: border-box !important;
-
             scrollbar-width: thin;
         }
 
-
-        /* =====================================================
-   TABEL
-   ===================================================== */
-
+        /* Tabel */
         #troubleReportSection .table-responsive table {
             width: 100% !important;
-
-            /*
-       Tabel tetap cukup lebar agar isi tidak berantakan.
-       Jika layar kecil, tabel bisa digeser horizontal.
-    */
             min-width: 1050px !important;
-
             max-width: none !important;
-
             margin: 0 !important;
-
             table-layout: fixed !important;
-
             border-collapse: collapse !important;
-
             box-sizing: border-box !important;
-
             color: #ffffff !important;
-
             background: #21477f !important;
         }
 
-
-        /* =====================================================
-   HEADER TABEL
-   ===================================================== */
-
+        /* Header Tabel */
         #troubleReportSection .table-responsive thead {
             background: #143565 !important;
         }
-
         #troubleReportSection .table-responsive th {
             background: #143565 !important;
-
             color: #ffffff !important;
-
             border-color: rgba(255, 255, 255, 0.15) !important;
-
             white-space: nowrap !important;
-
             vertical-align: middle !important;
-
             font-weight: 700 !important;
         }
 
-
-        /* =====================================================
-   ISI TABEL
-   ===================================================== */
-
+        /* Isi Tabel */
         #troubleReportSection .table-responsive td {
             background: #21477f !important;
-
             color: #ffffff !important;
-
             border-color: rgba(255, 255, 255, 0.12) !important;
-
             vertical-align: middle !important;
-
             word-break: break-word !important;
         }
 
-
-        /* =====================================================
-   HOVER BARIS
-   ===================================================== */
-
         #troubleReportSection .table-responsive tbody tr:hover td {
             background: #28538f !important;
-
             color: #ffffff !important;
         }
 
-
-        /* =====================================================
-   KOLOM 1 - NO
-   ===================================================== */
-
+        /* Kolom 1 - NO */
         #troubleReportSection .table-responsive th:nth-child(1),
         #troubleReportSection .table-responsive td:nth-child(1) {
             width: 55px !important;
             min-width: 55px !important;
-
             text-align: center !important;
         }
 
-
-        /* =====================================================
-   KOLOM 2 - NOMOR KERETA / LOKASI
-   ===================================================== */
-
+        /* Kolom 2 - NOMOR KERETA*/
         #troubleReportSection .table-responsive th:nth-child(2),
         #troubleReportSection .table-responsive td:nth-child(2) {
             width: 160px !important;
             min-width: 160px !important;
         }
 
-
-        /* =====================================================
-   KOLOM 3 - NAMA PERANGKAT
-   ===================================================== */
-
+        /* Kolom 3 - NAMA PERANGKAT */
         #troubleReportSection .table-responsive th:nth-child(3),
         #troubleReportSection .table-responsive td:nth-child(3) {
             width: 180px !important;
             min-width: 180px !important;
         }
 
-
-        /* =====================================================
-   KOLOM 4 - STATUS / KONDISI
-   ===================================================== */
-
+        /* Kolom 4 - STATUS */
         #troubleReportSection .table-responsive th:nth-child(4),
         #troubleReportSection .table-responsive td:nth-child(4) {
             width: 140px !important;
             min-width: 140px !important;
         }
 
-
-        /* =====================================================
-   KOLOM 5 - TANGGAL & WAKTU
-   ===================================================== */
-
+        /* Kolom 5 - TANGGAL & WAKTU */
         #troubleReportSection .table-responsive th:nth-child(5),
         #troubleReportSection .table-responsive td:nth-child(5) {
             width: 175px !important;
@@ -620,11 +536,7 @@
             white-space: nowrap !important;
         }
 
-
-        /* =====================================================
-   KOLOM 6 - CATATAN / KERUSAKAN
-   ===================================================== */
-
+        /* Kolom 6 - CATATAN */
         #troubleReportSection .table-responsive th:nth-child(6),
         #troubleReportSection .table-responsive td:nth-child(6) {
             width: 280px !important;
@@ -636,11 +548,7 @@
             word-break: break-word !important;
         }
 
-
-        /* =====================================================
-   KOLOM 7 - GAMBAR
-   ===================================================== */
-
+        /* Kolom 7 - LIHAT GAMBAR */
         #troubleReportSection .table-responsive th:nth-child(7),
         #troubleReportSection .table-responsive td:nth-child(7) {
             width: 120px !important;
@@ -649,48 +557,30 @@
             text-align: center !important;
         }
 
-
-        /* =====================================================
-   TOMBOL LIHAT GAMBAR
-   ===================================================== */
-
+        /* LIHAT GAMBAR */
         #troubleReportSection .table-responsive td:nth-child(7) .btn {
             white-space: nowrap !important;
         }
 
-
-        /* =====================================================
-   PESAN TIDAK ADA DATA
-   ===================================================== */
-
+        /* Pesan tidak ada data */
         #troubleReportSection .table-responsive td.text-success {
             color: #8ff0b5 !important;
         }
 
-
-        /* =====================================================
-   TABLET
-   ===================================================== */
-
+        /* Tablet */
         @media (max-width: 992px) {
-
             #troubleReportSection {
                 width: 100% !important;
                 max-width: 100% !important;
-
                 padding: 15px !important;
-
                 border-radius: 14px !important;
             }
-
             #troubleReportSection .table-responsive {
                 width: 100% !important;
                 max-width: 100% !important;
-
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
             }
-
             #troubleReportSection .table-responsive table {
                 min-width: 1050px !important;
             }
@@ -701,20 +591,16 @@
             #troubleReportSection .trouble-filter-wrap {
                 width: 100%;
             }
-
             #troubleReportSection .trouble-filter-item {
                 flex: 1 1 calc(50% - 8px);
                 min-width: 0;
             }
-
             #troubleReportSection .trouble-filter-item input {
                 width: 100%;
             }
-
             #troubleReportSection .trouble-print-wrap {
                 flex: 1 1 100%;
             }
-
             #troubleReportSection .trouble-print-wrap .btn {
                 width: 100%;
                 padding-top: 8px !important;
@@ -724,7 +610,6 @@
 
         /* HP */
         @media (max-width: 576px) {
-
             /* Konten utama memenuhi layar */
             .main-content {
                 margin-left: 0 !important;
@@ -735,7 +620,6 @@
             }
 
             /* Header Railmap */
-
             .main-content h1 {
                 font-size: 28px !important;
                 text-align: center !important;
@@ -748,7 +632,6 @@
             }
 
             /* Grid Perangkat 1 baris */
-
             .device-grid-container {
                 width: 100% !important;
                 max-width: 100% !important;
@@ -771,7 +654,6 @@
             }
 
             /* Card Kereta */
-
             .car-card {
                 width: 100% !important;
                 max-width: 100% !important;
@@ -782,7 +664,6 @@
             }
 
             /* Header Card */
-
             .car-card-header {
                 width: 100% !important;
                 display: flex !important;
@@ -804,7 +685,6 @@
             }
 
             /* Badge Status */
-
             .car-card .badge {
                 font-size: 7px !important;
                 padding: 3px 5px !important;
@@ -813,7 +693,6 @@
             }
 
             /* Grid Perangkat */
-
             .car-card .device-grid,
             .car-card .device-grid-container {
                 width: 100% !important;
@@ -828,7 +707,6 @@
             }
 
             /* TOMBOL DEVICE */
-
             .car-card .device-button,
             .car-card .device-btn,
             .car-card .device-item {
@@ -853,9 +731,7 @@
             .car-card button.device-btn {
                 width: 38px !important;
                 height: 38px !important;
-
                 padding: 0 !important;
-
                 font-size: 7px !important;
             }
 
@@ -866,11 +742,9 @@
                 margin-top: 5px !important;
                 white-space: nowrap !important;
             }
-
             .car-card .btn {
                 font-size: 8px !important;
             }
-
             .car-card .btn-sm {
                 padding: 3px 5px !important;
                 font-size: 8px !important;
@@ -879,16 +753,13 @@
 
         /* PRINT LAPORAN */
         @media print {
-
             body * {
                 visibility: hidden;
             }
-
             #troubleReportSection,
             #troubleReportSection * {
                 visibility: visible;
             }
-
             #troubleReportSection {
                 position: absolute !important;
                 left: 0 !important;
@@ -903,12 +774,10 @@
                 margin: 0 !important;
                 padding: 10px !important;
             }
-
             #troubleReportSection .table-responsive {
                 width: 100% !important;
                 overflow: visible !important;
             }
-
             #troubleReportSection .table-responsive table {
                 width: 100% !important;
                 min-width: auto !important;
@@ -917,7 +786,6 @@
                 background: #ffffff !important;
                 color: #000000 !important;
             }
-
             #troubleReportSection .table-responsive th,
             #troubleReportSection .table-responsive td {
                 background: #ffffff !important;
@@ -2220,6 +2088,7 @@
                 .then(res => res.json())
                 .then(data => {
                     globalDeviceData = data;
+                    updateTroubleFilterOptions();
                     sortCarsByStatus();
                     renderAllCars();
                 })
