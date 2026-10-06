@@ -783,17 +783,141 @@
             }
         }
 
+        /* Analitik perangkat */
+        #analyticsPage {
+            width: 100%;
+            max-width: 100%;
+        }
+        #analyticsSection {
+            width: 100%;
+            background: #173b78;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            color: #ffffff;
+        }
+        .analytics-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .analytics-title {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .analytics-filter {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .analytics-filter-item {
+            min-width: 150px;
+        }
+        .analytics-filter-item label {
+            display: block;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .analytics-filter-item select {
+            min-width: 150px;
+        }
+        .analytics-card {
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.08),
+                rgba(255, 255, 255, 0.03)
+            );
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 16px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .analytics-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(13, 202, 240, 0.4);
+        }
+        .analytics-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(13, 202, 240, 0.15);
+            color: #0dcaf0;
+            font-size: 1.1rem;
+        }
+        .analytics-card-label {
+            margin-top: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .analytics-card-value {
+            margin-top: 3px;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .analytics-panel {
+            height: 100%;
+            background: rgba(15, 23, 42, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .analytics-panel-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 14px;
+        }
+        .analytics-empty {
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-header {
+                align-items: stretch;
+            }
+            .analytics-filter {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .analytics-filter-item,
+            .analytics-filter-item select {
+                width: 100%;
+                min-width: 0;
+            }
+            .analytics-title {
+                font-size: 1rem;
+            }
+        }
+
         /* PRINT LAPORAN */
         @media print {
             body * {
                 visibility: hidden;
             }
-
             #troubleReportSection,
             #troubleReportSection * {
                 visibility: visible;
             }
-
             #troubleReportSection {
                 position: absolute !important;
                 left: 0 !important;
@@ -808,12 +932,10 @@
                 margin: 0 !important;
                 padding: 10px !important;
             }
-
             #troubleReportSection .table-responsive {
                 width: 100% !important;
                 overflow: visible !important;
             }
-
             #troubleReportSection .table-responsive table {
                 width: 100% !important;
                 min-width: auto !important;
@@ -822,14 +944,12 @@
                 background: #ffffff !important;
                 color: #000000 !important;
             }
-
             #troubleReportSection .table-responsive th,
             #troubleReportSection .table-responsive td {
                 background: #ffffff !important;
                 color: #000000 !important;
                 border: 1px solid #000000 !important;
             }
-
             .btn,
             sidebar,
             header,
@@ -839,7 +959,6 @@
                 display: none !important;
             }
         }
-
         #repairReportSection {
             width: 100% !important;
             max-width: 100% !important;
@@ -851,7 +970,6 @@
             overflow: hidden !important;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
         }
-
         #repairReportSection h5 {
             color: #ffffff !important;
             font-weight: 700 !important;
@@ -868,7 +986,6 @@
             box-sizing: border-box !important;
             scrollbar-width: thin;
         }
-
         #repairReportSection .table-responsive table {
             width: 100% !important;
             min-width: 1105px !important;
@@ -880,7 +997,6 @@
             color: #ffffff !important;
             background: #21477f !important;
         }
-
         #repairReportSection .table-responsive th {
             background: #143565 !important;
             color: #ffffff !important;
@@ -890,7 +1006,6 @@
             font-weight: 700 !important;
             padding: 8px 6px !important;
         }
-
         #repairReportSection .table-responsive td {
             background: #21477f !important;
             color: #ffffff !important;
@@ -907,38 +1022,32 @@
             min-width: 55px !important;
             text-align: center !important;
         }
-
         #repairReportSection .table-responsive th:nth-child(2),
         #repairReportSection .table-responsive td:nth-child(2) {
             width: 130px !important;
             min-width: 130px !important;
         }
-
         #repairReportSection .table-responsive th:nth-child(3),
         #repairReportSection .table-responsive td:nth-child(3) {
             width: 150px !important;
             min-width: 150px !important;
         }
-
         #repairReportSection .table-responsive th:nth-child(4),
         #repairReportSection .table-responsive td:nth-child(4) {
             width: 160px !important;
             min-width: 160px !important;
         }
-
         #repairReportSection .table-responsive th:nth-child(5),
         #repairReportSection .table-responsive td:nth-child(5) {
             width: 170px !important;
             min-width: 170px !important;
             white-space: nowrap !important;
         }
-
         #repairReportSection .table-responsive th:nth-child(6),
         #repairReportSection .table-responsive td:nth-child(6) {
             width: 260px !important;
             min-width: 260px !important;
         }
-
         #repairReportSection .table-responsive th:nth-child(7),
         #repairReportSection .table-responsive td:nth-child(7) {
             width: 180px !important;
@@ -951,7 +1060,6 @@
             white-space: normal !important;
             word-break: break-word !important;
         }
-
         #repairReportSection .repair-textarea {
             width: 100% !important;
             min-height: 50px !important;
@@ -959,7 +1067,6 @@
             resize: vertical !important;
             box-sizing: border-box !important;
         }
-
         /* Placeholder */
         .repair-textarea::placeholder {
             color: rgba(255, 255, 255, 0.65) !important;
@@ -968,21 +1075,18 @@
 
         /* Tablet / HP */
         @media (max-width: 992px) {
-
             #repairReportSection {
                 width: 100% !important;
                 max-width: 100% !important;
                 padding: 15px !important;
                 border-radius: 14px !important;
             }
-
             #repairReportSection .table-responsive {
                 width: 100% !important;
                 max-width: 100% !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
             }
-
             #repairReportSection .table-responsive table {
                 min-width: 1105px !important;
             }
@@ -993,20 +1097,16 @@
             #repairReportSection .repair-filter-wrap {
                 width: 100%;
             }
-
             #repairReportSection .repair-filter-item {
                 flex: 1 1 calc(50% - 8px);
                 min-width: 0;
             }
-
             #repairReportSection .repair-filter-item input {
                 width: 100%;
             }
-
             #repairReportSection .repair-print-wrap {
                 flex: 1 1 100%;
             }
-
             #repairReportSection .repair-print-wrap .btn {
                 width: 100%;
                 padding-top: 8px !important;
@@ -1016,12 +1116,10 @@
 
         /* Print */
         @media print {
-
             #repairReportSection,
             #repairReportSection * {
                 visibility: visible;
             }
-
             #repairReportSection {
                 position: absolute !important;
                 left: 0 !important;
@@ -1032,12 +1130,10 @@
                 box-shadow: none !important;
                 border: none !important;
             }
-
             #repairReportSection .table-responsive table {
                 background: #ffffff !important;
                 color: #000000 !important;
             }
-
             #repairReportSection .table-responsive th,
             #repairReportSection .table-responsive td {
                 background: #ffffff !important;
@@ -1338,9 +1434,7 @@
                     aria-controls="laporanPerangkatMenu">
 
                     <i class="bi bi-chevron-down train-arrow me-2"></i>
-
                     <i class="bi bi-file-earmark-text text-info me-2"></i>
-
                     <span class="text-light">
                         Laporan Perangkat
                     </span>
@@ -1348,7 +1442,6 @@
 
                 <div class="collapse" id="laporanPerangkatMenu">
                     <div class="train-ids" style="padding-left: 25px;">
-
                         <button
                             type="button"
                             class="train-id w-100 border-0 bg-transparent text-start"
@@ -1365,6 +1458,37 @@
                             Laporan Perangkat Perbaikan
                         </button>
 
+                    </div>
+                </div>
+            </div>
+
+            <!-- MENU ANALITIK -->
+            <div class="mt-3">
+                <button
+                    type="button"
+                    class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#analitikMenu"
+                    aria-expanded="false"
+                    aria-controls="analitikMenu">
+
+                    <i class="bi bi-chevron-down train-arrow me-2"></i>
+                    <i class="bi bi-bar-chart-line text-info me-2"></i>
+
+                    <span class="text-light">
+                        Analitik
+                    </span>
+                </button>
+
+                <div class="collapse" id="analitikMenu">
+                    <div class="train-ids" style="padding-left: 25px;">
+                        <button
+                            type="button"
+                            class="train-id w-100 border-0 bg-transparent text-start"
+                            onclick="showAnalyticsPage()">
+                            <i class="bi bi-cpu me-2 text-info"></i>
+                            Analitik Perangkat
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1830,6 +1954,213 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN ANALITIK PERANGKAT -->
+                <div class="mt-4" id="analyticsPage" style="display: none;">
+                    <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
+                        id="analyticsSection">
+
+                        <!-- HEADER -->
+                        <div class="analytics-header mb-4">
+                            <div>
+                                <h5 class="analytics-title">
+                                    <i class="bi bi-bar-chart-line me-2 text-info"></i>
+                                    Analitik Perangkat
+                                </h5>
+
+                                <div class="text-light opacity-50 mt-1"
+                                    style="font-size: 0.72rem;">
+                                    Ringkasan kondisi dan histori trouble perangkat
+                                </div>
+                            </div>
+
+                            <!-- FILTER -->
+                            <div class="analytics-filter">
+                                <div class="analytics-filter-item">
+                                    <label>Periode:</label>
+                                    <select
+                                        id="analyticsPeriod"
+                                        class="form-select form-select-sm">
+
+                                        <option value="today">
+                                            Hari Ini
+                                        </option>
+                                        <option value="7days">
+                                            7 Hari Terakhir
+                                        </option>
+                                        <option value="30days">
+                                            30 Hari Terakhir
+                                        </option>
+
+                                        <option value="custom">
+                                            Custom
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="analytics-filter-item"
+                                    id="analyticsStartDateWrapper"
+                                    style="display:none;">
+                                    <label>Dari:</label>
+                                    <input
+                                        type="date"
+                                        id="analyticsStartDate"
+                                        class="form-control form-control-sm">
+                                </div>
+
+                                <div class="analytics-filter-item"
+                                    id="analyticsEndDateWrapper"
+                                    style="display:none;">
+                                    <label>Sampai:</label>
+                                    <input
+                                        type="date"
+                                        id="analyticsEndDate"
+                                        class="form-control form-control-sm">
+                                </div>
+
+                                <div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-info btn-sm fw-bold"
+                                        id="btnApplyAnalytics">
+                                        <i class="bi bi-filter me-1"></i>
+                                        Terapkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RINGKASAN -->
+                        <div class="row g-3 mb-4">
+
+                            <!-- TOTAL TROUBLE -->
+                            <div class="col-12 col-sm-6 col-xl-3">
+                                <div class="analytics-card">
+                                    <div class="analytics-card-icon">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="analytics-card-label">
+                                        Total Trouble
+                                    </div>
+                                    <div
+                                        class="analytics-card-value"
+                                        id="analyticsTotalTrouble">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PERANGKAT TROUBLE -->
+                            <div class="col-12 col-sm-6 col-xl-3">
+                                <div class="analytics-card">
+                                    <div class="analytics-card-icon">
+                                        <i class="bi bi-cpu"></i>
+                                    </div>
+                                    <div class="analytics-card-label">
+                                        Perangkat Trouble
+                                    </div>
+                                    <div
+                                        class="analytics-card-value"
+                                        id="analyticsDeviceTrouble">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SUDAH DIPERBAIKI -->
+                            <div class="col-12 col-sm-6 col-xl-3">
+                                <div class="analytics-card">
+                                    <div class="analytics-card-icon">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div class="analytics-card-label">
+                                        Sudah Diperbaiki
+                                    </div>
+                                    <div
+                                        class="analytics-card-value"
+                                        id="analyticsRepaired">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BELUM DIPERBAIKI -->
+                            <div class="col-12 col-sm-6 col-xl-3">
+                                <div class="analytics-card">
+                                    <div class="analytics-card-icon">
+                                        <i class="bi bi-clock-history"></i>
+                                    </div>
+                                    <div class="analytics-card-label">
+                                        Belum Diperbaiki
+                                    </div>
+                                    <div
+                                        class="analytics-card-value"
+                                        id="analyticsUnrepaired">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AREA ANALISIS -->
+                        <div class="row g-3">
+
+                            <!-- TREND -->
+                            <div class="col-12 col-xl-7">
+                                <div class="analytics-panel">
+                                    <div class="analytics-panel-title">
+                                        <i class="bi bi-graph-up me-2 text-info"></i>
+                                        Trend Trouble Perangkat
+                                    </div>
+                                    <div
+                                        id="analyticsTrendChart"
+                                        class="analytics-empty">
+                                        <div>
+                                            <i class="bi bi-bar-chart-line fs-2 d-block mb-2 opacity-50"></i>
+                                            Data trend akan ditampilkan di sini.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TOP PERANGKAT -->
+                            <div class="col-12 col-xl-5">
+                                <div class="analytics-panel">
+                                    <div class="analytics-panel-title">
+                                        <i class="bi bi-cpu me-2 text-warning"></i>
+                                        Perangkat Paling Sering Trouble
+                                    </div>
+
+                                    <div id="analyticsDeviceRanking">
+                                        <div class="analytics-empty">
+                                            <div>
+                                                Belum ada data analitik.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TOP KERETA -->
+                            <div class="col-12">
+                                <div class="analytics-panel">
+                                    <div class="analytics-panel-title">
+                                        <i class="bi bi-train-front me-2 text-success"></i>
+                                        Kereta dengan Trouble Terbanyak
+                                    </div>
+
+                                    <div id="analyticsTrainRanking">
+                                        <div class="analytics-empty">
+                                            <div>
+                                                Belum ada data analitik.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2355,6 +2686,7 @@
         function showTroubleReport() {
             const reportPage = document.getElementById('deviceReportPage');
             const repairPage = document.getElementById('deviceRepairReportPage');
+            const analyticsPage = document.getElementById('analyticsPage');
             const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
             const mainContent = document.querySelector('.main-content');
             const dashboardHeader = document.querySelector('.dashboard-header');
@@ -2362,66 +2694,424 @@
             if (!reportPage || !contentArea || !mainContent) {
                 return;
             }
-
             // Sembunyikan header RAILMAP
             if (dashboardHeader) {
                 dashboardHeader.style.display = 'none';
             }
-
             if (reportPage.parentElement !== mainContent) {
                 mainContent.appendChild(reportPage);
             }
-
             if (repairPage && repairPage.parentElement !== mainContent) {
                 mainContent.appendChild(repairPage);
             }
-
             contentArea.style.display = 'none';
-
             if (repairPage) {
                 repairPage.style.display = 'none';
             }
-
+            if (analyticsPage) {
+                analyticsPage.style.display = 'none';
+            }
             reportPage.style.display = 'block';
-
             loadDeviceHistory();
         }
 
         function showRepairReport() {
             const reportPage = document.getElementById('deviceReportPage');
             const repairPage = document.getElementById('deviceRepairReportPage');
+            const analyticsPage = document.getElementById('analyticsPage');
             const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
             const mainContent = document.querySelector('.main-content');
             const dashboardHeader = document.querySelector('.dashboard-header');
-
             if (!repairPage || !contentArea || !mainContent) {
                 return;
             }
-
             // Sembunyikan header RAILMAP
             if (dashboardHeader) {
                 dashboardHeader.style.display = 'none';
             }
-
             if (reportPage && reportPage.parentElement !== mainContent) {
                 mainContent.appendChild(reportPage);
             }
-
             if (repairPage.parentElement !== mainContent) {
                 mainContent.appendChild(repairPage);
             }
-
             // Sembunyikan seluruh area detail kereta
             contentArea.style.display = 'none';
-
             // Sembunyikan laporan trouble
             if (reportPage) {
                 reportPage.style.display = 'none';
             }
-
+            if (analyticsPage) {
+                analyticsPage.style.display = 'none';
+            }
             // Tampilkan laporan perbaikan
             repairPage.style.display = 'block';
         }
+
+        function showAnalyticsPage() {
+            const reportPage = document.getElementById('deviceReportPage');
+            const repairPage = document.getElementById('deviceRepairReportPage');
+            const analyticsPage = document.getElementById('analyticsPage');
+            const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+            const mainContent = document.querySelector('.main-content');
+            const dashboardHeader = document.querySelector('.dashboard-header');
+            if (!analyticsPage || !contentArea || !mainContent) {
+                return;
+            }
+            // Sembunyikan header dashboard utama
+            if (dashboardHeader) {
+                dashboardHeader.style.display = 'none';
+            }
+            // Pindahkan halaman analitik ke area utama
+            if (analyticsPage.parentElement !== mainContent) {
+                mainContent.appendChild(analyticsPage);
+            }
+            // Sembunyikan seluruh area nomor sarana/dashboard utama
+            contentArea.style.display = 'none';
+            // Sembunyikan laporan trouble
+            if (reportPage) {
+                reportPage.style.display = 'none';
+            }
+            // Sembunyikan laporan perbaikan
+            if (repairPage) {
+                repairPage.style.display = 'none';
+            }
+            // Tampilkan analitik
+            analyticsPage.style.display = 'block';
+            loadAnalyticsData();
+        }
+
+        function loadAnalyticsData() {
+            const period =
+                document.getElementById('analyticsPeriod')?.value || 'today';
+            let url = 'api_analytics.php?period=' +
+                encodeURIComponent(period);
+            if (period === 'custom') {
+                const startDate =
+                    document.getElementById('analyticsStartDate')?.value || '';
+                const endDate =
+                    document.getElementById('analyticsEndDate')?.value || '';
+                if (!startDate || !endDate) {
+                    alert('Silakan pilih tanggal mulai dan tanggal akhir.');
+                    return;
+                }
+                url += '&start_date=' +
+                    encodeURIComponent(startDate);
+                url += '&end_date=' +
+                    encodeURIComponent(endDate);
+            }
+            fetch(url, {
+                cache: 'no-store'
+            })
+            .then(async response => {
+                const text = await response.text();
+                if (!response.ok) {
+                    throw new Error(
+                        'HTTP ' + response.status + ': ' + text
+                    );
+                }
+                return JSON.parse(text);
+            })
+            .then(result => {
+                if (result.status !== 'ok') {
+                    throw new Error(
+                        result.message ||
+                        'Gagal mengambil data analitik.'
+                    );
+                }
+                updateAnalyticsSummary(result.summary);
+                renderAnalyticsTrend(result.trend);
+                renderAnalyticsDeviceRanking(result.device_ranking);
+                renderAnalyticsTrainRanking(result.train_ranking);
+            })
+            .catch(error => {
+                console.error(
+                    'Gagal mengambil data analitik:',
+                    error
+                );
+                alert(
+                    'Gagal mengambil data analitik: ' +
+                    error.message
+                );
+            });
+        }
+
+        function updateAnalyticsSummary(summary) {
+            document.getElementById('analyticsTotalTrouble').textContent =
+                summary.total_trouble ?? 0;
+            document.getElementById('analyticsDeviceTrouble').textContent =
+                summary.device_trouble ?? 0;
+            document.getElementById('analyticsRepaired').textContent =
+                summary.repaired ?? 0;
+            document.getElementById('analyticsUnrepaired').textContent =
+                summary.unrepaired ?? 0;
+        }
+
+        function renderAnalyticsTrend(trend) {
+            const container =
+                document.getElementById('analyticsTrendChart');
+            if (!container) return;
+            if (!Array.isArray(trend) || trend.length === 0) {
+                container.innerHTML = `
+                    <div class="analytics-empty">
+                        <div>
+                            <i class="bi bi-bar-chart-line fs-2 d-block mb-2 opacity-50"></i>
+                            Tidak ada data trouble pada periode ini.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            const maxValue = Math.max(
+                ...trend.map(item => Number(item.jumlah) || 0),
+                1
+            );
+            container.innerHTML = `
+                <div style="
+                    display:flex;
+                    align-items:flex-end;
+                    gap:12px;
+                    height:220px;
+                    width:100%;
+                    padding:15px 5px 5px;
+                    overflow-x:auto;
+                ">
+                    ${trend.map(item => {
+                        const value = Number(item.jumlah) || 0;
+                        const height =
+                            Math.max(
+                                (value / maxValue) * 160,
+                                value > 0 ? 10 : 2
+                            );
+                        const dateParts =
+                            String(item.tanggal).split('-');
+                        const label =
+                            dateParts.length === 3
+                                ? dateParts[2] + '/' + dateParts[1]
+                                : item.tanggal;
+                        return `
+                            <div style="
+                                min-width:45px;
+                                height:100%;
+                                display:flex;
+                                flex-direction:column;
+                                align-items:center;
+                                justify-content:flex-end;
+                            ">
+                                <div style="
+                                    font-size:0.7rem;
+                                    font-weight:700;
+                                    color:#ffffff;
+                                    margin-bottom:5px;
+                                ">
+                                    ${value}
+                                </div>
+
+                                <div style="
+                                    width:28px;
+                                    height:${height}px;
+                                    background:#0dcaf0;
+                                    border-radius:6px 6px 2px 2px;
+                                    transition:height 0.3s ease;
+                                "></div>
+
+                                <div style="
+                                    margin-top:7px;
+                                    font-size:0.65rem;
+                                    color:rgba(255,255,255,0.6);
+                                ">
+                                    ${label}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Render peringkat perangkat yang paling sering mengalami trouble
+        function renderAnalyticsDeviceRanking(data) {
+            const container =
+                document.getElementById('analyticsDeviceRanking');
+
+            if (!container) return;
+
+            if (!Array.isArray(data) || data.length === 0) {
+
+                container.innerHTML = `
+                    <div class="analytics-empty">
+                        Belum ada data trouble perangkat.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const maxValue = Math.max(
+                ...data.map(item => Number(item.jumlah) || 0),
+                1
+            );
+
+            container.innerHTML = data.map((item, index) => {
+
+                const value = Number(item.jumlah) || 0;
+
+                const percentage =
+                    (value / maxValue) * 100;
+
+                return `
+                    <div style="margin-bottom:14px;">
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+
+                            <span style="
+                                font-size:0.75rem;
+                                font-weight:600;
+                                color:#ffffff;
+                            ">
+                                ${index + 1}. ${escapeHtml(item.device)}
+                            </span>
+
+                            <span style="
+                                font-size:0.72rem;
+                                font-weight:700;
+                                color:#0dcaf0;
+                            ">
+                                ${value}
+                            </span>
+
+                        </div>
+
+                        <div style="
+                            height:7px;
+                            background:rgba(255,255,255,0.08);
+                            border-radius:10px;
+                            overflow:hidden;
+                        ">
+
+                            <div style="
+                                width:${percentage}%;
+                                height:100%;
+                                background:#0dcaf0;
+                                border-radius:10px;
+                            "></div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join('');
+        }
+
+        // Render peringkat kereta yang paling sering mengalami trouble
+        function renderAnalyticsTrainRanking(data) {
+            const container =
+                document.getElementById('analyticsTrainRanking');
+
+            if (!container) return;
+
+            if (!Array.isArray(data) || data.length === 0) {
+
+                container.innerHTML = `
+                    <div class="analytics-empty">
+                        Belum ada data trouble kereta.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const maxValue = Math.max(
+                ...data.map(item => Number(item.jumlah) || 0),
+                1
+            );
+
+            container.innerHTML = data.map((item, index) => {
+
+                const value = Number(item.jumlah) || 0;
+
+                const percentage =
+                    (value / maxValue) * 100;
+
+                return `
+                    <div style="margin-bottom:14px;">
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+
+                            <span style="
+                                font-size:0.75rem;
+                                font-weight:600;
+                                color:#ffffff;
+                            ">
+                                ${index + 1}. ${escapeHtml(item.location)}
+                            </span>
+
+                            <span style="
+                                font-size:0.72rem;
+                                font-weight:700;
+                                color:#20c997;
+                            ">
+                                ${value} trouble
+                            </span>
+
+                        </div>
+
+                        <div style="
+                            height:7px;
+                            background:rgba(255,255,255,0.08);
+                            border-radius:10px;
+                            overflow:hidden;
+                        ">
+
+                            <div style="
+                                width:${percentage}%;
+                                height:100%;
+                                background:#20c997;
+                                border-radius:10px;
+                            "></div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnApplyAnalytics =
+                document.getElementById('btnApplyAnalytics');
+            const periodSelect =
+                document.getElementById('analyticsPeriod');
+            const startWrapper =
+                document.getElementById('analyticsStartDateWrapper');
+            const endWrapper =
+                document.getElementById('analyticsEndDateWrapper');
+            if (periodSelect) {
+                periodSelect.addEventListener('change', function () {
+                    const isCustom =
+                        this.value === 'custom';
+                    if (startWrapper) {
+                        startWrapper.style.display =
+                            isCustom ? 'block' : 'none';
+                    }
+                    if (endWrapper) {
+                        endWrapper.style.display =
+                            isCustom ? 'block' : 'none';
+                    }
+                });
+            }
+
+            if (btnApplyAnalytics) {
+                btnApplyAnalytics.addEventListener(
+                    'click',
+                    function () {
+                        loadAnalyticsData();
+                    }
+                );
+            }
+        });
 
         // Dipertahankan agar pemanggilan lama tidak error.
         function showDeviceReport() {
@@ -2910,6 +3600,7 @@
         function showRepairReport() {
             const reportPage = document.getElementById('deviceReportPage');
             const repairPage = document.getElementById('deviceRepairReportPage');
+            const analyticsPage = document.getElementById('analyticsPage');
             const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
             const mainContent = document.querySelector('.main-content');
             const dashboardHeader = document.querySelector('.dashboard-header');
@@ -2922,9 +3613,13 @@
             if (repairPage.parentElement !== mainContent) mainContent.appendChild(repairPage);
 
             contentArea.style.display = 'none';
-            if (reportPage) reportPage.style.display = 'none';
+            if (reportPage) {
+                reportPage.style.display = 'none';
+            }
+            if (analyticsPage) {
+                analyticsPage.style.display = 'none';
+            }
             repairPage.style.display = 'block';
-
             loadRepairHistory();
         }
 
