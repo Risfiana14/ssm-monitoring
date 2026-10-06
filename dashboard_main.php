@@ -441,6 +441,7 @@
             overflow: hidden !important;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
         }
+
         #troubleReportSection h5 {
             color: #ffffff !important;
             font-weight: 700 !important;
@@ -475,6 +476,7 @@
         #troubleReportSection .table-responsive thead {
             background: #143565 !important;
         }
+
         #troubleReportSection .table-responsive th {
             background: #143565 !important;
             color: #ffffff !important;
@@ -596,12 +598,14 @@
                 padding: 15px !important;
                 border-radius: 14px !important;
             }
+
             #troubleReportSection .table-responsive {
                 width: 100% !important;
                 max-width: 100% !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
             }
+
             #troubleReportSection .table-responsive table {
                 min-width: 1200px !important;
             }
@@ -612,16 +616,20 @@
             #troubleReportSection .trouble-filter-wrap {
                 width: 100%;
             }
+
             #troubleReportSection .trouble-filter-item {
                 flex: 1 1 calc(50% - 8px);
                 min-width: 0;
             }
+
             #troubleReportSection .trouble-filter-item input {
                 width: 100%;
             }
+
             #troubleReportSection .trouble-print-wrap {
                 flex: 1 1 100%;
             }
+
             #troubleReportSection .trouble-print-wrap .btn {
                 width: 100%;
                 padding-top: 8px !important;
@@ -631,6 +639,7 @@
 
         /* HP */
         @media (max-width: 576px) {
+
             /* Konten utama memenuhi layar */
             .main-content {
                 margin-left: 0 !important;
@@ -763,9 +772,11 @@
                 margin-top: 5px !important;
                 white-space: nowrap !important;
             }
+
             .car-card .btn {
                 font-size: 8px !important;
             }
+
             .car-card .btn-sm {
                 padding: 3px 5px !important;
                 font-size: 8px !important;
@@ -777,10 +788,12 @@
             body * {
                 visibility: hidden;
             }
+
             #troubleReportSection,
             #troubleReportSection * {
                 visibility: visible;
             }
+
             #troubleReportSection {
                 position: absolute !important;
                 left: 0 !important;
@@ -795,10 +808,12 @@
                 margin: 0 !important;
                 padding: 10px !important;
             }
+
             #troubleReportSection .table-responsive {
                 width: 100% !important;
                 overflow: visible !important;
             }
+
             #troubleReportSection .table-responsive table {
                 width: 100% !important;
                 min-width: auto !important;
@@ -807,6 +822,7 @@
                 background: #ffffff !important;
                 color: #000000 !important;
             }
+
             #troubleReportSection .table-responsive th,
             #troubleReportSection .table-responsive td {
                 background: #ffffff !important;
@@ -997,7 +1013,7 @@
                 padding-bottom: 8px !important;
             }
         }
-        
+
         /* Print */
         @media print {
 
@@ -1731,7 +1747,7 @@
                     </div>
                 </div>
 
-                
+
                 <!-- HALAMAN LAPORAN PERANGKAT PERBAIKAN -->
                 <div class="mt-4" id="deviceRepairReportPage" style="display: none;">
                     <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4"
@@ -1743,6 +1759,35 @@
                                 <i class="bi bi-tools me-2 text-success"></i>
                                 Laporan Perangkat Perbaikan
                             </h5>
+
+                            <!-- FILTER NOMOR KERETA -->
+                            <div class="repair-filter-item">
+                                <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">
+                                    Nomor Kereta:
+                                </label>
+
+                                <select
+                                    id="filterRepairTrain"
+                                    class="form-select form-select-sm"
+                                    onchange="renderRepairReportTable()"
+                                    style="min-width: 150px;">
+                                    <option value="">Semua Kereta</option>
+                                </select>
+                            </div>
+
+                            <div class="repair-filter-item">
+                                <label class="form-label text-light mb-1" style="font-size: 0.75rem; font-weight: 600;">
+                                    Nama Perangkat:
+                                </label>
+
+                                <select
+                                    id="filterRepairDevice"
+                                    class="form-select form-select-sm"
+                                    onchange="renderRepairReportTable()"
+                                    style="min-width: 150px;">
+                                    <option value="">Semua Perangkat</option>
+                                </select>
+                            </div>
 
                             <div class="d-flex align-items-center flex-wrap gap-2 repair-filter-wrap">
                                 <div class="repair-filter-item">
@@ -2433,55 +2478,55 @@
             console.log('Memanggil API:', url);
 
             fetch(url, {
-                cache: 'no-store'
-            })
-            .then(async response => {
-                const text = await response.text();
+                    cache: 'no-store'
+                })
+                .then(async response => {
+                    const text = await response.text();
 
-                console.log('HTTP Status:', response.status);
-                console.log('Response API:', text);
+                    console.log('HTTP Status:', response.status);
+                    console.log('Response API:', text);
 
-                if (!response.ok) {
-                    throw new Error(
-                        'HTTP ' + response.status + ': ' + text
+                    if (!response.ok) {
+                        throw new Error(
+                            'HTTP ' + response.status + ': ' + text
+                        );
+                    }
+
+                    let result;
+
+                    try {
+                        result = JSON.parse(text);
+                    } catch (e) {
+                        throw new Error(
+                            'Response API bukan JSON: ' + text
+                        );
+                    }
+
+                    return result;
+                })
+                .then(result => {
+                    console.log('Hasil histori:', result);
+
+                    if (result.status !== 'ok') {
+                        throw new Error(
+                            result.message || 'Gagal mengambil histori.'
+                        );
+                    }
+
+                    deviceHistoryData = Array.isArray(result.data) ?
+                        result.data :
+                        [];
+
+                    updateTroubleFilterOptions();
+                    renderTroubleReportTable();
+                })
+                .catch(error => {
+                    console.error(
+                        'Gagal mengambil device history:',
+                        error
                     );
-                }
 
-                let result;
-
-                try {
-                    result = JSON.parse(text);
-                } catch (e) {
-                    throw new Error(
-                        'Response API bukan JSON: ' + text
-                    );
-                }
-
-                return result;
-            })
-            .then(result => {
-                console.log('Hasil histori:', result);
-
-                if (result.status !== 'ok') {
-                    throw new Error(
-                        result.message || 'Gagal mengambil histori.'
-                    );
-                }
-
-                deviceHistoryData = Array.isArray(result.data)
-                    ? result.data
-                    : [];
-
-                updateTroubleFilterOptions();
-                renderTroubleReportTable();
-            })
-            .catch(error => {
-                console.error(
-                    'Gagal mengambil device history:',
-                    error
-                );
-
-                tbody.innerHTML = `
+                    tbody.innerHTML = `
                     <tr>
                         <td colspan="8"
                             class="text-center text-danger py-3">
@@ -2489,7 +2534,7 @@
                         </td>
                     </tr>
                 `;
-            });
+                });
         }
 
         // Fungsi untuk mengisi pilihan filter nomor kereta dan nama perangkat
@@ -2506,20 +2551,20 @@
 
             const trains = [...new Set(
                 deviceHistoryData
-                    .map(item => (item.location || '').trim())
-                    .filter(value => value !== '')
+                .map(item => (item.location || '').trim())
+                .filter(value => value !== '')
             )].sort();
 
             const devices = [...new Set(
                 deviceHistoryData
-                    .map(item => {
-                        return (
-                            item.device_name ||
-                            item.device_type ||
-                            ''
-                        ).trim();
-                    })
-                    .filter(value => value !== '')
+                .map(item => {
+                    return (
+                        item.device_name ||
+                        item.device_type ||
+                        ''
+                    ).trim();
+                })
+                .filter(value => value !== '')
             )].sort();
 
             trainSelect.innerHTML = `
@@ -2670,9 +2715,9 @@
 
                 const notes =
                     history.notes &&
-                    history.notes.trim() !== ''
-                        ? history.notes
-                        : '-';
+                    history.notes.trim() !== '' ?
+                    history.notes :
+                    '-';
 
                 const createdAt =
                     history.updated_at ||
@@ -2862,62 +2907,65 @@
         }
         let repairHistoryData = [];
 
-function showRepairReport() {
-    const reportPage = document.getElementById('deviceReportPage');
-    const repairPage = document.getElementById('deviceRepairReportPage');
-    const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
-    const mainContent = document.querySelector('.main-content');
-    const dashboardHeader = document.querySelector('.dashboard-header');
+        function showRepairReport() {
+            const reportPage = document.getElementById('deviceReportPage');
+            const repairPage = document.getElementById('deviceRepairReportPage');
+            const contentArea = document.querySelector('.container-fluid.px-2.px-md-3');
+            const mainContent = document.querySelector('.main-content');
+            const dashboardHeader = document.querySelector('.dashboard-header');
 
-    if (!repairPage || !contentArea || !mainContent) return;
+            if (!repairPage || !contentArea || !mainContent) return;
 
-    if (dashboardHeader) dashboardHeader.style.display = 'none';
+            if (dashboardHeader) dashboardHeader.style.display = 'none';
 
-    if (reportPage && reportPage.parentElement !== mainContent) mainContent.appendChild(reportPage);
-    if (repairPage.parentElement !== mainContent) mainContent.appendChild(repairPage);
+            if (reportPage && reportPage.parentElement !== mainContent) mainContent.appendChild(reportPage);
+            if (repairPage.parentElement !== mainContent) mainContent.appendChild(repairPage);
 
-    contentArea.style.display = 'none';
-    if (reportPage) reportPage.style.display = 'none';
-    repairPage.style.display = 'block';
+            contentArea.style.display = 'none';
+            if (reportPage) reportPage.style.display = 'none';
+            repairPage.style.display = 'block';
 
-    loadRepairHistory();
-}
+            loadRepairHistory();
+        }
 
-// Fungsi untuk mengambil data histori perbaikan dari database
-function loadRepairHistory() {
-    const tbody = document.getElementById('repairReportTableBody');
-    if (!tbody) return;
+        // Fungsi untuk mengambil data histori perbaikan dari database
+        function loadRepairHistory() {
+            const tbody = document.getElementById('repairReportTableBody');
+            if (!tbody) return;
 
-    const startDate = document.getElementById('filterRepairStartDate')?.value || '';
-    const endDate = document.getElementById('filterRepairEndDate')?.value || '';
+            const startDate = document.getElementById('filterRepairStartDate')?.value || '';
+            const endDate = document.getElementById('filterRepairEndDate')?.value || '';
 
-    let url = 'api_repair_history.php?1=1';
-    if (startDate) url += '&start_date=' + encodeURIComponent(startDate);
-    if (endDate) url += '&end_date=' + encodeURIComponent(endDate);
+            let url = 'api_repair_history.php?1=1';
+            if (startDate) url += '&start_date=' + encodeURIComponent(startDate);
+            if (endDate) url += '&end_date=' + encodeURIComponent(endDate);
 
-    fetch(url, { cache: 'no-store' })
-        .then(async response => {
-            const text = await response.text();
-            if (!response.ok) throw new Error('HTTP ' + response.status + ': ' + text);
-            return JSON.parse(text);
-        })
-        .then(result => {
-            if (result.status !== 'ok') throw new Error(result.message || 'Gagal mengambil histori perbaikan.');
-            repairHistoryData = Array.isArray(result.data) ? result.data : [];
-            renderRepairReportTable();
-        })
-        .catch(error => {
-            console.error('Gagal mengambil repair history:', error);
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-3">${escapeHtml(error.message)}</td></tr>`;
-        });
-}
+            fetch(url, {
+                    cache: 'no-store'
+                })
+                .then(async response => {
+                    const text = await response.text();
+                    if (!response.ok) throw new Error('HTTP ' + response.status + ': ' + text);
+                    return JSON.parse(text);
+                })
+                .then(result => {
+                    if (result.status !== 'ok') throw new Error(result.message || 'Gagal mengambil histori perbaikan.');
+                    repairHistoryData = Array.isArray(result.data) ? result.data : [];
+                    updateRepairFilterOptions();
+                    renderRepairReportTable();
+                })
+                .catch(error => {
+                    console.error('Gagal mengambil repair history:', error);
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-3">${escapeHtml(error.message)}</td></tr>`;
+                });
+        }
 
-function renderRepairReportTable() {
-    const tbody = document.getElementById('repairReportTableBody');
-    if (!tbody) return;
+        function renderRepairReportTable() {
+            const tbody = document.getElementById('repairReportTableBody');
+            if (!tbody) return;
 
-    if (!Array.isArray(repairHistoryData) || repairHistoryData.length === 0) {
-        tbody.innerHTML = `
+            if (!Array.isArray(repairHistoryData) || repairHistoryData.length === 0) {
+                tbody.innerHTML = `
             <tr>
                 <td colspan="7" class="text-center text-success fw-bold py-4">
                     <i class="bi bi-check-circle me-1"></i>
@@ -2925,23 +2973,55 @@ function renderRepairReportTable() {
                 </td>
             </tr>
         `;
-        return;
-    }
+                return;
+            }
 
-    let html = '';
-    repairHistoryData.forEach((history, index) => {
-        const id = history.id;
-        const location = history.location || '-';
-        const deviceName = history.device_name || history.device_type || '-';
-        const currentStatus = history.status || 'Belum ditindaklanjuti';
-        const initialNotes = history.notes && history.notes.trim() !== '' ? history.notes : '-';
-        const repairNotes = history.repair_notes || '';
-        const imageBefore = history.image_before || '';
-        const imageAfter = history.image_after || '';
-        const createdAt = history.updated_at || history.created_at || '-';
+            const selectedTrain =
+                document.getElementById('filterRepairTrain')?.value || '';
+            const selectedDevice =
+                document.getElementById('filterRepairDevice')?.value || '';
+            const filteredRepairData = repairHistoryData.filter(history => {
+                const location = (history.location || '').trim();
+                const deviceName = (
+                    history.device_name ||
+                    history.device_type ||
+                    ''
+                ).trim();
+                const trainMatch =
+                    selectedTrain === '' ||
+                    location === selectedTrain;
+                const deviceMatch =
+                    selectedDevice === '' ||
+                    deviceName === selectedDevice;
+                return trainMatch && deviceMatch;
+            });
 
-        // Dropdown Status Perbaikan dengan desain yang lebih elegan & bersih
-        let statusDropdown = `
+            if (filteredRepairData.length === 0) {
+                tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-warning fw-bold py-4">
+                    <i class="bi bi-search me-1"></i>
+                    Tidak ada data laporan perbaikan yang sesuai dengan filter.
+                </td>
+            </tr>
+        `;
+                return;
+            }
+
+            let html = '';
+            filteredRepairData.forEach((history, index) => {
+                const id = history.id;
+                const location = history.location || '-';
+                const deviceName = history.device_name || history.device_type || '-';
+                const currentStatus = history.status || 'Belum ditindaklanjuti';
+                const initialNotes = history.notes && history.notes.trim() !== '' ? history.notes : '-';
+                const repairNotes = history.repair_notes || '';
+                const imageBefore = history.image_before || '';
+                const imageAfter = history.image_after || '';
+                const createdAt = history.updated_at || history.created_at || '-';
+
+                // Dropdown Status Perbaikan dengan desain yang lebih elegan & bersih
+                let statusDropdown = `
             <select class="form-select form-select-sm text-light shadow-none" 
                     style="font-size: 0.75rem; background-color: #163673; border: 1px solid rgba(255,255,255,0.25); border-radius: 6px; cursor: pointer; padding: 5px 8px;" 
                     onchange="updateRepairField(${id}, 'status', this.value)">
@@ -2951,8 +3031,8 @@ function renderRepairReportTable() {
             </select>
         `;
 
-        // Kolom Catatan: Catatan Kerusakan (Statis) di atas, Kolom Catatan Perbaikan (Editable) di bawahnya
-        let notesContainer = `
+                // Kolom Catatan: Catatan Kerusakan (Statis) di atas, Kolom Catatan Perbaikan (Editable) di bawahnya
+                let notesContainer = `
             <div style="font-size: 0.78rem; width: 100%;">
                 <!-- Catatan Kerusakan (Statis / Tidak bisa diubah) -->
                 <div class="mb-2 pb-2 border-bottom border-secondary border-opacity-25">
@@ -2975,10 +3055,10 @@ function renderRepairReportTable() {
             </div>
         `;
 
-        const beforeInputId = `beforeImage_${index}`;
-        const afterInputId = `afterImage_${index}`;
+                const beforeInputId = `beforeImage_${index}`;
+                const afterInputId = `afterImage_${index}`;
 
-        let imageHtml = `
+                let imageHtml = `
             <div style="
                 width: 150px;
                 max-width: 100%;
@@ -3143,7 +3223,7 @@ function renderRepairReportTable() {
             </div>
         `;
 
-        html += `
+                html += `
             <tr>
                 <td class="text-center fw-bold align-middle">${index + 1}</td>
                 <td class="fw-bold text-center align-middle">${escapeHtml(location)}</td>
@@ -3154,33 +3234,80 @@ function renderRepairReportTable() {
                 <td class="text-center align-middle">${imageHtml}</td>
             </tr>
         `;
-    });
+            });
 
-    tbody.innerHTML = html;
-}
+            tbody.innerHTML = html;
+        }
 
-function uploadRepairImage(input, repairId, field, previewId) {
+        function updateRepairFilterOptions() {
+            const trainSelect = document.getElementById('filterRepairTrain');
+            const deviceSelect = document.getElementById('filterRepairDevice');
 
-    const preview = document.getElementById(previewId);
+            if (!trainSelect || !deviceSelect) return;
 
-    if (!preview || !input.files || !input.files[0]) {
-        return;
-    }
+            const selectedTrain = trainSelect.value;
+            const selectedDevice = deviceSelect.value;
+            const trains = [...new Set(
+                repairHistoryData
+                .map(history => (history.location || '').trim())
+                .filter(location => location !== '')
+            )].sort();
 
-    const file = input.files[0];
+            const devices = [...new Set(
+                repairHistoryData
+                .map(history => (
+                    history.device_name ||
+                    history.device_type ||
+                    ''
+                ).trim())
+                .filter(device => device !== '')
+            )].sort();
 
-    if (!file.type.startsWith('image/')) {
-        preview.innerHTML = '';
-        alert('File yang dipilih harus berupa gambar.');
-        input.value = '';
-        return;
-    }
+            trainSelect.innerHTML = `
+        <option value="">Semua Kereta</option>
+        ${trains.map(train => `
+            <option value="${escapeHtml(train)}">
+                ${escapeHtml(train)}
+            </option>
+        `).join('')}
+    `;
 
-    // Tampilkan preview terlebih dahulu
-    const reader = new FileReader();
+            deviceSelect.innerHTML = `
+        <option value="">Semua Perangkat</option>
+        ${devices.map(device => `
+            <option value="${escapeHtml(device)}">
+                ${escapeHtml(device)}
+            </option>
+        `).join('')}
+    `;
 
-    reader.onload = function (e) {
-        preview.innerHTML = `
+            if (trains.includes(selectedTrain)) {
+                trainSelect.value = selectedTrain;
+            }
+
+            if (devices.includes(selectedDevice)) {
+                deviceSelect.value = selectedDevice;
+            }
+        }
+
+        function uploadRepairImage(input, repairId, field, previewId) {
+            const preview = document.getElementById(previewId);
+            if (!preview || !input.files || !input.files[0]) {
+                return;
+            }
+
+            const file = input.files[0];
+            if (!file.type.startsWith('image/')) {
+                preview.innerHTML = '';
+                alert('File yang dipilih harus berupa gambar.');
+                input.value = '';
+                return;
+            }
+
+            // Tampilkan preview terlebih dahulu
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `
             <img
                 src="${e.target.result}"
                 alt="Preview"
@@ -3195,55 +3322,49 @@ function uploadRepairImage(input, repairId, field, previewId) {
                 "
             >
         `;
-    };
+            };
 
-    reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
 
-    // Upload ke server
-    const formData = new FormData();
+            // Upload ke server
+            const formData = new FormData();
 
-    formData.append('id', repairId);
-    formData.append('field', field);
-    formData.append('image', file);
+            formData.append('id', repairId);
+            formData.append('field', field);
+            formData.append('image', file);
 
-    fetch('upload_repair_image.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(result => {
+            fetch('upload_repair_image.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
 
-        if (result.status === 'ok') {
+                    if (result.status === 'ok') {
 
-            // Ambil kembali data dari database
-            loadRepairHistory();
+                        // Ambil kembali data dari database
+                        loadRepairHistory();
 
-        } else {
-
-            alert(
-                result.message ||
-                'Gagal menyimpan gambar.'
-            );
-
+                    } else {
+                        alert(
+                            result.message ||
+                            'Gagal menyimpan gambar.'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload gambar gagal:', error);
+                    alert(
+                        'Terjadi kesalahan saat menyimpan gambar.'
+                    );
+                });
         }
 
-    })
-    .catch(error => {
-
-        console.error('Upload gambar gagal:', error);
-
-        alert(
-            'Terjadi kesalahan saat menyimpan gambar.'
-        );
-
-    });
-}
-
-let repairCameraStream = null;
-let repairCameraTarget = null;
-let repairCameraRepairId = null;
-let repairCameraField = null;
-let repairCameraInputId = null;
+        let repairCameraStream = null;
+        let repairCameraTarget = null;
+        let repairCameraRepairId = null;
+        let repairCameraField = null;
+        let repairCameraInputId = null;
 
         function openRepairCamera(
             previewId,
@@ -3258,9 +3379,7 @@ let repairCameraInputId = null;
             repairCameraInputId = inputId;
 
             const cameraModal = document.createElement('div');
-
             cameraModal.id = 'repairCameraModal';
-
             cameraModal.innerHTML = `
                 <div style="
                     position: fixed;
@@ -3272,47 +3391,42 @@ let repairCameraInputId = null;
                     justify-content: center;
                     padding: 20px;
                 ">
-
-                    <div style="
-                        width: 100%;
-                        max-width: 500px;
-                        background: #173b78;
-                        border-radius: 15px;
-                        padding: 15px;
-                        text-align: center;
-                    ">
-
-                        <h5 style="
-                            color: #fff;
-                            margin-bottom: 12px;
-                        ">
-                            <i class="bi bi-camera me-2"></i>
-                            Ambil Foto
-                        </h5>
-
-                        <video
-                            id="repairCameraVideo"
-                            autoplay
-                            playsinline
-                            style="
-                                width: 100%;
-                                max-height: 60vh;
-                                object-fit: cover;
-                                border-radius: 10px;
-                                background: #000;
-                            "
-                        ></video>
-
-                        <div style="
-                            display: flex;
-                            justify-content: center;
-                            gap: 8px;
-                            margin-top: 12px;
-                        ">
-
-                            <button
-                                type="button"
-                                class="btn btn-success"
+                <div style="
+                    width: 100%;
+                    max-width: 500px;
+                    background: #173b78;
+                    border-radius: 15px;
+                    padding: 15px;
+                    text-align: center;
+                ">
+                    <h5 style="
+                    color: #fff;
+                    margin-bottom: 12px;
+                ">
+                    <i class="bi bi-camera me-2"></i>
+                    Ambil Foto
+                    </h5>
+                <video
+                    id="repairCameraVideo"
+                    autoplay
+                    playsinline
+                    style="
+                    width: 100%;
+                    max-height: 60vh;
+                    object-fit: cover;
+                    border-radius: 10px;
+                    background: #000;
+                "
+                ></video>
+                <div style="
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 12px;
+                ">
+                <button
+                type="button"
+                class="btn btn-success"
                                 onclick="captureRepairPhoto()"
                             >
                                 <i class="bi bi-camera-fill me-1"></i>
@@ -3337,37 +3451,37 @@ let repairCameraInputId = null;
             document.body.appendChild(cameraModal);
 
             navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: {
-                        ideal: 'environment'
+                    video: {
+                        facingMode: {
+                            ideal: 'environment'
+                        }
+                    },
+                    audio: false
+                })
+                .then(stream => {
+
+                    repairCameraStream = stream;
+
+                    const video = document.getElementById(
+                        'repairCameraVideo'
+                    );
+
+                    if (video) {
+                        video.srcObject = stream;
                     }
-                },
-                audio: false
-            })
-            .then(stream => {
 
-                repairCameraStream = stream;
+                })
+                .catch(error => {
 
-                const video = document.getElementById(
-                    'repairCameraVideo'
-                );
+                    console.error('Camera error:', error);
 
-                if (video) {
-                    video.srcObject = stream;
-                }
+                    alert(
+                        'Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan pada browser.'
+                    );
 
-            })
-            .catch(error => {
+                    closeRepairCamera();
 
-                console.error('Camera error:', error);
-
-                alert(
-                    'Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan pada browser.'
-                );
-
-                closeRepairCamera();
-
-            });
+                });
         }
 
         // Fungsi untuk mengambil foto
@@ -3425,8 +3539,7 @@ let repairCameraInputId = null;
                 // Buat File dari hasil kamera
                 const cameraFile = new File(
                     [blob],
-                    'camera_repair.jpg',
-                    {
+                    'camera_repair.jpg', {
                         type: 'image/jpeg'
                     }
                 );
@@ -3470,25 +3583,25 @@ let repairCameraInputId = null;
 
         function updateRepairField(id, field, value) {
             fetch('update_repair.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `id=${id}&field=${field}&value=${encodeURIComponent(value)}`
-            })
-            .then(res => res.json())
-            .then(result => {
-                if (result.status === 'ok') {
-                    // Ambil ulang data agar tanggal & waktu terbaru tampil
-                    loadRepairHistory();
-                } else {
-                    alert('Gagal memperbarui data: ' + (result.message || 'Unknown error'));
-                }
-            })
-            .catch(err => {
-                console.error('Error updating repair field:', err);
-                alert('Terjadi kesalahan koneksi saat menyimpan perubahan.');
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${id}&field=${field}&value=${encodeURIComponent(value)}`
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.status === 'ok') {
+                        // Ambil ulang data agar tanggal & waktu terbaru tampil
+                        loadRepairHistory();
+                    } else {
+                        alert('Gagal memperbarui data: ' + (result.message || 'Unknown error'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error updating repair field:', err);
+                    alert('Terjadi kesalahan koneksi saat menyimpan perubahan.');
+                });
         }
     </script>
 
@@ -3693,11 +3806,9 @@ let repairCameraInputId = null;
                             name="depo_id"
                             id="editDepoId">
                         <div class="mb-3">
-
                             <label class="form-label small">
                                 Nama Depo
                             </label>
-
                             <input
                                 type="text"
                                 name="nama_depo"
@@ -3726,4 +3837,5 @@ let repairCameraInputId = null;
         </div>
     </div>
 </body>
+
 </html>
