@@ -27,6 +27,11 @@
             margin-bottom: 2px;
         }
 
+        #statusFilterDropdown {
+            /* Membalikkan warna ikon panah bawaan menjadi putih terang */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+        }
+
         .search-container {
             max-width: 400px;
             margin: 10px auto 0 auto;
@@ -230,6 +235,8 @@
             display: flex !important;
             justify-content: center !important;
         }
+
+        
 
         /* Ukuran kartu mengikuti isi device */
         .car-card {

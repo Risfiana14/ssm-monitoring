@@ -49,6 +49,11 @@
             /* Posisi awal terbuka */
         }
 
+        #statusFilterDropdown {
+            /* Membalikkan warna ikon panah bawaan menjadi putih terang */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+        }
+
         /* Jika body ada class sidebar-closed, sidebar bergeser ke kiri (tertutup) di semua layar */
         body.sidebar-closed .railmap-sidebar {
             transform: translateX(-100%) !important;
@@ -318,6 +323,11 @@
             background-color: #28a745 !important;
         }
 
+        #searchCarInput::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+            opacity: 1 !important;
+        }
+        
         .device-box.st-warning {
             background-color: #fd7e14 !important;
         }
