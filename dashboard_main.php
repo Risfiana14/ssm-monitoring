@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once 'db.php';
+
+// Cek apakah user sudah login, jika belum arahkan kembali ke halaman login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
