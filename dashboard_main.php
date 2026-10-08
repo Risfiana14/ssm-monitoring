@@ -176,6 +176,71 @@
             line-height: 1.45;
         }
 
+        /* ACCOUNT & LOGOUT */
+        .sidebar-account {
+            margin-top: auto;
+            padding: 15px 12px 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .sidebar-account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .sidebar-account-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(18, 200, 223, 0.12);
+            border: 1px solid rgba(18, 200, 223, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #12c8df;
+            flex-shrink: 0;
+        }
+        .sidebar-account-text {
+            min-width: 0;
+        }
+        .sidebar-account-label {
+            font-size: 10px;
+            color: #7f9bc4;
+            margin-bottom: 2px;
+        }
+        .sidebar-account-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-logout {
+            width: 100%;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid rgba(220, 53, 69, 0.7);
+            border-radius: 7px;
+            color: #ff5c6c;
+            background: rgba(220, 53, 69, 0.06);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .sidebar-logout:hover {
+            color: #ffffff;
+            background: rgba(220, 53, 69, 0.18);
+            border-color: #dc3545;
+        }
+        .sidebar-logout i {
+            font-size: 14px;
+        }
+
         /* Tombol Toggle Sidebar */
         .sidebar-toggle-btn {
             position: fixed;
@@ -1501,6 +1566,25 @@
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <!-- ACCOUNT / LOGOUT -->
+            <div class="sidebar-account">
+                <div class="sidebar-account-info">
+                    <div class="sidebar-account-icon">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="sidebar-account-text">
+                        <div class="sidebar-account-label">Pengguna</div>
+                        <div class="sidebar-account-name">
+                            <?= htmlspecialchars($_SESSION['user_nama'] ?? 'User') ?>
+                        </div>
+                    </div>
+                </div>
+                <a href="logout.php" class="sidebar-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </aside>
 
