@@ -10,22 +10,22 @@ if (isset($_GET['register']) && $_GET['register'] === 'success') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $email = trim($_POST['email'] ?? '');
+    $nipp = trim($_POST['nipp'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if ($email === '' || $password === '') {
-        $error = 'Email dan password wajib diisi.';
+    if ($nipp === '' || $password === '') {
+        $error = 'NIPP dan password wajib diisi.';
     } else {
 
         try {
             $stmt = $pdo->prepare("
-                SELECT id, nama, email, password
+                SELECT id, nama, nipp, password
                 FROM users
-                WHERE email = ?
+                WHERE nipp = ?
                 LIMIT 1
             ");
 
-            $stmt->execute([$email]);
+            $stmt->execute([$nipp]);
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -35,13 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_nama'] = $user['nama'];
-                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_nipp'] = $user['nipp'];
 
                 header('Location: index.php');
                 exit;
 
             } else {
-                $error = 'Email atau password salah.';
+                $error = 'NIPP atau password salah.';
             }
 
         } catch (PDOException $e) {
@@ -97,13 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST">
 
             <div class="form-group">
-                <label>Email</label>
-
+                <label>NIPP</label>
                 <input
-                    type="email"
-                    name="email"
-                    placeholder="Masukkan email"
-                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                    type="text"
+                    name="nipp"
+                    placeholder="Masukkan NIPP"
+                    value="<?= htmlspecialchars($_POST['nipp'] ?? '') ?>"
                     required
                 >
             </div>

@@ -6,36 +6,34 @@ $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama = trim($_POST['nama'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $nipp = trim($_POST['nipp'] ?? '');
     $password = $_POST['password'] ?? '';
     $konfirmasi = $_POST['konfirmasi'] ?? '';
 
-    if ($nama === '' || $email === '' || $password === '' || $konfirmasi === '') {
+    if ($nama === '' || $nipp === '' || $password === '' || $konfirmasi === '') {
         $error = 'Semua data wajib diisi.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Format email tidak valid.';
     } elseif (strlen($password) < 6) {
         $error = 'Password minimal 6 karakter.';
     } elseif ($password !== $konfirmasi) {
         $error = 'Konfirmasi password tidak sesuai.';
     } else {
         try {
-            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-            $stmt->execute([$email]);
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE nipp = ?");
+            $stmt->execute([$nipp]);
 
             if ($stmt->fetch()) {
-                $error = 'Email sudah terdaftar.';
+                $error = 'NIPP sudah terdaftar.';
             } else {
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                 $stmt = $pdo->prepare("
-                    INSERT INTO users (nama, email, password)
+                    INSERT INTO users (nama, nipp, password)
                     VALUES (?, ?, ?)
                 ");
 
                 $stmt->execute([
                     $nama,
-                    $email,
+                    $nipp,
                     $hashedPassword
                 ]);
 
@@ -99,12 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
-                <label>Email</label>
+                <label>NIPP</label>
                 <input
-                    type="email"
-                    name="email"
-                    placeholder="Masukkan email"
-                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                    type="text"
+                    name="nipp"
+                    placeholder="Masukkan NIPP"
+                    value="<?= htmlspecialchars($_POST['nipp'] ?? '') ?>"
                     required
                 >
             </div>
