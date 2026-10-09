@@ -2621,7 +2621,7 @@ if (!isset($_SESSION['user_id'])) {
                         // Jika GSM / Internet Online (Hijau)
                         gsmBanner.style.backgroundColor = '#28a745';
                         gsmBanner.style.color = '#ffffff';
-                        if (gsmStatusText) gsmStatusText.innerText = 'GSM ON LINE';
+                        if (gsmStatusText) gsmStatusText.innerText = 'GSM ONLINE';
                         
                         carCardBox.style.background = 'linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(255, 255, 255, 0.03))';
                         carCardBox.style.borderColor = 'rgba(40, 167, 69, 0.4)';
@@ -2629,7 +2629,7 @@ if (!isset($_SESSION['user_id'])) {
                         // Jika GSM / Internet Offline / No Internet (Kuning)
                         gsmBanner.style.backgroundColor = '#ffc107';
                         gsmBanner.style.color = '#000000';
-                        if (gsmStatusText) gsmStatusText.innerText = 'GSM OFF LINE';
+                        if (gsmStatusText) gsmStatusText.innerText = 'GSM OFFLINE';
                         
                         carCardBox.style.background = 'linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 255, 255, 0.03))';
                         carCardBox.style.borderColor = 'rgba(255, 193, 7, 0.5)';
