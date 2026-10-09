@@ -411,6 +411,23 @@ if (!isset($_SESSION['user_id'])) {
             background-color: #dc3545 !important;
         }
 
+        .last-update-device {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            padding: 7px 8px;
+            border-radius: 6px;
+            background: #1456a0;
+            border: 1px solid #12c8df;
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+        }
+
         .badge-status {
             font-size: 0.55rem;
             padding: 2px 5px;
@@ -850,7 +867,8 @@ if (!isset($_SESSION['user_id'])) {
                 font-size: 7px !important;
             }
 
-            .car-card .last-update {
+            .car-card .last-update,
+            .car-card .last-update-device {
                 width: 100% !important;
                 text-align: center !important;
                 font-size: 8px !important;
@@ -1717,7 +1735,7 @@ if (!isset($_SESSION['user_id'])) {
 
                                     // Footer Waktu Update
                                     echo '<div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">';
-                                    echo '<i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-' . $location . '">-</span>';
+                                    echo '<i class="bi bi-clock me-1 text-warning"></i>Last update device: <span id="time-' . $location . '">-</span>';
                                     echo '</div>';
 
                                     echo '</div>'; // End car-card
@@ -2490,8 +2508,8 @@ if (!isset($_SESSION['user_id'])) {
                                     <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
                                 </div>
                                 
-                                <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
-                                    <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
+                                <div class="last-update-device">
+                                    <i class="bi bi-clock me-1 text-warning"></i>Last update device: <span id="time-${car}">-</span>
                                 </div>
                             </div>
                         </div>
