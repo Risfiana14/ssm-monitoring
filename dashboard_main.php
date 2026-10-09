@@ -1702,7 +1702,13 @@ if (!isset($_SESSION['user_id'])) {
                                     $internet = htmlspecialchars($car['internet_status'] ?? 'NO INTERNET', ENT_QUOTES, 'UTF-8');
 
                                     echo '<div class="col-12 col-sm-6 col-md-4 col-lg-3 car-wrapper" data-car-id="' . $location . '">';
-                                    echo '<div class="car-card">';
+                                    echo '<div class="car-card" id="car-card-box-' . $location . '">';
+
+                                    // Banner GSM
+                                    echo '<div id="gsm-banner-' . $location . '" class="text-center py-1 mb-2 rounded fw-bold text-dark" style="font-size: 0.72rem; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">';
+                                    echo '<div id="gsm-status-text-' . $location . '">GSM ON LINE</div>';
+                                    echo '<div id="gsm-time-' . $location . '" style="font-size: 0.65rem; font-weight: bold;">DATE = -, TIME = -</div>';
+                                    echo '</div>';
 
                                     // Header Kartu
                                     echo '<div class="car-header">';
@@ -1734,8 +1740,8 @@ if (!isset($_SESSION['user_id'])) {
                                     echo '</div>';
 
                                     // Footer Waktu Update
-                                    echo '<div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">';
-                                    echo '<i class="bi bi-clock me-1 text-warning"></i>Last update device: <span id="time-' . $location . '">-</span>';
+                                    echo '<div class="text-center mt-2 pt-2 pb-2 rounded" style="font-size: 0.7rem; background: #0d5aa7; border: 1px solid #12c8df; color: #ffffff;">';
+                                    echo '<i class="bi bi-clock me-1 text-warning"></i><strong>Last update device: <span id="time-' . $location . '">-</span></strong>';
                                     echo '</div>';
 
                                     echo '</div>'; // End car-card
