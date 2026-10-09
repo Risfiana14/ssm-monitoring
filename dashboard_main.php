@@ -2463,9 +2463,10 @@ if (!isset($_SESSION['user_id'])) {
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 car-wrapper" data-car-id="${car}">
                             <div class="car-card" id="car-card-box-${car}" style="transition: all 0.3s ease;">
                                 
-                                <!-- BANNER STATUS GSM (MENYESUAIKAN INTERNET / NO INTERNET) -->
+                                <!-- BANNER STATUS GSM & DATE TIME -->
                                 <div id="gsm-banner-${car}" class="text-center py-1 mb-2 rounded fw-bold text-dark" style="font-size: 0.72rem; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                                    GSM ON LINE
+                                    <div id="gsm-status-text-${car}">GSM ON LINE</div>
+                                    <div id="gsm-time-${car}" style="font-size: 0.65rem; font-weight: bold;">DATE = -, TIME = -</div>
                                 </div>
 
                                 <div class="car-header">
@@ -2496,7 +2497,6 @@ if (!isset($_SESSION['user_id'])) {
                         </div>
                     `;
                 });
-                
             }
 
             // Ambil daftar kereta baik dari uniqueCars (dashboard utama) maupun dari elemen HTML halaman detail
@@ -2570,37 +2570,55 @@ if (!isset($_SESSION['user_id'])) {
 
                 let carData = globalCarriagesData.find(c => c.location === car) || {};
                 const carriageInternet = (carData.internet_status || 'NO_INTERNET').toUpperCase();
-
-                let isInternetConnected = false;
-                if (carriageInternet === 'INTERNET' && carData.last_timestamp) {
-                    let diffSeconds = (new Date().getTime() - new Date(carData.last_timestamp).getTime()) / 1000;
-                    if (diffSeconds < 120) isInternetConnected = true;
-                }
-
+                
+                // Cek status internet langsung dari database (jika INTERNET = true)
+                let isInternetConnected = (carriageInternet === 'INTERNET');
+                
                 if (netBadgeElem) {
                     netBadgeElem.className = 'badge-status ' + (isInternetConnected ? 'bg-info text-dark' : 'bg-danger');
                     netBadgeElem.innerText = isInternetConnected ? 'INTERNET' : 'NO INTERNET';
                 }
 
-                // --- LOGIKA UTAMA TAMPILAN BANNER GSM & WARNA KARTU ---
+                // --- LOGIKA UTAMA TAMPILAN BANNER GSM, WARNA KARTU, & DATE/TIME ---
                 let carCardBox = document.getElementById(`car-card-box-${car}`);
                 let gsmBanner = document.getElementById(`gsm-banner-${car}`);
+                let gsmStatusText = document.getElementById(`gsm-status-text-${car}`);
+                let gsmTimeText = document.getElementById(`gsm-time-${car}`);
+
+                // Ambil waktu realtime saat halaman dirender untuk banner GSM
+                let rawTime = carData.last_timestamp;
+                let dateStr = '-';
+                let timeStr = '-';
+
+                if (rawTime) {
+                    let dateObj = new Date(rawTime);
+                    if (!isNaN(dateObj.getTime())) {
+                        dateStr = `${dateObj.getMonth() + 1}/${dateObj.getDate()}/${dateObj.getFullYear()}`;
+                        timeStr = dateObj.toTimeString().split(' ')[0];
+                    }
+                }
 
                 if (gsmBanner && carCardBox) {
                     if (isInternetConnected) {
                         // Jika GSM / Internet Online (Hijau)
                         gsmBanner.style.backgroundColor = '#28a745';
                         gsmBanner.style.color = '#ffffff';
-                        gsmBanner.innerText = 'GSM ON LINE';
+                        if (gsmStatusText) gsmStatusText.innerText = 'GSM ON LINE';
+                        
                         carCardBox.style.background = 'linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(255, 255, 255, 0.03))';
                         carCardBox.style.borderColor = 'rgba(40, 167, 69, 0.4)';
                     } else {
-                        // Jika GSM / Internet Offline / No Internet (Kuning / Peringatan)
+                        // Jika GSM / Internet Offline / No Internet (Kuning)
                         gsmBanner.style.backgroundColor = '#ffc107';
                         gsmBanner.style.color = '#000000';
-                        gsmBanner.innerText = 'GSM OFF LINE';
+                        if (gsmStatusText) gsmStatusText.innerText = 'GSM OFF LINE';
+                        
                         carCardBox.style.background = 'linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 255, 255, 0.03))';
                         carCardBox.style.borderColor = 'rgba(255, 193, 7, 0.5)';
+                    }
+
+                    if (gsmTimeText) {
+                        gsmTimeText.innerText = `DATE = ${dateStr}, TIME = ${timeStr}`;
                     }
                 }
                 // ---------------------------------------------------
