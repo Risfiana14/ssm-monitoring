@@ -2460,8 +2460,14 @@ if (!isset($_SESSION['user_id'])) {
                 gridContainer.innerHTML = '';
                 uniqueCars.forEach(car => {
                     gridContainer.innerHTML += `
-                        <div class="car-col-item d-flex justify-content-center car-wrapper" data-car-id="${car}">
-                            <div class="car-card">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 car-wrapper" data-car-id="${car}">
+                            <div class="car-card" id="car-card-box-${car}" style="transition: all 0.3s ease;">
+                                
+                                <!-- BANNER STATUS GSM (MENYESUAIKAN INTERNET / NO INTERNET) -->
+                                <div id="gsm-banner-${car}" class="text-center py-1 mb-2 rounded fw-bold text-dark" style="font-size: 0.72rem; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                    GSM ON LINE
+                                </div>
+
                                 <div class="car-header">
                                     <span class="car-title-text" title="${car}">
                                         <i class="bi bi-distribute-vertical me-1 text-info"></i>
@@ -2478,9 +2484,11 @@ if (!isset($_SESSION['user_id'])) {
                                         </button>
                                     </div>
                                 </div>
+                                
                                 <div class="device-grid-container" id="body-${car}">
                                     <div class="text-center text-light opacity-50 py-2 small" style="grid-column: span 5;">Memuat...</div>
                                 </div>
+                                
                                 <div class="text-center text-light opacity-75 mt-2 pt-1 border-top border-secondary border-opacity-25" style="font-size: 0.65rem;">
                                     <i class="bi bi-clock me-1 text-warning"></i>Last update: <span id="time-${car}">-</span>
                                 </div>
@@ -2488,6 +2496,7 @@ if (!isset($_SESSION['user_id'])) {
                         </div>
                     `;
                 });
+                
             }
 
             // Ambil daftar kereta baik dari uniqueCars (dashboard utama) maupun dari elemen HTML halaman detail
@@ -2573,6 +2582,29 @@ if (!isset($_SESSION['user_id'])) {
                     netBadgeElem.innerText = isInternetConnected ? 'INTERNET' : 'NO INTERNET';
                 }
 
+                // --- LOGIKA UTAMA TAMPILAN BANNER GSM & WARNA KARTU ---
+                let carCardBox = document.getElementById(`car-card-box-${car}`);
+                let gsmBanner = document.getElementById(`gsm-banner-${car}`);
+
+                if (gsmBanner && carCardBox) {
+                    if (isInternetConnected) {
+                        // Jika GSM / Internet Online (Hijau)
+                        gsmBanner.style.backgroundColor = '#28a745';
+                        gsmBanner.style.color = '#ffffff';
+                        gsmBanner.innerText = 'GSM ON LINE';
+                        carCardBox.style.background = 'linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(255, 255, 255, 0.03))';
+                        carCardBox.style.borderColor = 'rgba(40, 167, 69, 0.4)';
+                    } else {
+                        // Jika GSM / Internet Offline / No Internet (Kuning / Peringatan)
+                        gsmBanner.style.backgroundColor = '#ffc107';
+                        gsmBanner.style.color = '#000000';
+                        gsmBanner.innerText = 'GSM OFF LINE';
+                        carCardBox.style.background = 'linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 255, 255, 0.03))';
+                        carCardBox.style.borderColor = 'rgba(255, 193, 7, 0.5)';
+                    }
+                }
+                // ---------------------------------------------------
+
                 if (badgeElem) {
                     badgeElem.className = 'badge-status ' + (hasOffline ? 'bg-danger' : (hasWarning ? 'bg-warning text-dark' : 'bg-success'));
                     badgeElem.innerText = hasOffline ? 'OFFLINE' : (hasWarning ? 'WARNING' : 'ONLINE');
@@ -2583,7 +2615,7 @@ if (!isset($_SESSION['user_id'])) {
                 filterCars();
             }
         }
-
+        
         function scanData() {
             fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
