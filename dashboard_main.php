@@ -1681,13 +1681,29 @@ if (!isset($_SESSION['user_id'])) {
 
                             // ambil nomor sarana yang sudah masuk ke rangkaian ini
                             $stmtCarriages = $pdo->prepare("
-                                SELECT 
-                                    id,
-                                    location,
-                                    internet_status
-                                FROM carriages
-                                WHERE train_id = ?
-                                ORDER BY location ASC
+                                SELECT
+                                    c.id,
+                                    c.location,
+                                    c.internet_status
+                                FROM carriages c
+                                LEFT JOIN (
+                                    SELECT
+                                        location,
+                                        MAX(timestamp) AS last_timestamp
+                                    FROM monitoring_logs
+                                    WHERE device_type = 'router'
+                                    GROUP BY location
+                                ) r ON c.location = r.location
+                                WHERE c.train_id = ?
+                                AND (
+                                    c.is_hidden = 0
+                                    OR (
+                                        c.is_hidden = 1
+                                        AND r.last_timestamp IS NOT NULL
+                                        AND TIMESTAMPDIFF(SECOND, r.last_timestamp, NOW()) <= 120
+                                    )
+                                )
+                                ORDER BY c.location ASC
                             ");
 
                             $stmtCarriages->execute([$selected_train_id]);

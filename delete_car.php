@@ -8,6 +8,7 @@ $location = trim($_POST['location'] ?? '');
 
 if ($location === '') {
     http_response_code(400);
+
     echo json_encode([
         'status' => 'error',
         'message' => 'location wajib diisi'
@@ -16,19 +17,28 @@ if ($location === '') {
 }
 
 try {
-    // Hanya melepas nomor sarana dari rangkaian bukan menghapus.
-    // Data location tetap disimpan di carriages.
+
+    // Sembunyikan nomor sarana dari dashboard utama.
+    // Data carriages tetap disimpan.
     $stmt = $pdo->prepare("
         UPDATE carriages
-        SET train_id = NULL
+        SET is_hidden = 1
         WHERE location = ?
     ");
-
     $stmt->execute([$location]);
+
+    // Hapus heartbeat router lama.
+    // Router yang masih mati tidak boleh dianggap sebagai router yang baru aktif.
+    $stmtRouter = $pdo->prepare("
+        DELETE FROM monitoring_logs
+        WHERE location = ?
+          AND device_type = 'router'
+    ");
+    $stmtRouter->execute([$location]);
 
     echo json_encode([
         'status' => 'ok',
-        'message' => "$location berhasil dilepas dari rangkaian"
+        'message' => "$location berhasil disembunyikan dari dashboard"
     ]);
 
 } catch (PDOException $e) {
@@ -37,7 +47,7 @@ try {
 
     echo json_encode([
         'status' => 'error',
-        'message' => 'Gagal melepas nomor sarana'
+        'message' => 'Gagal menyembunyikan nomor sarana'
     ]);
 }
 ?>
