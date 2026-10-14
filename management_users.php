@@ -146,15 +146,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $success = 'Akun berhasil dinonaktifkan.';
 
-        // UBAH ROLE DAN DEPO
+        // UBAH DATA USER
         } elseif ($action === 'update_user') {
 
             if ($userId <= 0) {
                 throw new Exception('User tidak valid.');
             }
 
+            $nama = trim($_POST['nama'] ?? '');
+            $nipp = trim($_POST['nipp'] ?? '');
             $role = $_POST['role'] ?? 'user';
             $depo = trim($_POST['depo'] ?? '');
+
+            // Validasi data wajib
+            if ($nama === '' || $nipp === '' || $depo === '') {
+                throw new Exception('Nama, NIPP, dan Depo wajib diisi.');
+            }
 
             // Role yang diperbolehkan
             $allowedRoles = ['user', 'operator', 'admin'];
@@ -174,13 +181,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('Depo tidak valid.');
             }
 
+            // Cek NIPP digunakan user lain atau tidak
+            $stmt = $pdo->prepare("
+                SELECT id
+                FROM users
+                WHERE nipp = ?
+                AND id != ?
+                LIMIT 1
+            ");
+
+            $stmt->execute([
+                $nipp,
+                $userId
+            ]);
+
+            if ($stmt->fetch()) {
+                throw new Exception('NIPP sudah digunakan oleh user lain.');
+            }
+
+            // Update data user
             $stmt = $pdo->prepare("
                 UPDATE users
-                SET role = ?, depo = ?
+                SET
+                    nama = ?,
+                    nipp = ?,
+                    role = ?,
+                    depo = ?
                 WHERE id = ?
             ");
 
             $stmt->execute([
+                $nama,
+                $nipp,
                 $role,
                 $depo,
                 $userId
@@ -2065,9 +2097,11 @@ foreach ($users as $user) {
 
                         <input
                             type="text"
+                            name="nama"
                             class="form-control"
                             id="edit_nama"
-                            readonly
+                            placeholder="Masukkan nama lengkap"
+                            required
                         >
 
                     </div>
@@ -2080,9 +2114,11 @@ foreach ($users as $user) {
 
                         <input
                             type="text"
+                            name="nipp"
                             class="form-control"
                             id="edit_nipp"
-                            readonly
+                            placeholder="Masukkan NIPP"
+                            required
                         >
 
                     </div>
