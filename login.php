@@ -1,11 +1,20 @@
+```php
 <?php
 session_start();
 require_once 'db.php';
 
 $error = '';
+$success = '';
+
+// ======================================================
+// AKUN SUPER ADMIN
+// Login langsung dari coding, tidak disimpan di database
+// ======================================================
+$superAdminNipp = '000000';
+$superAdminPassword = 'SuperAdmin123';
 
 if (isset($_GET['register']) && $_GET['register'] === 'success') {
-    $success = 'Registrasi berhasil. Silakan masuk.';
+    $success = 'Registrasi berhasil. Silakan menunggu aktivasi dari Super Admin.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,12 +23,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if ($nipp === '' || $password === '') {
+
         $error = 'NIPP dan password wajib diisi.';
+
     } else {
 
+        // LOGIN SUPER ADMIN
+        if ($nipp === $superAdminNipp && $password === $superAdminPassword) {
+
+            session_regenerate_id(true);
+
+            $_SESSION['user_id'] = 0;
+            $_SESSION['user_nama'] = 'Super Admin';
+            $_SESSION['user_nipp'] = $superAdminNipp;
+            $_SESSION['user_role'] = 'super_admin';
+            $_SESSION['user_depo'] = 'SEMUA';
+
+            header('Location: index.php');
+            exit;
+        }
+
+        // LOGIN USER BIASA
         try {
+
             $stmt = $pdo->prepare("
-                SELECT id, nama, nipp, password
+                SELECT id, nama, nipp, depo, password, role, status
                 FROM users
                 WHERE nipp = ?
                 LIMIT 1
@@ -29,22 +57,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user && password_verify($password, $user['password'])) {
+            // Cek NIPP dan password
+            if (!$user || !password_verify($password, $user['password'])) {
 
+                $error = 'NIPP atau password salah.';
+
+            // Cek status akun
+            } elseif ($user['status'] !== 'aktif') {
+
+                $error = 'Akun Anda belum diaktifkan oleh Super Admin.';
+
+            } else {
+
+                // LOGIN BERHASIL
                 session_regenerate_id(true);
 
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_nama'] = $user['nama'];
                 $_SESSION['user_nipp'] = $user['nipp'];
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['user_depo'] = $user['depo'];
 
                 header('Location: index.php');
                 exit;
-
-            } else {
-                $error = 'NIPP atau password salah.';
             }
 
         } catch (PDOException $e) {
+
             $error = 'Terjadi kesalahan saat login.';
         }
     }

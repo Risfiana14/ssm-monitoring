@@ -1596,6 +1596,16 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </div>
 
+            <!-- MENU MANAGEMENT USERS -->
+            <div class="mt-3">
+                <a href="management_users.php" class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center text-decoration-none">
+                <i class="bi bi-people-fill text-info me-2"></i>
+                <span class="text-light">
+                    Management Users
+                </span>
+                </a>
+            </div>
+
             <!-- ACCOUNT / LOGOUT -->
             <div class="sidebar-account">
                 <div class="sidebar-account-info">
@@ -1616,11 +1626,10 @@ if (!isset($_SESSION['user_id'])) {
             </div>
         </aside>
 
-        <!-- KONTEN UTAMA KANAN -->
-        <div class="main-content">
-            <div class="dashboard-header mb-3">
-                <h1 class="dashboard-title">RAILMAP</h1>
-
+            <!-- KONTEN UTAMA KANAN -->
+            <div class="main-content">
+                <div class="dashboard-header mb-3">
+                    <h1 class="dashboard-title">RAILMAP</h1>
                 <div class="d-inline-flex align-items-center gap-2 mb-2 my-2" style="font-size: 1rem;">
                     <i class="bi bi-train-front text-info fs-5"></i>
                     <span class="fw-bold tracking-wide">Real-Time Train Monitoring System</span>

@@ -5,6 +5,7 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $nama = trim($_POST['nama'] ?? '');
     $nipp = trim($_POST['nipp'] ?? '');
     $depo = trim($_POST['depo'] ?? '');
@@ -12,24 +13,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $konfirmasi = $_POST['konfirmasi'] ?? '';
 
     if ($nama === '' || $nipp === '' || $depo === '' || $password === '' || $konfirmasi === '') {
+
         $error = 'Semua data wajib diisi.';
+
     } elseif (strlen($password) < 6) {
+
         $error = 'Password minimal 6 karakter.';
+
     } elseif ($password !== $konfirmasi) {
+
         $error = 'Konfirmasi password tidak sesuai.';
+
     } else {
+
         try {
-            $stmt = $pdo->prepare("SELECT id FROM users WHERE nipp = ?");
+
+            // Cek apakah NIPP sudah terdaftar
+            $stmt = $pdo->prepare("
+                SELECT id
+                FROM users
+                WHERE nipp = ?
+            ");
+
             $stmt->execute([$nipp]);
 
             if ($stmt->fetch()) {
-                $error = 'NIPP sudah terdaftar.';
-            } else {
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
+                $error = 'NIPP sudah terdaftar.';
+
+            } else {
+
+                // Hash password
+                $hashedPassword = password_hash(
+                    $password,
+                    PASSWORD_DEFAULT
+                );
+
+                // Akun baru otomatis menjadi user dan pending
                 $stmt = $pdo->prepare("
-                    INSERT INTO users (nama, nipp, depo, password)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO users (
+                        nama,
+                        nipp,
+                        depo,
+                        password,
+                        role,
+                        status
+                    )
+                    VALUES (?, ?, ?, ?, 'user', 'pending')
                 ");
 
                 $stmt->execute([
@@ -39,10 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $hashedPassword
                 ]);
 
+                // Setelah berhasil daftar, kembali ke login
                 header('Location: login.php?register=success');
                 exit;
             }
+
         } catch (PDOException $e) {
+
             $error = 'Terjadi kesalahan saat membuat akun.';
         }
     }
