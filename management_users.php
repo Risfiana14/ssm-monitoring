@@ -19,8 +19,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
 
+        // CREATE USER BARU
+        if ($action === 'create_user') {
+
+            $nama = trim($_POST['nama'] ?? '');
+            $nipp = trim($_POST['nipp'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $role = $_POST['role'] ?? 'user';
+            $depo = trim($_POST['depo'] ?? '');
+            $status = $_POST['status'] ?? 'aktif';
+
+            // Validasi data wajib
+            if ($nama === '' || $nipp === '' || $password === '' || $depo === '') {
+                throw new Exception('Semua data user wajib diisi.');
+            }
+
+            // Validasi password
+            if (strlen($password) < 6) {
+                throw new Exception('Password minimal 6 karakter.');
+            }
+
+            // Role yang diperbolehkan
+            $allowedRoles = ['user', 'operator', 'admin'];
+
+            if (!in_array($role, $allowedRoles, true)) {
+                throw new Exception('Role tidak valid.');
+            }
+
+            // Depo yang diperbolehkan
+            $allowedDepos = [
+                'Depo Malang',
+                'Depo Sidotopo',
+                'Depo Surabaya Pasar Turi'
+            ];
+
+            if (!in_array($depo, $allowedDepos, true)) {
+                throw new Exception('Depo tidak valid.');
+            }
+
+            // Status yang diperbolehkan
+            $allowedStatus = [
+                'aktif',
+                'pending',
+                'nonaktif'
+            ];
+
+            if (!in_array($status, $allowedStatus, true)) {
+                throw new Exception('Status tidak valid.');
+            }
+
+            // Cek NIPP sudah terdaftar atau belum
+            $stmt = $pdo->prepare("
+                SELECT id
+                FROM users
+                WHERE nipp = ?
+                LIMIT 1
+            ");
+
+            $stmt->execute([$nipp]);
+
+            if ($stmt->fetch()) {
+                throw new Exception('NIPP sudah terdaftar.');
+            }
+
+            // Hash password
+            $hashedPassword = password_hash(
+                $password,
+                PASSWORD_DEFAULT
+            );
+
+            // Simpan user baru
+            $stmt = $pdo->prepare("
+                INSERT INTO users (
+                    nama,
+                    nipp,
+                    depo,
+                    password,
+                    role,
+                    status
+                )
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
+
+            $stmt->execute([
+                $nama,
+                $nipp,
+                $depo,
+                $hashedPassword,
+                $role,
+                $status
+            ]);
+
+            $success = 'User baru berhasil dibuat.';
+
         // AKTIFKAN USER
-        if ($action === 'aktifkan') {
+        } elseif ($action === 'aktifkan') {
 
             if ($userId <= 0) {
                 throw new Exception('User tidak valid.');
@@ -110,7 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$userId]);
 
             $success = 'User berhasil dihapus.';
-
 
         } else {
 
@@ -469,11 +561,13 @@ body.sidebar-closed .page-wrapper {
             gap: 20px;
             margin-bottom: 30px;
         }
+
         .page-title {
             display: flex;
             align-items: center;
             gap: 14px;
         }
+
         .page-title-icon {
             width: 48px;
             height: 48px;
@@ -485,11 +579,13 @@ body.sidebar-closed .page-wrapper {
             color: #0dcaf0;
             font-size: 23px;
         }
+
         .page-title h1 {
             font-size: 25px;
             margin: 0;
             font-weight: 700;
         }
+
         .page-title p {
             margin: 4px 0 0;
             color: #8da6c7;
@@ -504,6 +600,7 @@ body.sidebar-closed .page-wrapper {
             padding: 20px;
             height: 100%;
         }
+
         .stat-icon {
             width: 42px;
             height: 42px;
@@ -514,27 +611,33 @@ body.sidebar-closed .page-wrapper {
             font-size: 19px;
             margin-bottom: 13px;
         }
+
         .stat-number {
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 2px;
         }
+
         .stat-label {
             font-size: 13px;
             color: #8da6c7;
         }
+
         .icon-blue {
             background: rgba(13, 110, 253, 0.15);
             color: #4da3ff;
         }
+
         .icon-yellow {
             background: rgba(255, 193, 7, 0.15);
             color: #ffc107;
         }
+
         .icon-green {
             background: rgba(25, 135, 84, 0.15);
             color: #42d392;
         }
+
         .icon-red {
             background: rgba(220, 53, 69, 0.15);
             color: #ff6b7a;
@@ -549,6 +652,7 @@ body.sidebar-closed .page-wrapper {
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
         }
+
         .table-header {
             padding: 22px 24px;
             border-bottom: 1px solid #284d78;
@@ -557,6 +661,7 @@ body.sidebar-closed .page-wrapper {
             align-items: center;
             background: #0d294c;
         }
+
         .table-header h2 {
             margin: 0;
             color: #ffffff;
@@ -564,20 +669,24 @@ body.sidebar-closed .page-wrapper {
             font-weight: 700;
             letter-spacing: 0.1px;
         }
+
         .table-header h2 i {
             color: #21c7ed;
         }
+
         .table-header span {
             display: block;
             margin-top: 6px;
             color: #9fb5d0;
             font-size: 13px;
         }
+
         /* Container tabel */
         .table-responsive {
             overflow-x: auto;
             background: #091f3b;
         }
+
         /* Tabel */
         .table {
             width: 100%;
@@ -588,6 +697,7 @@ body.sidebar-closed .page-wrapper {
             border-collapse: separate;
             border-spacing: 0;
         }
+
         /* Header tabel */
         .table thead th {
             background: #122f54;
@@ -601,9 +711,11 @@ body.sidebar-closed .page-wrapper {
             padding: 16px 18px;
             white-space: nowrap;
         }
+
         .table thead th:last-child {
             border-right: none;
         }
+
         /* Isi tabel */
         .table tbody td {
             background: #0b2445;
@@ -615,17 +727,21 @@ body.sidebar-closed .page-wrapper {
             line-height: 1.5;
             white-space: nowrap;
         }
+
         .table tbody td:last-child {
             border-right: none;
         }
+
         .table tbody tr:last-child td {
             border-bottom: none;
         }
+
         /* Efek hover baris */
         .table tbody tr:hover td {
             background: #12345b;
             color: #ffffff;
         }
+
         /* Nomor */
         .table tbody td:first-child {
             width: 55px;
@@ -633,12 +749,14 @@ body.sidebar-closed .page-wrapper {
             color: #8fa9c6;
             font-weight: 600;
         }
+
         /* Nama */
         .table tbody td:nth-child(2) {
             min-width: 190px;
             color: #ffffff;
             font-weight: 600;
         }
+
         /* NIPP */
         .table tbody td:nth-child(3) {
             min-width: 130px;
@@ -647,16 +765,19 @@ body.sidebar-closed .page-wrapper {
             font-weight: 600;
             letter-spacing: 0.3px;
         }
+
         /* Depo */
         .table tbody td:nth-child(4) {
             min-width: 210px;
             color: #d5e3f1;
         }
+
         /* Role dan Status */
         .table tbody td:nth-child(5),
         .table tbody td:nth-child(6) {
             min-width: 125px;
         }
+
         /* Kolom aksi */
         .table tbody td:last-child {
             min-width: 300px;
@@ -677,48 +798,56 @@ body.sidebar-closed .page-wrapper {
             line-height: 1;
             border: 1px solid transparent;
         }
+
         /* STATUS PENDING */
         .badge-pending {
             background: rgba(255, 193, 7, 0.12);
             border-color: rgba(255, 193, 7, 0.28);
             color: #ffd45a;
         }
+
         /* STATUS AKTIF */
         .badge-aktif {
             background: rgba(25, 135, 84, 0.14);
             border-color: rgba(66, 211, 146, 0.28);
             color: #61e6a4;
         }
+
         /* STATUS NONAKTIF */
         .badge-nonaktif {
             background: rgba(220, 53, 69, 0.13);
             border-color: rgba(255, 107, 122, 0.28);
             color: #ff8792;
         }
+
         /* ROLE USER */
         .badge-user {
             background: rgba(148, 163, 184, 0.12);
             border-color: rgba(148, 163, 184, 0.25);
             color: #cbd5e1;
         }
+
         /* ROLE OPERATOR */
         .badge-operator {
             background: rgba(13, 202, 240, 0.12);
             border-color: rgba(13, 202, 240, 0.28);
             color: #4dd8f3;
         }
+
         /* ROLE ADMIN */
         .badge-admin {
             background: rgba(139, 92, 246, 0.14);
             border-color: rgba(167, 139, 250, 0.30);
             color: #c4a7ff;
         }
+
         /* Button */
         .action-buttons {
             display: flex;
             gap: 7px;
             flex-wrap: wrap;
         }
+
         .btn-action {
             border: none;
             border-radius: 7px;
@@ -727,31 +856,39 @@ body.sidebar-closed .page-wrapper {
             cursor: pointer;
             white-space: nowrap;
         }
+
         .btn-edit {
             background: rgba(13, 202, 240, 0.12);
             color: #0dcaf0;
         }
+
         .btn-edit:hover {
             background: rgba(13, 202, 240, 0.22);
         }
+
         .btn-active {
             background: rgba(25, 135, 84, 0.15);
             color: #42d392;
         }
+
         .btn-active:hover {
             background: rgba(25, 135, 84, 0.25);
         }
+
         .btn-deactivate {
             background: rgba(255, 193, 7, 0.12);
             color: #ffc107;
         }
+
         .btn-deactivate:hover {
             background: rgba(255, 193, 7, 0.22);
         }
+
         .btn-delete {
             background: rgba(220, 53, 69, 0.12);
             color: #ff6b7a;
         }
+
         .btn-delete:hover {
             background: rgba(220, 53, 69, 0.22);
         }
@@ -763,11 +900,13 @@ body.sidebar-closed .page-wrapper {
             margin-bottom: 20px;
             font-size: 13px;
         }
+
         .alert-success-custom {
             background: rgba(25, 135, 84, 0.13);
             border: 1px solid rgba(25, 135, 84, 0.3);
             color: #6fe3a8;
         }
+
         .alert-error-custom {
             background: rgba(220, 53, 69, 0.13);
             border: 1px solid rgba(220, 53, 69, 0.3);
@@ -781,23 +920,29 @@ body.sidebar-closed .page-wrapper {
             color: #ffffff;
             border-radius: 14px;
         }
+
         .modal-header {
             border-bottom: 1px solid #1d3d65;
         }
+
         .modal-footer {
             border-top: 1px solid #1d3d65;
         }
+
         .modal-title {
             font-size: 17px;
         }
+
         .btn-close {
             filter: invert(1);
         }
+
         .form-label {
             color: #9db5d4;
             font-size: 13px;
             margin-bottom: 7px;
         }
+
         .form-control,
         .form-select {
             background: #081d38;
@@ -807,6 +952,7 @@ body.sidebar-closed .page-wrapper {
             padding: 10px 12px;
             font-size: 13px;
         }
+
         .form-control:focus,
         .form-select:focus {
             background: #081d38;
@@ -814,10 +960,12 @@ body.sidebar-closed .page-wrapper {
             color: #ffffff;
             box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.12);
         }
+
         .form-select option {
             background: #0b2445;
             color: #ffffff;
         }
+
         .btn-save {
             background: #0dcaf0;
             border: none;
@@ -826,14 +974,17 @@ body.sidebar-closed .page-wrapper {
             padding: 9px 17px;
             border-radius: 8px;
         }
+
         .btn-save:hover {
             background: #31d6f4;
         }
+
         .empty-state {
             text-align: center;
             padding: 55px 20px;
             color: #718caf;
         }
+
         .empty-state i {
             font-size: 40px;
             margin-bottom: 12px;
@@ -841,6 +992,7 @@ body.sidebar-closed .page-wrapper {
         }
 
         @media (max-width: 768px) {
+
         .page-wrapper {
             padding: 75px 18px 18px;
         }
@@ -1249,6 +1401,7 @@ body.sidebar-closed .page-wrapper {
             <div class="page-title-icon">
                 <i class="bi bi-people-fill"></i>
             </div>
+
             <div>
                 <h1>Management Users</h1>
                 <p>Kelola akun dan hak akses pengguna RailMap</p>
@@ -1273,14 +1426,17 @@ body.sidebar-closed .page-wrapper {
 
     <!-- Statistik -->
     <div class="row g-3">
+
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-icon icon-blue">
                     <i class="bi bi-people-fill"></i>
                 </div>
+
                 <div class="stat-number">
                     <?= $totalUsers ?>
                 </div>
+
                 <div class="stat-label">
                     Total User
                 </div>
@@ -1292,9 +1448,11 @@ body.sidebar-closed .page-wrapper {
                 <div class="stat-icon icon-yellow">
                     <i class="bi bi-hourglass-split"></i>
                 </div>
+
                 <div class="stat-number">
                     <?= $totalPending ?>
                 </div>
+
                 <div class="stat-label">
                     Menunggu Aktivasi
                 </div>
@@ -1306,9 +1464,11 @@ body.sidebar-closed .page-wrapper {
                 <div class="stat-icon icon-green">
                     <i class="bi bi-person-check-fill"></i>
                 </div>
+
                 <div class="stat-number">
                     <?= $totalAktif ?>
                 </div>
+
                 <div class="stat-label">
                     User Aktif
                 </div>
@@ -1320,40 +1480,69 @@ body.sidebar-closed .page-wrapper {
                 <div class="stat-icon icon-red">
                     <i class="bi bi-person-x-fill"></i>
                 </div>
+
                 <div class="stat-number">
                     <?= $totalNonaktif ?>
                 </div>
+
                 <div class="stat-label">
                     User Nonaktif
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- TABLE USER -->
     <div class="table-card">
+
         <div class="table-header">
+
             <div>
+
                 <h2>
                     <i class="bi bi-person-lines-fill me-2"></i>
                     Daftar Pengguna
                 </h2>
+
                 <span>
                     Kelola akun, role, status, dan depo pengguna
                 </span>
+
             </div>
+
+            <!-- TOMBOL CREATE USER -->
+            <button
+                type="button"
+                class="btn btn-info d-inline-flex align-items-center gap-2"
+                data-bs-toggle="modal"
+                data-bs-target="#createUserModal"
+                style="font-size: 13px; font-weight: 600; border-radius: 8px;"
+            >
+                <i class="bi bi-person-plus-fill"></i>
+                Tambah User
+            </button>
+
         </div>
 
         <div class="table-responsive">
+
             <?php if (empty($users)): ?>
+
                 <div class="empty-state">
+
                     <i class="bi bi-people"></i>
+
                     Belum ada pengguna yang terdaftar.
+
                 </div>
 
             <?php else: ?>
+
                 <table class="table">
+
                     <thead>
+
                         <tr>
                             <th>#</th>
                             <th>Nama</th>
@@ -1363,66 +1552,91 @@ body.sidebar-closed .page-wrapper {
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
+
                     <?php foreach ($users as $index => $user): ?>
+
                         <tr>
+
                             <td>
                                 <?= $index + 1 ?>
                             </td>
+
                             <td>
                                 <strong>
                                     <?= htmlspecialchars($user['nama']) ?>
                                 </strong>
                             </td>
+
                             <td>
                                 <?= htmlspecialchars($user['nipp']) ?>
                             </td>
+
                             <td>
                                 <?= htmlspecialchars($user['depo']) ?>
                             </td>
 
                             <!-- ROLE -->
                             <td>
+
                                 <?php if ($user['role'] === 'admin'): ?>
+
                                     <span class="badge-role badge-admin">
                                         Admin
                                     </span>
+
                                 <?php elseif ($user['role'] === 'operator'): ?>
+
                                     <span class="badge-role badge-operator">
                                         Operator
                                     </span>
+
                                 <?php else: ?>
+
                                     <span class="badge-role badge-user">
                                         User
                                     </span>
+
                                 <?php endif; ?>
+
                             </td>
 
                             <!-- STATUS -->
                             <td>
+
                                 <?php if ($user['status'] === 'aktif'): ?>
+
                                     <span class="badge-status badge-aktif">
                                         <i class="bi bi-check-circle me-1"></i>
                                         Aktif
                                     </span>
+
                                 <?php elseif ($user['status'] === 'pending'): ?>
+
                                     <span class="badge-status badge-pending">
                                         <i class="bi bi-clock me-1"></i>
                                         Pending
                                     </span>
+
                                 <?php else: ?>
+
                                     <span class="badge-status badge-nonaktif">
                                         <i class="bi bi-x-circle me-1"></i>
                                         Nonaktif
                                     </span>
+
                                 <?php endif; ?>
+
                             </td>
 
                             <!-- AKSI -->
                             <td>
+
                                 <div class="action-buttons">
+
                                     <!-- EDIT ROLE + DEPO -->
                                     <button
                                         type="button"
@@ -1441,21 +1655,25 @@ body.sidebar-closed .page-wrapper {
 
                                     <!-- AKTIFKAN -->
                                     <?php if ($user['status'] !== 'aktif'): ?>
+
                                         <form
                                             method="POST"
                                             style="display:inline;"
                                             onsubmit="return confirm('Aktifkan akun <?= htmlspecialchars($user['nama'], ENT_QUOTES) ?>?');"
                                         >
+
                                             <input
                                                 type="hidden"
                                                 name="action"
                                                 value="aktifkan"
                                             >
+
                                             <input
                                                 type="hidden"
                                                 name="user_id"
                                                 value="<?= $user['id'] ?>"
                                             >
+
                                             <button
                                                 type="submit"
                                                 class="btn-action btn-active"
@@ -1463,26 +1681,32 @@ body.sidebar-closed .page-wrapper {
                                                 <i class="bi bi-check-lg me-1"></i>
                                                 Aktifkan
                                             </button>
+
                                         </form>
+
                                     <?php endif; ?>
 
                                     <!-- NONAKTIFKAN -->
                                     <?php if ($user['status'] === 'aktif'): ?>
+
                                         <form
                                             method="POST"
                                             style="display:inline;"
                                             onsubmit="return confirm('Nonaktifkan akun <?= htmlspecialchars($user['nama'], ENT_QUOTES) ?>?');"
                                         >
+
                                             <input
                                                 type="hidden"
                                                 name="action"
                                                 value="nonaktifkan"
                                             >
+
                                             <input
                                                 type="hidden"
                                                 name="user_id"
                                                 value="<?= $user['id'] ?>"
                                             >
+
                                             <button
                                                 type="submit"
                                                 class="btn-action btn-deactivate"
@@ -1490,7 +1714,9 @@ body.sidebar-closed .page-wrapper {
                                                 <i class="bi bi-pause-fill me-1"></i>
                                                 Nonaktifkan
                                             </button>
+
                                         </form>
+
                                     <?php endif; ?>
 
                                     <!-- HAPUS -->
@@ -1499,16 +1725,19 @@ body.sidebar-closed .page-wrapper {
                                         style="display:inline;"
                                         onsubmit="return confirm('Yakin ingin menghapus akun <?= htmlspecialchars($user['nama'], ENT_QUOTES) ?>? Data user akan dihapus permanen.');"
                                     >
+
                                         <input
                                             type="hidden"
                                             name="action"
                                             value="hapus"
                                         >
+
                                         <input
                                             type="hidden"
                                             name="user_id"
                                             value="<?= $user['id'] ?>"
                                         >
+
                                         <button
                                             type="submit"
                                             class="btn-action btn-delete"
@@ -1516,121 +1745,220 @@ body.sidebar-closed .page-wrapper {
                                             <i class="bi bi-trash-fill me-1"></i>
                                             Hapus
                                         </button>
+
                                     </form>
+
                                 </div>
+
                             </td>
+
                         </tr>
+
                     <?php endforeach; ?>
+
                     </tbody>
+
                 </table>
+
             <?php endif; ?>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- MODAL EDIT USER -->
+
+<!-- =========================================================
+     MODAL CREATE USER
+========================================================= -->
+
 <div
     class="modal fade"
-    id="editUserModal"
+    id="createUserModal"
     tabindex="-1"
     aria-hidden="true"
 >
+
     <div class="modal-dialog modal-dialog-centered">
+
         <div class="modal-content">
+
             <form method="POST">
+
                 <div class="modal-header">
+
                     <h5 class="modal-title">
-                        <i class="bi bi-person-gear me-2"></i>
-                        Edit Hak Akses User
+
+                        <i class="bi bi-person-plus-fill me-2"></i>
+
+                        Tambah User Baru
+
                     </h5>
+
                     <button
                         type="button"
                         class="btn-close"
                         data-bs-dismiss="modal"
                     ></button>
+
                 </div>
 
                 <div class="modal-body">
+
                     <input
                         type="hidden"
                         name="action"
-                        value="update_user"
+                        value="create_user"
                     >
-                    <input
-                        type="hidden"
-                        name="user_id"
-                        id="edit_user_id"
-                    >
+
+                    <!-- NAMA -->
                     <div class="mb-3">
+
                         <label class="form-label">
                             Nama
                         </label>
+
                         <input
                             type="text"
+                            name="nama"
                             class="form-control"
-                            id="edit_nama"
-                            readonly
+                            placeholder="Masukkan nama lengkap"
+                            required
                         >
+
                     </div>
 
+                    <!-- NIPP -->
                     <div class="mb-3">
+
                         <label class="form-label">
                             NIPP
                         </label>
+
                         <input
                             type="text"
+                            name="nipp"
                             class="form-control"
-                            id="edit_nipp"
-                            readonly
+                            placeholder="Masukkan NIPP"
+                            required
                         >
+
                     </div>
 
+                    <!-- PASSWORD -->
                     <div class="mb-3">
+
+                        <label class="form-label">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Minimal 6 karakter"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- ROLE -->
+                    <div class="mb-3">
+
                         <label class="form-label">
                             Role
                         </label>
+
                         <select
                             name="role"
-                            id="edit_role"
                             class="form-select"
                             required
                         >
+
                             <option value="user">
                                 User
                             </option>
+
                             <option value="operator">
                                 Operator
                             </option>
+
                             <option value="admin">
                                 Admin
                             </option>
+
                         </select>
+
                     </div>
 
+                    <!-- DEPO -->
                     <div class="mb-3">
+
                         <label class="form-label">
                             Depo
                         </label>
+
                         <select
                             name="depo"
-                            id="edit_depo"
                             class="form-select"
                             required
                         >
+
+                            <option value="">
+                                Pilih Depo
+                            </option>
+
                             <option value="Depo Malang">
                                 Depo Malang
                             </option>
+
                             <option value="Depo Sidotopo">
                                 Depo Sidotopo
                             </option>
+
                             <option value="Depo Surabaya Pasar Turi">
                                 Depo Surabaya Pasar Turi
                             </option>
+
                         </select>
+
                     </div>
+
+                    <!-- STATUS -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Status
+                        </label>
+
+                        <select
+                            name="status"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="aktif">
+                                Aktif
+                            </option>
+
+                            <option value="pending">
+                                Pending
+                            </option>
+
+                            <option value="nonaktif">
+                                Nonaktif
+                            </option>
+
+                        </select>
+
+                    </div>
+
                 </div>
 
                 <div class="modal-footer">
+
                     <button
                         type="button"
                         class="btn btn-secondary"
@@ -1638,6 +1966,175 @@ body.sidebar-closed .page-wrapper {
                     >
                         Batal
                     </button>
+
+                    <button
+                        type="submit"
+                        class="btn-save"
+                    >
+                        <i class="bi bi-person-plus-fill me-1"></i>
+                        Buat User
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL EDIT USER
+========================================================= -->
+
+<div
+    class="modal fade"
+    id="editUserModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form method="POST">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+
+                        <i class="bi bi-person-gear me-2"></i>
+
+                        Edit Hak Akses User
+
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                    ></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="update_user"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="user_id"
+                        id="edit_user_id"
+                    >
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Nama
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="edit_nama"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            NIPP
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="edit_nipp"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Role
+                        </label>
+
+                        <select
+                            name="role"
+                            id="edit_role"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="user">
+                                User
+                            </option>
+
+                            <option value="operator">
+                                Operator
+                            </option>
+
+                            <option value="admin">
+                                Admin
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Depo
+                        </label>
+
+                        <select
+                            name="depo"
+                            id="edit_depo"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="Depo Malang">
+                                Depo Malang
+                            </option>
+
+                            <option value="Depo Sidotopo">
+                                Depo Sidotopo
+                            </option>
+
+                            <option value="Depo Surabaya Pasar Turi">
+                                Depo Surabaya Pasar Turi
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Batal
+                    </button>
+
                     <button
                         type="submit"
                         class="btn-save"
@@ -1645,11 +2142,17 @@ body.sidebar-closed .page-wrapper {
                         <i class="bi bi-check-lg me-1"></i>
                         Simpan Perubahan
                     </button>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
