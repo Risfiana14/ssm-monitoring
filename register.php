@@ -7,10 +7,11 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama = trim($_POST['nama'] ?? '');
     $nipp = trim($_POST['nipp'] ?? '');
+    $depo = trim($_POST['depo'] ?? '');
     $password = $_POST['password'] ?? '';
     $konfirmasi = $_POST['konfirmasi'] ?? '';
 
-    if ($nama === '' || $nipp === '' || $password === '' || $konfirmasi === '') {
+    if ($nama === '' || $nipp === '' || $depo === '' || $password === '' || $konfirmasi === '') {
         $error = 'Semua data wajib diisi.';
     } elseif (strlen($password) < 6) {
         $error = 'Password minimal 6 karakter.';
@@ -27,13 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                 $stmt = $pdo->prepare("
-                    INSERT INTO users (nama, nipp, password)
-                    VALUES (?, ?, ?)
+                    INSERT INTO users (nama, nipp, depo, password)
+                    VALUES (?, ?, ?, ?)
                 ");
 
                 $stmt->execute([
                     $nama,
                     $nipp,
+                    $depo,
                     $hashedPassword
                 ]);
 
@@ -105,6 +107,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     value="<?= htmlspecialchars($_POST['nipp'] ?? '') ?>"
                     required
                 >
+            </div>
+
+            <div class="form-group">
+                <label>Depo</label>
+                    <select name="depo" required style="width: 100%; padding: 13px 14px; background: #0c2852; border: 1px solid #31558a; border-radius: 10px; color: #fff; font-size: 14px; outline: none; cursor: pointer;">
+                        <option value="" style="background: #0c2852; color: #718caf;">-- Pilih Depo --</option>
+                        <option value="Depo Malang" style="background: #0c2852; color: #fff;"
+                            <?= (($_POST['depo'] ?? '') === 'Depo Malang') ? 'selected' : '' ?>>
+                            Depo Malang
+                        </option>
+                        <option value="Depo Sidotopo" style="background: #0c2852; color: #fff;"
+                            <?= (($_POST['depo'] ?? '') === 'Depo Sidotopo') ? 'selected' : '' ?>>
+                            Depo Sidotopo
+                        </option>
+                        <option value="Depo Surabaya Pasar Turi" style="background: #0c2852; color: #fff;"
+                            <?= (($_POST['depo'] ?? '') === 'Depo Surabaya Pasar Turi') ? 'selected' : '' ?>>
+                            Depo Surabaya Pasar Turi
+                        </option>
+                    </select>
             </div>
 
             <div class="form-group">
