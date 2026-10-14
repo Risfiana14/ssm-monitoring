@@ -8,6 +8,8 @@ $stmt = $pdo->query("
     SELECT
         c.location,
         c.is_hidden,
+        c.train_id,
+        c.carriage_order,
         CASE
             WHEN r.last_timestamp IS NULL THEN 'NO_INTERNET'
             WHEN TIMESTAMPDIFF(SECOND, r.last_timestamp, NOW()) > 120 THEN 'NO_INTERNET'

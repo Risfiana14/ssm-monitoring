@@ -1774,6 +1774,32 @@ if (!isset($_SESSION['user_id'])) {
                                 }
 
                                 echo '</div>';
+                                // ---> TAMBAHKAN TABEL STANFORMASI DI SINI <---
+                                echo '
+                                <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4 mt-5" style="background: #173b78; border: 1px solid rgba(255, 255, 255, 0.12) !important; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="m-0 fw-bold text-light" style="font-size: 1.15rem;">
+                                            <i class="bi bi-table me-2 text-info"></i>Tabel Urutan Stanformasi Rangkaian Asli
+                                        </h5>
+                                        <span class="badge bg-secondary" style="font-size: 0.75rem;">Urutan tetap sesuai fisik lapangan</span>
+                                    </div>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-bordered table-sm align-middle mb-0" style="width: 100%; background: #21477f; color: #ffffff; border-color: rgba(255, 255, 255, 0.12);">
+                                            <thead style="background: #143565;">
+                                                <tr class="text-center" style="background: #143565;">
+                                                    <th scope="col" class="py-2" style="width: 80px; background: #143565; color: #ffffff; border-color: rgba(255, 255, 255, 0.15);">Urutan</th>
+                                                    <th scope="col" class="py-2" style="background: #143565; color: #ffffff; border-color: rgba(255, 255, 255, 0.15);">Nomor Sarana</th>
+                                                    <th scope="col" class="py-2" style="background: #143565; color: #ffffff; border-color: rgba(255, 255, 255, 0.15);">Status Internet (GSM)</th>
+                                                    <th scope="col" class="py-2" style="background: #143565; color: #ffffff; border-color: rgba(255, 255, 255, 0.15);">Status Perangkat</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="stanformasi-table-body">
+                                                <!-- Data akan diisi otomatis oleh JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>';
                             } else {
 
                                 // JIKA BELUM ADA NOMOR SARANA
@@ -2681,8 +2707,120 @@ if (!isset($_SESSION['user_id'])) {
             if (typeof filterCars === 'function') {
                 filterCars();
             }
+            sortCardElementsOnPage();
+            // Tambahkan baris ini di akhir fungsi renderAllCars
+            if (typeof renderStanformasiTable === 'function') {
+                renderStanformasiTable();
+            }
         }
         
+        function sortCardElementsOnPage() {
+            const gridContainer = document.querySelector('.row.g-2.g-md-3.justify-content-center');
+            if (!gridContainer) return;
+
+            let wrappers = Array.from(gridContainer.querySelectorAll('.car-wrapper'));
+            if (wrappers.length === 0) return;
+
+            wrappers.sort((elA, elB) => {
+                let carA = elA.getAttribute('data-car-id');
+                let carB = elB.getAttribute('data-car-id');
+
+                let devA = globalDeviceData.filter(d => d.location === carA);
+                let devB = globalDeviceData.filter(d => d.location === carB);
+
+                let priorityA = 3, priorityB = 3;
+
+                if (devA.length > 0) {
+                    let hasOffA = devA.some(d => {
+                        let st = (d.status || '').toUpperCase();
+                        return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                    });
+                    let hasWarnA = devA.some(d => (d.status || '').toUpperCase() === 'WARNING');
+                    if (hasOffA) priorityA = 1;
+                    else if (hasWarnA) priorityA = 2;
+                } else {
+                    priorityA = 4;
+                }
+
+                if (devB.length > 0) {
+                    let hasOffB = devB.some(d => {
+                        let st = (d.status || '').toUpperCase();
+                        return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                    });
+                    let hasWarnB = devB.some(d => (d.status || '').toUpperCase() === 'WARNING');
+                    if (hasOffB) priorityB = 1;
+                    else if (hasWarnB) priorityB = 2;
+                } else {
+                    priorityB = 4;
+                }
+
+                return priorityA - priorityB;
+            });
+
+            // Masukkan kembali elemen yang sudah terurut ke dalam grid
+            wrappers.forEach(el => gridContainer.appendChild(el));
+        }
+
+        function renderStanformasiTable() {
+            const tbody = document.getElementById('stanformasi-table-body');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            // Ambil train_id dari URL (misalnya ?train_id=1) jika ada
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentTrainId = urlParams.get('train_id');
+
+            // Filter data carriage hanya untuk train_id yang sedang aktif
+            let filteredCarriages = globalCarriagesData;
+            if (currentTrainId) {
+                filteredCarriages = globalCarriagesData.filter(c => String(c.train_id) === String(currentTrainId));
+            }
+
+            // Urutkan berdasarkan carriage_order (urutan asli)
+            let sortedCarriages = [...filteredCarriages].sort((a, b) => {
+                let orderA = parseInt(a.carriage_order) || 99;
+                let orderB = parseInt(b.carriage_order) || 99;
+                return orderA - orderB;
+            });
+
+            if (sortedCarriages.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">Tidak ada data stanformasi untuk rangkaian ini</td></tr>`;
+                return;
+            }
+
+            sortedCarriages.forEach((carData, index) => {
+                let carNum = carData.location;
+                let orderNo = carData.carriage_order || (index + 1);
+                
+                // Cek status internet
+                let isNetOnline = (carData.internet_status || '').toUpperCase() === 'INTERNET';
+                let netBadge = isNetOnline 
+                    ? '<span class="badge bg-success">GSM ONLINE</span>' 
+                    : '<span class="badge bg-warning text-dark">GSM OFFLINE</span>';
+
+                // Cek status perangkat di kereta tersebut
+                let devices = globalDeviceData.filter(d => d.location === carNum);
+                let hasOfflineDev = devices.some(d => {
+                    let st = (d.status || '').toUpperCase();
+                    return st !== 'ONLINE' && st !== 'UP' && st !== 'WARNING';
+                });
+                
+                let devBadge = devices.length === 0 
+                    ? '<span class="badge bg-secondary">NO DATA</span>' 
+                    : (hasOfflineDev ? '<span class="badge bg-danger">OFFLINE / TROUBLE</span>' : '<span class="badge bg-success">ONLINE</span>');
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="text-center fw-bold text-warning py-2" style="background: #21477f; color: #ffc107; border-color: rgba(255, 255, 255, 0.12);">${orderNo}</td>
+                        <td class="fw-bold py-2" style="background: #21477f; color: #ffffff; border-color: rgba(255, 255, 255, 0.12);"><i class="bi bi-train-front me-2 text-info"></i>${carNum}</td>
+                        <td class="text-center py-2" style="background: #21477f; border-color: rgba(255, 255, 255, 0.12);">${netBadge}</td>
+                        <td class="text-center py-2" style="background: #21477f; border-color: rgba(255, 255, 255, 0.12);">${devBadge}</td>
+                    </tr>
+                `;
+            });
+        }
+
         function scanData() {
             fetch('api_detail_status.php?trainset=DAOP_8')
                 .then(res => res.json())
