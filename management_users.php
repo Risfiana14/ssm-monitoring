@@ -215,7 +215,174 @@ foreach ($users as $user) {
         .page-wrapper {
             min-height: 100vh;
             padding: 30px;
+            margin-left: 260px;
         }
+
+        /* SIDEBAR RAILMAP */
+        .railmap-sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: #122b59;
+            border-right: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 1050;
+            box-sizing: border-box;
+        }
+        .sidebar-brand {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+        .sidebar-brand-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            margin: 0;
+            color: #fff;
+        }
+        .sidebar-brand-subtitle {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .sidebar-dashboard {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: #0dcaf0;
+            border: 1px solid #0dcaf0;
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+        .sidebar-dashboard:hover {
+            background: rgba(13, 202, 240, 0.12);
+            color: #fff;
+        }
+        .sidebar-section-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.55);
+            margin: 0 9px 9px;
+        }
+        .sidebar-menu-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+        .sidebar-menu-item:hover {
+            background: rgba(13, 202, 240, 0.15);
+            color: #fff;
+        }
+        .sidebar-menu-item i {
+            color: #0dcaf0;
+            width: 15px;
+            text-align: center;
+        }
+        .sidebar-depo {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            color: #fff;
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+        .sidebar-depo i {
+            color: #0dcaf0;
+        }
+        .sidebar-depo .depo-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+        .sidebar-depo .depo-actions i {
+            color: #ffc107;
+        }
+        .sidebar-depo .depo-actions i:last-child {
+            color: #ff3b5c;
+        }
+        .sidebar-active {
+            background: rgba(13, 202, 240, 0.15);
+        }
+        .sidebar-active i {
+            color: #0dcaf0;
+        }
+        .sidebar-account {
+            margin-top: auto;
+            padding: 15px 12px 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .sidebar-account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .sidebar-account-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(18, 200, 223, 0.12);
+            border: 1px solid rgba(18, 200, 223, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #12c8df;
+            flex-shrink: 0;
+        }
+        .sidebar-account-label {
+            font-size: 10px;
+            color: #7f9bc4;
+            margin-bottom: 2px;
+        }
+        .sidebar-account-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .sidebar-logout {
+            width: 100%;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid rgba(220, 53, 69, 0.7);
+            border-radius: 7px;
+            color: #ff5c6c;
+            background: rgba(220, 53, 69, 0.06);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .sidebar-logout:hover {
+            color: #fff;
+            background: rgba(220, 53, 69, 0.18);
+        }
+
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -307,95 +474,179 @@ foreach ($users as $user) {
             color: #ff6b7a;
         }
 
-        /* Table */
+        /* Table Card */
         .table-card {
             background: #0b2445;
-            border: 1px solid #1d3d65;
-            border-radius: 14px;
-            margin-top: 25px;
+            border: 1px solid #284d78;
+            border-radius: 16px;
+            margin-top: 28px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
         }
         .table-header {
-            padding: 20px 22px;
-            border-bottom: 1px solid #1d3d65;
+            padding: 22px 24px;
+            border-bottom: 1px solid #284d78;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #0d294c;
         }
         .table-header h2 {
             margin: 0;
-            font-size: 17px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.1px;
+        }
+        .table-header h2 i {
+            color: #21c7ed;
         }
         .table-header span {
-            color: #8da6c7;
+            display: block;
+            margin-top: 6px;
+            color: #9fb5d0;
             font-size: 13px;
         }
+        /* Container tabel */
         .table-responsive {
             overflow-x: auto;
+            background: #091f3b;
         }
+        /* Tabel */
         .table {
+            width: 100%;
+            min-width: 1050px;
             margin: 0;
             color: #ffffff;
             vertical-align: middle;
-            min-width: 900px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
+        /* Header tabel */
         .table thead th {
-            background: #102d52;
-            color: #9db5d4;
-            border-bottom: 1px solid #284a72;
+            background: #122f54;
+            color: #d8e6f5;
+            border-bottom: 1px solid #396087;
+            border-right: 1px solid rgba(57, 96, 135, 0.45);
             font-size: 12px;
-            font-weight: 600;
-            padding: 14px 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 18px;
             white-space: nowrap;
         }
+        .table thead th:last-child {
+            border-right: none;
+        }
+        /* Isi tabel */
         .table tbody td {
             background: #0b2445;
-            border-bottom: 1px solid #17395f;
-            padding: 14px 16px;
-            font-size: 13px;
+            color: #dce8f5;
+            border-bottom: 1px solid #234666;
+            border-right: 1px solid rgba(35, 70, 102, 0.55);
+            padding: 17px 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+        .table tbody td:last-child {
+            border-right: none;
         }
         .table tbody tr:last-child td {
             border-bottom: none;
         }
+        /* Efek hover baris */
         .table tbody tr:hover td {
-            background: #102d52;
+            background: #12345b;
+            color: #ffffff;
+        }
+        /* Nomor */
+        .table tbody td:first-child {
+            width: 55px;
+            text-align: center;
+            color: #8fa9c6;
+            font-weight: 600;
+        }
+        /* Nama */
+        .table tbody td:nth-child(2) {
+            min-width: 190px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        /* NIPP */
+        .table tbody td:nth-child(3) {
+            min-width: 130px;
+            color: #b9cde3;
+            font-family: "Courier New", monospace;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        /* Depo */
+        .table tbody td:nth-child(4) {
+            min-width: 210px;
+            color: #d5e3f1;
+        }
+        /* Role dan Status */
+        .table tbody td:nth-child(5),
+        .table tbody td:nth-child(6) {
+            min-width: 125px;
+        }
+        /* Kolom aksi */
+        .table tbody td:last-child {
+            min-width: 300px;
         }
 
-        /* Badge */
+        /* Badge Status dan Role */
         .badge-status,
         .badge-role {
             display: inline-flex;
             align-items: center;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
+            justify-content: center;
+            gap: 4px;
+            min-width: 82px;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            border: 1px solid transparent;
         }
+        /* STATUS PENDING */
         .badge-pending {
             background: rgba(255, 193, 7, 0.12);
-            color: #ffc107;
+            border-color: rgba(255, 193, 7, 0.28);
+            color: #ffd45a;
         }
+        /* STATUS AKTIF */
         .badge-aktif {
-            background: rgba(25, 135, 84, 0.12);
-            color: #42d392;
+            background: rgba(25, 135, 84, 0.14);
+            border-color: rgba(66, 211, 146, 0.28);
+            color: #61e6a4;
         }
+        /* STATUS NONAKTIF */
         .badge-nonaktif {
-            background: rgba(220, 53, 69, 0.12);
-            color: #ff6b7a;
+            background: rgba(220, 53, 69, 0.13);
+            border-color: rgba(255, 107, 122, 0.28);
+            color: #ff8792;
         }
+        /* ROLE USER */
         .badge-user {
-            background: rgba(108, 117, 125, 0.18);
-            color: #c9d1d9;
+            background: rgba(148, 163, 184, 0.12);
+            border-color: rgba(148, 163, 184, 0.25);
+            color: #cbd5e1;
         }
+        /* ROLE OPERATOR */
         .badge-operator {
             background: rgba(13, 202, 240, 0.12);
-            color: #0dcaf0;
+            border-color: rgba(13, 202, 240, 0.28);
+            color: #4dd8f3;
         }
+        /* ROLE ADMIN */
         .badge-admin {
-            background: rgba(111, 66, 193, 0.16);
-            color: #b99aff;
+            background: rgba(139, 92, 246, 0.14);
+            border-color: rgba(167, 139, 250, 0.30);
+            color: #c4a7ff;
         }
-
         /* Button */
         .action-buttons {
             display: flex;
@@ -543,7 +794,105 @@ foreach ($users as $user) {
 </head>
 
 <body>
+<!-- SIDEBAR RAILMAP -->
+<aside class="railmap-sidebar">
 
+    <div class="sidebar-brand">
+        <h2 class="sidebar-brand-title">
+            RAILMAP
+        </h2>
+
+        <div class="sidebar-brand-subtitle">
+            Real-Time Train Monitoring
+        </div>
+    </div>
+
+    <a href="index.php" class="sidebar-dashboard">
+        <i class="bi bi-arrow-left-circle me-1"></i>
+        Dashboard Utama
+    </a>
+
+    <div class="sidebar-section-title">
+        DASHBOARD MAIN
+    </div>
+
+    <div class="sidebar-depo">
+        <i class="bi bi-chevron-down me-2"></i>
+        <i class="bi bi-folder me-2"></i>
+        <span>Depo Malang</span>
+
+        <div class="depo-actions">
+            <i class="bi bi-pencil-square"></i>
+            <i class="bi bi-trash"></i>
+        </div>
+    </div>
+
+    <div class="sidebar-depo">
+        <i class="bi bi-chevron-down me-2"></i>
+        <i class="bi bi-folder me-2"></i>
+        <span>Depo Sidotopo</span>
+
+        <div class="depo-actions">
+            <i class="bi bi-pencil-square"></i>
+            <i class="bi bi-trash"></i>
+        </div>
+    </div>
+
+    <div class="sidebar-depo">
+        <i class="bi bi-chevron-down me-2"></i>
+        <i class="bi bi-folder me-2"></i>
+        <span>Depo Surabaya Pasar Turi</span>
+
+        <div class="depo-actions">
+            <i class="bi bi-pencil-square"></i>
+            <i class="bi bi-trash"></i>
+        </div>
+    </div>
+
+    <a href="index.php" class="sidebar-menu-item mt-3">
+        <i class="bi bi-file-earmark-text"></i>
+        <span>Laporan Perangkat</span>
+    </a>
+
+    <a href="index.php" class="sidebar-menu-item">
+        <i class="bi bi-bar-chart-line"></i>
+        <span>Analitik</span>
+    </a>
+
+    <a href="management_users.php"
+       class="sidebar-menu-item sidebar-active">
+        <i class="bi bi-people-fill"></i>
+        <span>Management Users</span>
+    </a>
+
+    <div class="sidebar-account">
+
+        <div class="sidebar-account-info">
+
+            <div class="sidebar-account-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div>
+                <div class="sidebar-account-label">
+                    Pengguna
+                </div>
+
+                <div class="sidebar-account-name">
+                    <?= htmlspecialchars($_SESSION['user_nama'] ?? 'User') ?>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="logout.php" class="sidebar-logout">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </a>
+
+    </div>
+
+</aside>
 <div class="page-wrapper">
 
     <!-- Header -->
