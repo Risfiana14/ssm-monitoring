@@ -1053,6 +1053,65 @@ if (!isset($_SESSION['user_id'])) {
                 color: #000000 !important;
                 border: 1px solid #000000 !important;
             }
+            #repairReportSection,
+            #repairReportSection * {
+                visibility: visible;
+            }
+            #repairReportSection {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            #repairReportSection .table-responsive table {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            #repairReportSection .table-responsive th,
+            #repairReportSection .table-responsive td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+            }
+            #stanformasiSection,
+            #stanformasiSection * {
+                visibility: visible;
+            }
+            #stanformasiSection {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                border: none !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                padding: 10px !important;
+            }
+            #stanformasiSection .table-responsive {
+                width: 100% !important;
+                overflow: visible !important;
+            }
+            #stanformasiSection table {
+                width: 100% !important;
+                min-width: auto !important;
+                max-width: 100% !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            #stanformasiSection th,
+            #stanformasiSection td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+            }
             .btn,
             sidebar,
             header,
@@ -1217,33 +1276,7 @@ if (!isset($_SESSION['user_id'])) {
             }
         }
 
-        /* Print */
-        @media print {
-            #repairReportSection,
-            #repairReportSection * {
-                visibility: visible;
-            }
-            #repairReportSection {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                background: #ffffff !important;
-                color: #000000 !important;
-                box-shadow: none !important;
-                border: none !important;
-            }
-            #repairReportSection .table-responsive table {
-                background: #ffffff !important;
-                color: #000000 !important;
-            }
-            #repairReportSection .table-responsive th,
-            #repairReportSection .table-responsive td {
-                background: #ffffff !important;
-                color: #000000 !important;
-                border: 1px solid #000000 !important;
-            }
-        }
+        
     </style>
 </head>
 
@@ -1350,7 +1383,7 @@ if (!isset($_SESSION['user_id'])) {
                                     <div class="d-flex align-items-center w-100">
                                         <!-- Tombol Nama Depo -->
                                         <button
-                                            class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center"
+                                            class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#<?php echo $collapseId; ?>"
@@ -1530,7 +1563,7 @@ if (!isset($_SESSION['user_id'])) {
             <div class="mt-3">
                 <button
                     type="button"
-                    class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
+                    class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center collapsed"
                     data-bs-toggle="collapse"
                     data-bs-target="#laporanPerangkatMenu"
                     aria-expanded="false"
@@ -1569,7 +1602,7 @@ if (!isset($_SESSION['user_id'])) {
             <div class="mt-3">
                 <button
                     type="button"
-                    class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
+                    class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center collapsed"
                     data-bs-toggle="collapse"
                     data-bs-target="#analitikMenu"
                     aria-expanded="false"
@@ -1776,12 +1809,21 @@ if (!isset($_SESSION['user_id'])) {
                                 echo '</div>';
                                 // ---> TAMBAHKAN TABEL STANFORMASI DI SINI <---
                                 echo '
-                                <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4 mt-5" style="background: #173b78; border: 1px solid rgba(255, 255, 255, 0.12) !important; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="card text-light shadow-sm border-0 p-3 p-md-4 rounded-4 mt-5" id="stanformasiSection" style="background: #173b78; border: 1px solid rgba(255, 255, 255, 0.12) !important; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                                         <h5 class="m-0 fw-bold text-light" style="font-size: 1.15rem;">
-                                            <i class="bi bi-table me-2 text-info"></i>Tabel Urutan Stanformasi Rangkaian Asli
+                                            <i class="bi bi-table me-2 text-info"></i>Tabel Urutan Stanformasi Rangkaian Kereta ' . htmlspecialchars($currentTrain['nama_kereta']) .'
                                         </h5>
-                                        <span class="badge bg-secondary" style="font-size: 0.75rem;">Urutan tetap sesuai fisik lapangan</span>
+                                        
+                                        <!-- TOMBOL CETAK / EXPORT -->
+                                        <div class="d-flex align-items-center gap-2">
+                                            <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="printStanformasiTable()">
+                                                <i class="bi bi-printer me-1"></i> Cetak PDF
+                                            </button>
+                                            <button class="btn btn-success btn-sm px-3 fw-bold py-1 text-nowrap" onclick="exportStanformasiExcel()">
+                                                <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                                            </button>
+                                        </div>
                                     </div>
                                     
                                     <div class="table-responsive">
@@ -4638,6 +4680,44 @@ if (!isset($_SESSION['user_id'])) {
                     console.error('Error updating repair field:', err);
                     alert('Terjadi kesalahan koneksi saat menyimpan perubahan.');
                 });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const openTab = sessionStorage.getItem('openTab');
+            if (openTab === 'trouble') {
+                sessionStorage.removeItem('openTab');
+                if (typeof showTroubleReport === 'function') showTroubleReport();
+            } else if (openTab === 'repair') {
+                sessionStorage.removeItem('openTab');
+                if (typeof showRepairReport === 'function') showRepairReport();
+            } else if (openTab === 'analytics') {
+                sessionStorage.removeItem('openTab');
+                if (typeof showAnalyticsPage === 'function') showAnalyticsPage();
+            }
+        });
+
+        // Fungsi untuk mencetak khusus tabel stanformasi (Cetak PDF / Print)
+        function printStanformasiTable() {
+            window.print();
+        }
+
+        // Fungsi sederhana untuk meng-export tabel stanformasi ke format Excel (.xls / CSV)
+        function exportStanformasiExcel() {
+            let table = document.querySelector('#stanformasiSection table');
+            if (!table) {
+                alert('Data tabel tidak ditemukan.');
+                return;
+            }
+
+            let html = table.outerHTML;
+            let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            let downloadLink = document.createElement('a');
+            
+            downloadLink.href = url;
+            downloadLink.download = 'Stanformasi_Rangkaian_Kereta.xls';
+            
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }
     </script>
 

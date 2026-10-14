@@ -299,7 +299,7 @@ foreach ($users as $user) {
 
         body {
             margin: 0;
-            background: #071a35;
+            background: #163673;
             color: #ffffff;
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -311,248 +311,244 @@ foreach ($users as $user) {
         }
 
         /* SIDEBAR RAILMAP */
-        /* =========================================
-   SIDEBAR RAILMAP - SAMA SEPERTI DASHBOARD
-========================================= */
+        .railmap-sidebar {
+            width: 260px;
+            min-width: 260px;
+            background-color: #122b59;
+            border-right: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 1050;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
+        }
 
-.railmap-sidebar {
-    width: 260px;
-    min-width: 260px;
-    background-color: #122b59;
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 15px;
-    overflow-y: auto;
-    z-index: 1050;
-    transition: transform 0.3s ease-in-out;
-    transform: translateX(0);
-}
+        .sidebar-brand {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
 
-.sidebar-brand {
-    text-align: center;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 15px;
-}
+        .sidebar-brand-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            margin: 0;
+            color: #fff;
+        }
 
-.sidebar-brand-title {
-    font-weight: 800;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-    margin: 0;
-    color: #fff;
-}
+        .sidebar-brand-subtitle {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
 
-.sidebar-brand-subtitle {
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.6);
-}
+        .sidebar-section-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0 9px 9px;
+        }
 
-.sidebar-section-title {
-    font-size: 0.65rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0 9px 9px;
-}
+        .train-group {
+            margin-bottom: 5px;
+        }
 
-.train-group {
-    margin-bottom: 5px;
-}
+        .train-name {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
 
-.train-name {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    color: #fff;
-    text-align: left;
-    border-radius: 8px;
-    padding: 9px 10px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-}
+        .train-name:hover,
+        .train-name.active {
+            background: rgba(13, 202, 240, 0.15);
+        }
 
-.train-name:hover,
-.train-name.active {
-    background: rgba(13, 202, 240, 0.15);
-}
+        .train-name .train-arrow {
+            color: #0dcaf0;
+            width: 13px;
+            transition: transform 0.15s ease;
+        }
 
-.train-name .train-arrow {
-    color: #0dcaf0;
-    width: 13px;
-    transition: transform 0.15s ease;
-}
+        .train-name.collapsed .train-arrow {
+            transform: rotate(-90deg);
+        }
 
-.train-name.collapsed .train-arrow {
-    transform: rotate(-90deg);
-}
+        .train-ids {
+            padding: 3px 0 7px 31px;
+        }
 
-.train-ids {
-    padding: 3px 0 7px 31px;
-}
+        .train-id {
+            display: block;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.74rem;
+            padding: 6px 9px;
+            border-left: 2px solid rgba(13, 202, 240, 0.35);
+            margin-bottom: 2px;
+            border-radius: 0 6px 6px 0;
+        }
 
-.train-id {
-    display: block;
-    color: rgba(255, 255, 255, 0.75);
-    text-decoration: none;
-    font-size: 0.74rem;
-    padding: 6px 9px;
-    border-left: 2px solid rgba(13, 202, 240, 0.35);
-    margin-bottom: 2px;
-    border-radius: 0 6px 6px 0;
-}
+        .train-id:hover,
+        .train-id.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-left-color: #0dcaf0;
+        }
 
-.train-id:hover,
-.train-id.active {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-    border-left-color: #0dcaf0;
-}
+        /* ACCOUNT */
+        .sidebar-account {
+            margin-top: auto;
+            padding: 15px 12px 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
 
-/* ACCOUNT */
-.sidebar-account {
-    margin-top: auto;
-    padding: 15px 12px 18px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
+        .sidebar-account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
 
-.sidebar-account-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-}
+        .sidebar-account-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(18, 200, 223, 0.12);
+            border: 1px solid rgba(18, 200, 223, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #12c8df;
+            flex-shrink: 0;
+        }
 
-.sidebar-account-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: rgba(18, 200, 223, 0.12);
-    border: 1px solid rgba(18, 200, 223, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #12c8df;
-    flex-shrink: 0;
-}
+        .sidebar-account-text {
+            min-width: 0;
+        }
 
-.sidebar-account-text {
-    min-width: 0;
-}
+        .sidebar-account-label {
+            font-size: 10px;
+            color: #7f9bc4;
+            margin-bottom: 2px;
+        }
 
-.sidebar-account-label {
-    font-size: 10px;
-    color: #7f9bc4;
-    margin-bottom: 2px;
-}
+        .sidebar-account-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-.sidebar-account-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .sidebar-logout {
+            width: 100%;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid rgba(220, 53, 69, 0.7);
+            border-radius: 7px;
+            color: #ff5c6c;
+            background: rgba(220, 53, 69, 0.06);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
 
-.sidebar-logout {
-    width: 100%;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    border: 1px solid rgba(220, 53, 69, 0.7);
-    border-radius: 7px;
-    color: #ff5c6c;
-    background: rgba(220, 53, 69, 0.06);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
+        .sidebar-logout:hover {
+            color: #ffffff;
+            background: rgba(220, 53, 69, 0.18);
+            border-color: #dc3545;
+        }
 
-.sidebar-logout:hover {
-    color: #ffffff;
-    background: rgba(220, 53, 69, 0.18);
-    border-color: #dc3545;
-}
+        /* TOMBOL HAMBURGER */
+        .sidebar-toggle-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #122b59;
+            color: #fff;
+            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-/* TOMBOL HAMBURGER */
-.sidebar-toggle-btn {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 1100;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: #122b59;
-    color: #fff;
-    border-radius: 8px;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        /* SIDEBAR TERTUTUP */
+        body.sidebar-closed .railmap-sidebar {
+            transform: translateX(-100%);
+        }
 
-/* SIDEBAR TERTUTUP */
-body.sidebar-closed .railmap-sidebar {
-    transform: translateX(-100%);
-}
+        /* SAAT SIDEBAR DITUTUP */
+        body.sidebar-closed .page-wrapper {
+            margin-left: 0;
+        }
 
-/* SAAT SIDEBAR DITUTUP */
-body.sidebar-closed .page-wrapper {
-    margin-left: 0;
-}
+        /* MOBILE */
+        @media (max-width: 992px) {
 
-/* MOBILE */
-@media (max-width: 992px) {
+            .railmap-sidebar {
+                width: 260px;
+                min-width: 260px;
+                transform: translateX(-100%);
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 1050;
+                transition: transform 0.3s ease-in-out;
+                box-shadow: 8px 0 25px rgba(0, 0, 0, 0.25);
+            }
 
-    .railmap-sidebar {
-        width: 260px;
-        min-width: 260px;
-        transform: translateX(-100%);
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        z-index: 1050;
-        transition: transform 0.3s ease-in-out;
-        box-shadow: 8px 0 25px rgba(0, 0, 0, 0.25);
-    }
+            .railmap-sidebar.active {
+                transform: translateX(0);
+            }
 
-    .railmap-sidebar.active {
-        transform: translateX(0);
-    }
+            .page-wrapper {
+                width: 100%;
+                margin-left: 0 !important;
+                padding-top: 70px;
+            }
 
-    .page-wrapper {
-        width: 100%;
-        margin-left: 0 !important;
-        padding-top: 70px;
-    }
+            .sidebar-toggle-btn {
+                top: 12px;
+                left: 8px;
+                width: 46px;
+                height: 46px;
+                z-index: 1100;
+            }
 
-    .sidebar-toggle-btn {
-        top: 12px;
-        left: 8px;
-        width: 46px;
-        height: 46px;
-        z-index: 1100;
-    }
-
-    .table-card {
-        max-width: 100%;
-    }
-}
+            .table-card {
+                max-width: 100%;
+            }
+        }
 
         .page-header {
             display: flex;
@@ -588,17 +584,19 @@ body.sidebar-closed .page-wrapper {
 
         .page-title p {
             margin: 4px 0 0;
-            color: #8da6c7;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 13px;
         }
 
         /* Stat Card */
         .stat-card {
-            background: #0b2445;
-            border: 1px solid #1d3d65;
-            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
             padding: 20px;
             height: 100%;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
         }
 
         .stat-icon {
@@ -620,7 +618,7 @@ body.sidebar-closed .page-wrapper {
 
         .stat-label {
             font-size: 13px;
-            color: #8da6c7;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .icon-blue {
@@ -645,21 +643,21 @@ body.sidebar-closed .page-wrapper {
 
         /* Table Card */
         .table-card {
-            background: #0b2445;
-            border: 1px solid #284d78;
+            background: #173b78;
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 16px;
             margin-top: 28px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .table-header {
             padding: 22px 24px;
-            border-bottom: 1px solid #284d78;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #0d294c;
+            background: #143565;
         }
 
         .table-header h2 {
@@ -671,20 +669,20 @@ body.sidebar-closed .page-wrapper {
         }
 
         .table-header h2 i {
-            color: #21c7ed;
+            color: #0dcaf0;
         }
 
         .table-header span {
             display: block;
             margin-top: 6px;
-            color: #9fb5d0;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 13px;
         }
 
         /* Container tabel */
         .table-responsive {
             overflow-x: auto;
-            background: #091f3b;
+            background: #21477f;
         }
 
         /* Tabel */
@@ -700,10 +698,10 @@ body.sidebar-closed .page-wrapper {
 
         /* Header tabel */
         .table thead th {
-            background: #122f54;
-            color: #d8e6f5;
-            border-bottom: 1px solid #396087;
-            border-right: 1px solid rgba(57, 96, 135, 0.45);
+            background: #143565;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
@@ -718,10 +716,10 @@ body.sidebar-closed .page-wrapper {
 
         /* Isi tabel */
         .table tbody td {
-            background: #0b2445;
-            color: #dce8f5;
-            border-bottom: 1px solid #234666;
-            border-right: 1px solid rgba(35, 70, 102, 0.55);
+            background: #21477f;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             padding: 17px 18px;
             font-size: 14px;
             line-height: 1.5;
@@ -738,7 +736,7 @@ body.sidebar-closed .page-wrapper {
 
         /* Efek hover baris */
         .table tbody tr:hover td {
-            background: #12345b;
+            background: #28538f;
             color: #ffffff;
         }
 
@@ -746,7 +744,7 @@ body.sidebar-closed .page-wrapper {
         .table tbody td:first-child {
             width: 55px;
             text-align: center;
-            color: #8fa9c6;
+            color: #ffffff;
             font-weight: 600;
         }
 
@@ -760,7 +758,7 @@ body.sidebar-closed .page-wrapper {
         /* NIPP */
         .table tbody td:nth-child(3) {
             min-width: 130px;
-            color: #b9cde3;
+            color: #ffffff;
             font-family: "Courier New", monospace;
             font-weight: 600;
             letter-spacing: 0.3px;
@@ -769,7 +767,7 @@ body.sidebar-closed .page-wrapper {
         /* Depo */
         .table tbody td:nth-child(4) {
             min-width: 210px;
-            color: #d5e3f1;
+            color: #ffffff;
         }
 
         /* Role dan Status */
@@ -915,18 +913,18 @@ body.sidebar-closed .page-wrapper {
 
         /* Modal */
         .modal-content {
-            background: #0b2445;
-            border: 1px solid #31527c;
+            background: #173b78;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
             border-radius: 14px;
         }
 
         .modal-header {
-            border-bottom: 1px solid #1d3d65;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .modal-footer {
-            border-top: 1px solid #1d3d65;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .modal-title {
@@ -938,15 +936,15 @@ body.sidebar-closed .page-wrapper {
         }
 
         .form-label {
-            color: #9db5d4;
+            color: rgba(255, 255, 255, 0.85);
             font-size: 13px;
             margin-bottom: 7px;
         }
 
         .form-control,
         .form-select {
-            background: #081d38;
-            border: 1px solid #31527c;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
             border-radius: 8px;
             padding: 10px 12px;
@@ -955,14 +953,14 @@ body.sidebar-closed .page-wrapper {
 
         .form-control:focus,
         .form-select:focus {
-            background: #081d38;
+            background: #0f172a;
             border-color: #0dcaf0;
             color: #ffffff;
             box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.12);
         }
 
         .form-select option {
-            background: #0b2445;
+            background: #173b78;
             color: #ffffff;
         }
 
@@ -982,7 +980,7 @@ body.sidebar-closed .page-wrapper {
         .empty-state {
             text-align: center;
             padding: 55px 20px;
-            color: #718caf;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .empty-state i {
@@ -1091,7 +1089,6 @@ body.sidebar-closed .page-wrapper {
 </button>
 
 <!-- SIDEBAR RAILMAP -->
-<!-- SIDEBAR RAILMAP -->
 <aside class="railmap-sidebar" id="railmapSidebar">
 
     <div class="sidebar-brand">
@@ -1177,7 +1174,7 @@ body.sidebar-closed .page-wrapper {
                 foreach ($deposList as $depo) {
 
                     $depoId = (int) $depo['id'];
-
+                    $collapseId = 'depoCollapse_user_' . $depoId;
                     $namaDepo = htmlspecialchars(
                         $depo['nama_depo'],
                         ENT_QUOTES,
@@ -1189,9 +1186,14 @@ body.sidebar-closed .page-wrapper {
 
                     <div class="d-flex align-items-center w-100">
 
-                        <a
-                            href="dashboard_main.php?depo=<?= $depoId ?>"
-                            class="train-name flex-grow-1 text-decoration-none"
+                        <!-- Tombol Dropdown Nama Depo (Menggunakan button collapse, bukan link pindah halaman) -->
+                        <button
+                            class="train-name flex-grow-1 border-0 bg-transparent text-start d-flex align-items-center collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#<?php echo $collapseId; ?>"
+                            aria-expanded="false"
+                            aria-controls="<?php echo $collapseId; ?>"
                         >
 
                             <i class="bi bi-chevron-down train-arrow me-2"></i>
@@ -1199,31 +1201,60 @@ body.sidebar-closed .page-wrapper {
                             <i class="bi bi-folder text-info me-2"></i>
 
                             <span class="text-light">
-                                <?= $namaDepo ?>
+                                <?php echo $namaDepo; ?>
                             </span>
 
-                        </a>
-
-                        <!-- EDIT -->
-                        <button
-                            type="button"
-                            class="btn btn-sm text-warning p-1 ms-1"
-                            onclick="window.location.href='dashboard_main.php'"
-                            title="Edit nama depo"
-                        >
-                            <i class="bi bi-pencil-square"></i>
                         </button>
 
-                        <!-- HAPUS -->
-                        <button
-                            type="button"
-                            class="btn btn-sm text-danger p-1 ms-1"
-                            onclick="window.location.href='dashboard_main.php'"
-                            title="Hapus depo"
-                        >
-                            <i class="bi bi-trash"></i>
-                        </button>
+                    </div>
 
+                    <!-- DROPDOWN NAMA KERETA DI DALAM DEPO -->
+                    <div
+                        class="collapse"
+                        id="<?php echo $collapseId; ?>"
+                    >
+                        <div
+                            class="train-ids"
+                            style="padding-left: 25px;"
+                        >
+                            <?php
+                            // Ambil kereta berdasarkan depo
+                            $stmtTrain = $pdo->prepare("
+                                SELECT *
+                                FROM trains
+                                WHERE depo_id = ?
+                                ORDER BY id ASC
+                            ");
+                            $stmtTrain->execute([$depoId]);
+                            $trainsList = $stmtTrain->fetchAll(PDO::FETCH_ASSOC);
+
+                            if (count($trainsList) > 0) {
+                                foreach ($trainsList as $train) {
+                                    $trainId = (int)$train['id'];
+                                    $namaKereta = htmlspecialchars($train['nama_kereta'], ENT_QUOTES, 'UTF-8');
+                            ?>
+                                    <!-- NAMA KERETA (Hanya elemen ini yang menuju ke dashboard saat diklik) -->
+                                    <a
+                                        href="dashboard_main.php?train_id=<?php echo $trainId; ?>"
+                                        class="train-id d-block text-light text-decoration-none py-1 ps-2 rounded mb-1"
+                                        style="font-size: 0.8rem;"
+                                    >
+                                        <?php echo $namaKereta; ?>
+                                    </a>
+                            <?php
+                                }
+                            } else {
+                            ?>
+                                <span
+                                    class="train-id text-muted d-block"
+                                    style="font-size: 0.7rem; font-style: italic;"
+                                >
+                                    Belum ada kereta
+                                </span>
+                            <?php
+                            }
+                            ?>
+                        </div>
                     </div>
 
                 </div>
@@ -1245,7 +1276,7 @@ body.sidebar-closed .page-wrapper {
 
         <button
             type="button"
-            class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
+            class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center collapsed"
             data-bs-toggle="collapse"
             data-bs-target="#laporanPerangkatMenu"
             aria-expanded="false"
@@ -1272,18 +1303,12 @@ body.sidebar-closed .page-wrapper {
                 style="padding-left: 25px;"
             >
 
-                <a
-                    href="dashboard_main.php?open=trouble"
-                    class="train-id"
-                >
+                <a href="dashboard_main.php" class="train-id" onclick="sessionStorage.setItem('openTab', 'trouble');">
                     <i class="bi bi-exclamation-triangle me-2 text-warning"></i>
                     Laporan Perangkat Trouble
                 </a>
 
-                <a
-                    href="dashboard_main.php?open=repair"
-                    class="train-id"
-                >
+                <a href="dashboard_main.php" class="train-id" onclick="sessionStorage.setItem('openTab', 'repair');">
                     <i class="bi bi-tools me-2 text-success"></i>
                     Laporan Perangkat Perbaikan
                 </a>
@@ -1299,7 +1324,7 @@ body.sidebar-closed .page-wrapper {
 
         <button
             type="button"
-            class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center"
+            class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center collapsed"
             data-bs-toggle="collapse"
             data-bs-target="#analitikMenu"
             aria-expanded="false"
@@ -1326,10 +1351,7 @@ body.sidebar-closed .page-wrapper {
                 style="padding-left: 25px;"
             >
 
-                <a
-                    href="dashboard_main.php?open=analytics"
-                    class="train-id"
-                >
+                <a href="dashboard_main.php" class="train-id" onclick="sessionStorage.setItem('openTab', 'analytics');">
                     <i class="bi bi-cpu me-2 text-info"></i>
                     Analitik Perangkat
                 </a>
