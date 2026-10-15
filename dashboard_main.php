@@ -1657,14 +1657,16 @@ function canWriteDepo(string $namaDepo): bool
             </div>
 
             <!-- MENU MANAGEMENT USERS -->
+            <?php if ($isSuperAdmin): ?>
             <div class="mt-3">
                 <a href="management_users.php" class="train-name w-100 border-0 bg-transparent text-start d-flex align-items-center text-decoration-none">
-                <i class="bi bi-people-fill text-info me-2"></i>
-                <span class="text-light">
-                    Management Users
-                </span>
+                    <i class="bi bi-people-fill text-info me-2"></i>
+                    <span class="text-light">
+                        Management Users
+                    </span>
                 </a>
             </div>
+            <?php endif; ?>
 
             <!-- ACCOUNT / LOGOUT -->
             <div class="sidebar-account">
