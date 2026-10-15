@@ -1845,9 +1845,12 @@ function canWriteDepo(string $namaDepo): bool
                                         <h5 class="m-0 fw-bold text-light" style="font-size: 1.15rem;">
                                             <i class="bi bi-table me-2 text-info"></i>Tabel Urutan Stanformasi Rangkaian Kereta ' . htmlspecialchars($currentTrain['nama_kereta']) .'
                                         </h5>
-                                        
+                                                                                                                       
                                         <!-- TOMBOL CETAK / EXPORT -->
                                         <div class="d-flex align-items-center gap-2">
+                                            <button class="btn btn-warning btn-sm px-3 fw-bold py-1 text-nowrap" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                                <i class="bi bi-pencil-square me-1"></i> Atur Urutan
+                                            </button>
                                             <button class="btn btn-primary btn-sm px-3 fw-bold py-1 text-nowrap" onclick="printStanformasiTable()">
                                                 <i class="bi bi-printer me-1"></i> Cetak PDF
                                             </button>
@@ -4751,7 +4754,7 @@ function canWriteDepo(string $namaDepo): bool
             downloadLink.click();
             document.body.removeChild(downloadLink);
         }
-    </script>
+ </script>
 
     <!-- Modal Pop-up Create (Depo & Nama Kereta) -->
     <div class="modal fade" id="modalCreateMenu" tabindex="-1" aria-labelledby="modalCreateMenuLabel" aria-hidden="true">
@@ -5029,6 +5032,62 @@ function canWriteDepo(string $namaDepo): bool
             </div>
         </div>
     </div>
+    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #173b78; color: #fff; border: 1px solid rgba(255,255,255,0.2);">
+            <form action="update_carriage_order.php" method="POST">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-list-ol me-2"></i>Atur Urutan Stanformasi</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <?php 
+                        $activeTrainId = $_GET['train_id'] ?? 1; 
+                    ?>
+                    <input type="hidden" name="train_id" value="<?= htmlspecialchars($activeTrainId) ?>">
+                    <p class="text-muted small" style="color: #cbd5e1 !important;">Masukkan angka urutan (1, 2, 3, dst.) untuk setiap nomor sarana:</p>
+                    
+                    <div id="modalOrderList">
+                        <?php
+                        try {
+                            $stmtModal = $pdo->prepare("
+                                SELECT id, location, carriage_order 
+                                FROM carriages 
+                                WHERE train_id = ? AND is_hidden = 0 
+                                ORDER BY carriage_order ASC, location ASC
+                            ");
+                            $stmtModal->execute([$activeTrainId]);
+                            $modalCars = $stmtModal->fetchAll(PDO::FETCH_ASSOC);
+
+                            if (count($modalCars) > 0) {
+                                foreach ($modalCars as $index => $car) {
+                                    $carId = (int)$car['id'];
+                                    $carLoc = htmlspecialchars($car['location'], ENT_QUOTES, 'UTF-8');
+                                    $carOrder = $car['carriage_order'] > 0 ? $car['carriage_order'] : ($index + 1);
+                        ?>
+                                    <div class="d-flex align-items-center justify-content-between mb-2 p-2 rounded" style="background: rgba(255,255,255,0.05);">
+                                        <span class="fw-bold text-info"><i class="bi bi-train-front me-2"></i><?= $carLoc ?></span>
+                                        <input type="number" name="order[<?= $carId ?>]" value="<?= $carOrder ?>" class="form-control form-control-sm text-center text-white bg-dark border-secondary" style="width: 80px;" min="1" required>
+                                    </div>
+                        <?php
+                                }
+                            } else {
+                                echo '<p class="text-warning small text-center m-0">Tidak ada data sarana untuk rangkaian kereta ini.</p>';
+                            }
+                        } catch (Exception $e) {
+                            echo '<p class="text-danger small text-center m-0">Gagal memuat data gerbong.</p>';
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-info btn-sm fw-bold text-dark">Simpan Urutan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>

@@ -26,7 +26,7 @@ $stmt = $pdo->query("
         GROUP BY location
     ) r ON c.location = r.location
     WHERE c.is_hidden = 0
-    ORDER BY c.location ASC
+    ORDER BY c.carriage_order ASC, c.location ASC
 ");
 
 $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);

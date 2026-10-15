@@ -23,7 +23,15 @@ if ($locationCode) {
     ");
     $regStmt->execute([$locationCode]);
 
-    // 2. Jika parameter internet_status dikirim, perbarui status internetnya
+    // 2. OTOMATIS UN-HIDE (is_hidden = 0) saat Mikrotik mengirim data (perangkat hidup)
+    $unhideStmt = $pdo->prepare("
+        UPDATE carriages 
+        SET is_hidden = 0 
+        WHERE location = ?
+    ");
+    $unhideStmt->execute([$locationCode]);
+
+    // 3. Jika parameter internet_status dikirim, perbarui status internetnya
     if ($internetStatus) {
         $internetStmt = $pdo->prepare("
             UPDATE carriages 
