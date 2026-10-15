@@ -7,7 +7,33 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+
+// Hak akses user
+$userRole = $_SESSION['user_role'] ?? 'user';
+$userDepo = $_SESSION['user_depo'] ?? '';
+
+$isSuperAdmin = ($userRole === 'super_admin');
+$isAdmin      = ($userRole === 'admin');
+$isOperator   = ($userRole === 'operator');
+
+// Operator hanya boleh WRITE pada depo miliknya. Super Admin dan Admin boleh WRITE pada semua depo.
+function canWriteDepo(string $namaDepo): bool
+{
+    $role = $_SESSION['user_role'] ?? 'user';
+    $depo = $_SESSION['user_depo'] ?? '';
+
+    if ($role === 'super_admin' || $role === 'admin') {
+        return true;
+    }
+
+    if ($role === 'operator') {
+        return $depo === $namaDepo;
+    }
+
+    return false;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -1330,6 +1356,7 @@ if (!isset($_SESSION['user_id'])) {
                     </a>
                 </span>
 
+                <?php if ($isSuperAdmin || $isAdmin): ?>
                 <!-- Tombol Tambah Data -->
                 <button
                     type="button"
@@ -1340,6 +1367,7 @@ if (!isset($_SESSION['user_id'])) {
                     style="background: none; border: none;">
                     <i class="bi bi-plus-circle-fill fs-6"></i>
                 </button>
+            <?php endif; ?>
             </div>
 
             <!-- Menu Daftar Depo Dinamis -->
@@ -1404,6 +1432,8 @@ if (!isset($_SESSION['user_id'])) {
 
                                         </button>
 
+                                        <?php if (canWriteDepo($namaDepoRaw)): ?>
+
                                         <!-- TOMBOL EDIT DEPO -->
                                         <button
                                             type="button"
@@ -1413,9 +1443,7 @@ if (!isset($_SESSION['user_id'])) {
                                             data-depo-id="<?php echo $depoId; ?>"
                                             data-depo-name="<?php echo $namaDepo; ?>"
                                             title="Edit nama depo">
-
                                             <i class="bi bi-pencil-square"></i>
-
                                         </button>
 
                                         <!-- TOMBOL HAPUS DEPO -->
@@ -1424,12 +1452,10 @@ if (!isset($_SESSION['user_id'])) {
                                             method="POST"
                                             class="d-inline"
                                             onsubmit="return confirm('Yakin ingin menghapus depo <?php echo addslashes($namaDepoRaw); ?> beserta seluruh nama kereta di dalamnya?');">
-
                                             <input
                                                 type="hidden"
                                                 name="depo_id"
                                                 value="<?php echo $depoId; ?>">
-
                                             <button
                                                 type="submit"
                                                 class="btn btn-sm text-danger p-1 ms-1"
@@ -1437,6 +1463,7 @@ if (!isset($_SESSION['user_id'])) {
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
+                                    <?php endif; ?>
                                     </div>
 
                                     <!-- DROPDOWN NAMA KERETA -->
@@ -1492,18 +1519,17 @@ if (!isset($_SESSION['user_id'])) {
                                                             <?php echo $namaKereta; ?>
                                                         </a>
 
+                                                        <?php if (canWriteDepo($namaDepoRaw)): ?>
                                                         <!-- TOMBOL HAPUS NAMA KERETA -->
                                                         <form
                                                             action="delete_kereta.php"
                                                             method="POST"
                                                             class="d-inline ms-1"
                                                             onsubmit="return confirm('Yakin ingin menghapus nama kereta <?php echo addslashes($namaKeretaRaw); ?>?');">
-
                                                             <input
                                                                 type="hidden"
                                                                 name="train_id"
                                                                 value="<?php echo $trainId; ?>">
-
                                                             <button
                                                                 type="submit"
                                                                 class="btn btn-sm text-danger p-1"
@@ -1512,6 +1538,7 @@ if (!isset($_SESSION['user_id'])) {
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
+                                                        <?php endif; ?>
                                                     </div>
                                                 <?php
                                                 }
@@ -1708,17 +1735,17 @@ if (!isset($_SESSION['user_id'])) {
                             echo '</small>';
 
                             echo '</div>';
-
-                            // tombol tambah nomor sarana
-                            echo '<button 
-                                    type="button"
-                                    class="btn btn-success btn-sm px-3 py-2 fw-bold"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalAddLocation">
-                                    <i class="bi bi-plus-circle me-1"></i>
-                                    Tambah Nomor Sarana
-                                </button>';
-
+                            $currentTrainDepo = $currentTrain['nama_depo'] ?? '';
+                            if (canWriteDepo($currentTrainDepo)) {
+                                echo '<button 
+                                        type="button"
+                                        class="btn btn-success btn-sm px-3 py-2 fw-bold"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalAddLocation">
+                                        <i class="bi bi-plus-circle me-1"></i>
+                                        Tambah Nomor Sarana
+                                    </button>';
+                            }
                             echo '</div>';
 
                             // ambil nomor sarana yang sudah masuk ke rangkaian ini
@@ -1781,6 +1808,7 @@ if (!isset($_SESSION['user_id'])) {
                                     echo '<span class="badge-status bg-secondary" id="badge-' . $location . '">NO DATA</span>';
 
                                     // TOMBOL LEPAS DARI RANGKAIAN (Diperbesar agar kotak sempurna & sejajar)
+                                    if (canWriteDepo($currentTrain['nama_depo'] ?? '')) {
                                     echo '<form action="detach_carriage.php" method="POST" class="d-inline" onsubmit="return confirm(\'Lepas ' . $location . ' dari rangkaian ini?\')">';
                                     echo '<input type="hidden" name="location" value="' . $location . '">';
                                     echo '<input type="hidden" name="train_id" value="' . (int)$selected_train_id . '">';
@@ -1788,6 +1816,7 @@ if (!isset($_SESSION['user_id'])) {
                                     echo '<i class="bi bi-link-45deg"></i>';
                                     echo '</button>';
                                     echo '</form>';
+                                    }
 
                                     echo '</div>';
                                     echo '</div>'; // End car-header
@@ -1852,16 +1881,17 @@ if (!isset($_SESSION['user_id'])) {
                                 echo 'Klik "Tambah Nomor Sarana" untuk memilih nomor sarana yang sudah terdeteksi monitoring.';
                                 echo '</p>';
 
-                                echo '<button 
-                                        type="button"
-                                        class="btn btn-success btn-sm mt-1 px-4 py-2 fw-bold shadow-sm"
-                                        style="border-radius: 8px;"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalAddLocation">
-                                        <i class="bi bi-plus-circle-fill me-1"></i>
-                                        Tambah Nomor Sarana
-                                    </button>';
-
+                                if (canWriteDepo($currentTrainDepo)) {
+                                    echo '<button 
+                                            type="button"
+                                            class="btn btn-success btn-sm mt-1 px-4 py-2 fw-bold shadow-sm"
+                                            style="border-radius: 8px;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalAddLocation">
+                                            <i class="bi bi-plus-circle-fill me-1"></i>
+                                            Tambah Nomor Sarana
+                                        </button>';
+                                }
                                 echo '</div>';
                             }
                         } else {
@@ -4759,18 +4789,63 @@ if (!isset($_SESSION['user_id'])) {
                             <form action="create_kereta.php" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
-                                    <select name="depo_id" class="form-select form-select-sm text-light bg-dark border-secondary" required>
-                                        <option value="">-- Pilih Depo --</option>
+                                    <select
+                                        name="depo_id"
+                                        class="form-select form-select-sm text-light bg-dark border-secondary"
+                                        required>
+
+                                        <option value="">
+                                            -- Pilih Depo --
+                                        </option>
+
                                         <?php
+
                                         try {
-                                            $stmt = $pdo->query("SELECT * FROM depos ORDER BY nama_depo ASC");
-                                            while ($row = $stmt->fetch()) {
-                                                echo '<option value="' . $row['id'] . '">' . htmlspecialchars($row['nama_depo']) . '</option>';
+
+                                            if ($isOperator) {
+
+                                                $stmt = $pdo->prepare("
+                                                    SELECT id, nama_depo
+                                                    FROM depos
+                                                    WHERE nama_depo = ?
+                                                    LIMIT 1
+                                                ");
+
+                                                $stmt->execute([$userDepo]);
+
+                                            } else {
+
+                                                $stmt = $pdo->query("
+                                                    SELECT id, nama_depo
+                                                    FROM depos
+                                                    ORDER BY nama_depo ASC
+                                                ");
+
                                             }
+
+                                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                                                echo '<option value="' .
+                                                    (int)$row['id'] .
+                                                    '">' .
+                                                    htmlspecialchars(
+                                                        $row['nama_depo'],
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) .
+                                                    '</option>';
+                                            }
+
                                         } catch (PDOException $e) {
-                                            echo '<option value="">Gagal memuat depo</option>';
+
+                                            echo '<option value="">
+                                                    Gagal memuat depo
+                                                </option>';
+
                                         }
+
                                         ?>
+
                                     </select>
                                 </div>
                                 <div class="mb-3">
