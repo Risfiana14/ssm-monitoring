@@ -1356,7 +1356,7 @@ function canWriteDepo(string $namaDepo): bool
                     </a>
                 </span>
 
-                <?php if ($isSuperAdmin || $isAdmin): ?>
+                <?php if ($isSuperAdmin || $isAdmin || $isOperator): ?>
                 <!-- Tombol Tambah Data -->
                 <button
                     type="button"
@@ -4769,16 +4769,27 @@ function canWriteDepo(string $namaDepo): bool
 
                 <div class="modal-body">
                     <ul class="nav nav-pills nav-fill mb-3" id="createTab" role="tablist">
+                        <?php if ($isSuperAdmin || $isAdmin): ?>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active btn-sm" id="depo-tab" data-bs-toggle="tab" data-bs-target="#depoTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Depo</button>
                         </li>
+                        <?php endif; ?>
+
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link btn-sm" id="kereta-tab" data-bs-toggle="tab" data-bs-target="#keretaTabContent" type="button" role="tab" style="font-size: 0.8rem; font-weight: 600;">Create Nama Kereta</button>
+                            <button class="nav-link <?php echo $isOperator ? 'active' : ''; ?> btn-sm"
+                                id="kereta-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#keretaTabContent"
+                                type="button"
+                                role="tab"
+                                style="font-size: 0.8rem; font-weight: 600;">
+                                Create Nama Kereta
+                            </button>
                         </li>
                     </ul>
 
                     <div class="tab-content" id="createTabContent">
-                        <div class="tab-pane fade show active" id="depoTabContent" role="tabpanel">
+                        <div class="tab-pane fade <?php echo ($isSuperAdmin || $isAdmin) ? 'show active' : ''; ?>" id="depoTabContent" role="tabpanel">
                             <form action="create_depo.php" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label" style="font-size: 0.8rem;">Nama Depo</label>
@@ -4790,7 +4801,7 @@ function canWriteDepo(string $namaDepo): bool
                             </form>
                         </div>
 
-                        <div class="tab-pane fade" id="keretaTabContent" role="tabpanel">
+                        <div class="tab-pane fade <?php echo $isOperator ? 'show active' : ''; ?>" id="keretaTabContent" role="tabpanel">
                             <form action="create_kereta.php" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label" style="font-size: 0.8rem;">Pilih Depo</label>
