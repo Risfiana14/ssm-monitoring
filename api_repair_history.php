@@ -6,8 +6,6 @@ try {
     $start_date = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
     $end_date = isset($_GET['end_date']) ? trim($_GET['end_date']) : '';
 
-    // Logika: Tampilkan jika device masih bermasalah (offline/warning) 
-    // ATAU jika status perbaikannya sudah diubah menjadi 'Sudah diperbaiki' (biar tidak hilang)
     $sql = "
         SELECT
             rh.id,
@@ -24,16 +22,28 @@ try {
             rh.created_at,
             rh.updated_at
         FROM repair_history rh
-        JOIN monitoring_logs ml 
-          ON rh.location COLLATE utf8mb4_unicode_ci = ml.location COLLATE utf8mb4_unicode_ci 
-         AND rh.device_ip COLLATE utf8mb4_unicode_ci = ml.device_ip COLLATE utf8mb4_unicode_ci
-        JOIN (
-            SELECT location, device_ip, MAX(id) as max_id
-            FROM repair_history
-            GROUP BY location, device_ip
-        ) latest ON rh.id = latest.max_id
-        WHERE (ml.status != 'ONLINE' AND ml.status != 'UP') 
-           OR rh.status = 'Sudah diperbaiki'
+        JOIN monitoring_logs ml
+        ON rh.location COLLATE utf8mb4_unicode_ci = ml.location COLLATE utf8mb4_unicode_ci
+        AND rh.device_ip COLLATE utf8mb4_unicode_ci = ml.device_ip COLLATE utf8mb4_unicode_ci
+        WHERE
+            (
+                NOT (
+                    rh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                )
+            )
+            OR
+            (
+                rh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                AND rh.created_at >= NOW() - INTERVAL 24 HOUR
+                AND rh.id = (
+                    SELECT MAX(rh2.id)
+                    FROM repair_history rh2
+                    WHERE rh2.location = rh.location
+                    AND rh2.device_ip = rh.device_ip
+                    AND rh2.notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                    AND rh2.created_at >= NOW() - INTERVAL 24 HOUR
+                )
+            )
     ";
 
     $params = [];
