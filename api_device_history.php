@@ -27,7 +27,35 @@ try {
             dh.image,
             dh.created_at
         FROM device_history AS dh
-        WHERE 1 = 1
+        WHERE
+            (
+                -- LAPORAN MANUAL:
+                -- tetap ditampilkan dan tidak dibatasi 24 jam
+                NOT (
+                    dh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                    AND TRIM(COALESCE(dh.image, '')) = ''
+                )
+            )
+            OR
+            (
+                -- LAPORAN OTOMATIS:
+                -- hanya yang dibuat dalam 24 jam terakhir
+                dh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                AND TRIM(COALESCE(dh.image, '')) = ''
+                AND dh.created_at >= NOW() - INTERVAL 24 HOUR
+
+                -- hanya 1 laporan otomatis terbaru
+                -- untuk device yang sama
+                AND dh.id = (
+                    SELECT MAX(dh2.id)
+                    FROM device_history AS dh2
+                    WHERE dh2.location = dh.location
+                    AND dh2.device_ip = dh.device_ip
+                    AND dh2.notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                    AND TRIM(COALESCE(dh2.image, '')) = ''
+                    AND dh2.created_at >= NOW() - INTERVAL 24 HOUR
+                )
+            )
     ";
 
     // Parameter query

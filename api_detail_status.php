@@ -74,16 +74,24 @@ try {
             $dType = $device['device_type'] ?? '';
 
             if (!empty($loc) && !empty($dIp)) {
-                // Cek apakah dalam 1 jam terakhir perangkat ini sudah tercatat trouble agar tidak duplikat terus menerus
                 $stmtCheck = $pdo->prepare("
-                    SELECT id FROM device_history 
-                    WHERE location = ? AND device_ip = ? AND status = ? 
-                      AND created_at >= NOW() - INTERVAL 1 HOUR
+                    SELECT id
+                    FROM device_history
+                    WHERE location = ?
+                    AND device_ip = ?
+                    AND status = ?
+                    AND notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                    AND created_at >= NOW() - INTERVAL 24 HOUR
                     LIMIT 1
                 ");
-                $stmtCheck->execute([$loc, $dIp, $statusUpper]);
 
-                if ($stmtCheck->rowCount() === 0) {
+                $stmtCheck->execute([
+                    $loc,
+                    $dIp,
+                    $statusUpper
+                ]);
+
+                if ($stmtCheck->fetchColumn() === false) {
                     $autoNotes = "Terdeteksi otomatis oleh sistem (Status: " . $statusUpper . ")";
 
                     // 1. Masukkan otomatis ke tabel laporan kerusakan (device_history)
@@ -94,12 +102,52 @@ try {
                     $insTrouble->execute([$loc, $dName, $dIp, $dType, $statusUpper, $autoNotes]);
 
                     // 2. Masukkan otomatis ke tabel laporan perbaikan (repair_history)
-                    // Kolom status default: 'Belum ditindaklanjuti'
-                    $insRepair = $pdo->prepare("
-                        INSERT INTO repair_history (location, device_name, device_ip, device_type, status, notes, created_at)
-                        VALUES (?, ?, ?, ?, 'Belum ditindaklanjuti', ?, NOW())
+                    $stmtRepairCheck = $pdo->prepare("
+                        SELECT id
+                        FROM repair_history
+                        WHERE location = ?
+                        AND device_ip = ?
+                        AND notes LIKE 'Terdeteksi otomatis oleh sistem%'
+                        AND created_at >= NOW() - INTERVAL 24 HOUR
+                        LIMIT 1
                     ");
-                    $insRepair->execute([$loc, $dName, $dIp, $dType, $autoNotes]);
+
+                    $stmtRepairCheck->execute([
+                        $loc,
+                        $dIp
+                    ]);
+
+                    if ($stmtRepairCheck->fetchColumn() === false) {
+
+                        $insRepair = $pdo->prepare("
+                            INSERT INTO repair_history (
+                                location,
+                                device_name,
+                                device_ip,
+                                device_type,
+                                status,
+                                notes,
+                                created_at
+                            )
+                            VALUES (
+                                ?,
+                                ?,
+                                ?,
+                                ?,
+                                'Belum ditindaklanjuti',
+                                ?,
+                                NOW()
+                            )
+                        ");
+
+                        $insRepair->execute([
+                            $loc,
+                            $dName,
+                            $dIp,
+                            $dType,
+                            $autoNotes
+                        ]);
+                    }
                 }
             }
         }
