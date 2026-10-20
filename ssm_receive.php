@@ -11,9 +11,7 @@ $locationCode = $_GET['location'] ?? null;
 $status       = strtoupper($_GET['status'] ?? 'OFFLINE');
 $internetStatus = strtoupper($_GET['internet_status'] ?? '');
 
-// =========================================================================
 // AUTO-REGISTER KERETA & UPDATE STATUS INTERNET
-// =========================================================================
 if ($locationCode) {
     // 1. Pastikan gerbong terdaftar di tabel carriages
     $regStmt = $pdo->prepare("
@@ -55,9 +53,7 @@ if (!in_array($status, ['ONLINE', 'OFFLINE'])) {
     $status = 'OFFLINE';
 }
 
-// =========================================================================
 // PENYIMPANAN / UPDATE DATA PERANGKAT MONITORING
-// =========================================================================
 if ($deviceIP && $locationCode) {
     $stmt = $pdo->prepare("
         INSERT INTO monitoring_logs (device_name, device_ip, device_type, trainset, location, status, timestamp) 
@@ -69,7 +65,7 @@ if ($deviceIP && $locationCode) {
             device_type = VALUES(device_type),
             trainset = VALUES(trainset)
     ");
-    
+
     $stmt->execute([$deviceName, $deviceIP, $deviceType, $trainset, $locationCode, $status]);
     echo "UPDATED_OK";
 } else {
