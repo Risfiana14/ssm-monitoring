@@ -28,9 +28,8 @@ try {
             dh.created_at
         FROM device_history AS dh
         WHERE
+        (
             (
-                -- LAPORAN MANUAL:
-                -- tetap ditampilkan dan tidak dibatasi 24 jam
                 NOT (
                     dh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
                     AND TRIM(COALESCE(dh.image, '')) = ''
@@ -38,14 +37,9 @@ try {
             )
             OR
             (
-                -- LAPORAN OTOMATIS:
-                -- hanya yang dibuat dalam 24 jam terakhir
                 dh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
                 AND TRIM(COALESCE(dh.image, '')) = ''
                 AND dh.created_at >= NOW() - INTERVAL 24 HOUR
-
-                -- hanya 1 laporan otomatis terbaru
-                -- untuk device yang sama
                 AND dh.id = (
                     SELECT MAX(dh2.id)
                     FROM device_history AS dh2
@@ -56,6 +50,7 @@ try {
                     AND dh2.created_at >= NOW() - INTERVAL 24 HOUR
                 )
             )
+        )
     ";
 
     // Parameter query

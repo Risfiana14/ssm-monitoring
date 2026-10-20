@@ -26,6 +26,7 @@ try {
         ON rh.location COLLATE utf8mb4_unicode_ci = ml.location COLLATE utf8mb4_unicode_ci
         AND rh.device_ip COLLATE utf8mb4_unicode_ci = ml.device_ip COLLATE utf8mb4_unicode_ci
         WHERE
+        (
             (
                 NOT (
                     rh.notes LIKE 'Terdeteksi otomatis oleh sistem%'
@@ -44,6 +45,7 @@ try {
                     AND rh2.created_at >= NOW() - INTERVAL 24 HOUR
                 )
             )
+        )
     ";
 
     $params = [];
