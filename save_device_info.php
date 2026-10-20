@@ -15,9 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // =========================================================
         // AMBIL DATA DEVICE YANG SEDANG AKTIF
-        // =========================================================
         $stmtDevice = $pdo->prepare("
             SELECT device_name, device_type, status
             FROM monitoring_logs
@@ -26,17 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         $stmtDevice->execute([$location, $deviceIP]);
-
         $deviceData = $stmtDevice->fetch(PDO::FETCH_ASSOC);
-
 
         // Menyimpan nama file gambar baru untuk histori
         $newFileName = null;
 
-
-        // =========================================================
         // 1. UPDATE CATATAN TERBARU
-        // =========================================================
         if ($notes !== '') {
 
             $stmtNotes = $pdo->prepare("
@@ -45,31 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     image_updated_at = NOW() 
                 WHERE location = ? AND device_ip = ?
             ");
-
             $stmtNotes->execute([$notes, $location, $deviceIP]);
         }
 
-
-        // =========================================================
         // 2. JIKA ADA UNGGAHAN GAMBAR BARU
-        // =========================================================
         if (
             isset($_FILES['device_image']) &&
             $_FILES['device_image']['error'] === UPLOAD_ERR_OK
         ) {
-
             $file = $_FILES['device_image'];
-
             $ext = strtolower(
                 pathinfo($file['name'], PATHINFO_EXTENSION)
             );
-
             $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-
             if (in_array($ext, $allowed)) {
-
                 $uploadDir = __DIR__ . '/uploads/';
-
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
@@ -85,16 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $targetPath = $uploadDir . $newFileName;
 
-
                 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-
                     $stmtImg = $pdo->prepare("
                         UPDATE monitoring_logs 
                         SET image = ?, 
                             image_updated_at = NOW() 
                         WHERE location = ? AND device_ip = ?
                     ");
-
                     $stmtImg->execute([
                         $newFileName,
                         $location,
@@ -104,12 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-
-        // =========================================================
         // 3. SIMPAN HISTORI KERUSAKAN (Trouble)
-        // =========================================================
         if ($notes !== '' || $newFileName !== null) {
-
             $historyStmt = $pdo->prepare("
                 INSERT INTO device_history
                 (
@@ -135,9 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $newFileName
             ]);
 
-            // =========================================================
             // 4. SIMPAN HISTORI PERBAIKAN (Repair)
-            // =========================================================
             $repairHistoryStmt = $pdo->prepare("
                 INSERT INTO repair_history
                 (
@@ -147,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     device_type,
                     status,
                     notes,
-                    image,
+                    image_before,
                     created_at
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
@@ -158,26 +132,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $deviceData['device_name'] ?? null,
                 $deviceIP,
                 $deviceData['device_type'] ?? null,
-                $deviceData['status'] ?? null,
+                'Belum ditindaklanjuti',
                 $notes !== '' ? $notes : null,
                 $newFileName
             ]);
         }
 
-
-        // =========================================================
         // KEMBALI KE HALAMAN SEBELUMNYA
-        // =========================================================
         header(
             "Location: " .
-            ($_SERVER['HTTP_REFERER'] ?? 'index.php')
-        );
-
+            ($_SERVER['HTTP_REFERER'] ?? 'index.php')        );
         exit;
-
     } catch (PDOException $e) {
-
         die("Error Database: " . $e->getMessage());
-
     }
 }
